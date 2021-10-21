@@ -503,6 +503,7 @@ export default {
                   paciente: this.datosPaciente[0].url,
                   numBalda: this.editedItem.numBalda,
                   numHisCli: this.editedItem.numHisCli,
+                  user_reg: this.usuario,
                 },
                 {
                   headers: { Authorization: this.auth },
