@@ -93,6 +93,22 @@
         </v-row>
 
         <v-row justify="center">
+          <v-col cols="12" md="8">
+            <v-autocomplete
+              v-model="valorAutocomplete"
+              :items="autoComplite"
+              dense
+              label="BUSCAR A PACIENTE POR NOMBRE"
+            ></v-autocomplete>
+          </v-col>
+          <v-col cols="12" md="2">
+            <v-btn class="" icon color="#1973a5" @click="buscarPacicenteAuto">
+              <v-icon>mdi-magnify</v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+
+        <v-row justify="center">
           <v-col cols="12" md="10">
             <div v-if="this.datosPaciente.length != 0">
               <p class="text-h6">Nombre Paciente:</p>
@@ -234,6 +250,9 @@ export const RUTA_SERVIDOR = process.env.VUE_APP_RUTA_API;
 
 export default {
   data: () => ({
+    valorAutocomplete: null,
+    autoComplite: [
+    ],
     valid: true,
     rules: {
       required: (value) => !!value || "Campo Obligatorio.",
@@ -290,9 +309,52 @@ export default {
 
   created() {
     //this.actionBoton='pres'
+      this.dialogDataApi=true
+      axios
+          .post(RUTA_SERVIDOR + "/api/token/", {
+            username: "cnsr",
+            password: "123456",
+          })
+          .then((response) => {
+            this.auth = "Bearer " + response.data.access;
+            axios
+              .get(RUTA_SERVIDOR + "/paciente/", {
+                headers: { Authorization: this.auth },
+              })
+              .then((res) => {
+                //this.autoComplite = res.data[0].ape_pat + " " + res.data[0].ape_mat + " " + res.data[0].nombres;
+                for (let i = 0; i < 4; i++)
+                {
+                  this.autoComplite.push(res.data[i].ape_pat + " " + res.data[i].ape_mat + " " + res.data[i].nombres+ " DNI:"+ res.data[i].num_doc)
+                }
+                console.log("autocomplite", this.autoComplite);
+                this.dialogDataApi=false
+                //this.datosPaciente.length != 0
+                 // ? this.datosHistoria()
+                  //: //: ((this.dialogDataApi = false),
+                    // (this.aviso = "Datos de paciente no encontrados"),
+                    //(this.dialogAviso = true);
+                //);
+                //this.pres()
+              })
+              .catch((res) => {
+                console.warn("Error:", res);
+                this.dialog = false;
+              });
+          })
+          .catch((response) => {
+            response === 404
+              ? console.warn("lo sientimos no tenemos servicios")
+              : console.warn("Error:", response);
+          });
   },
 
   methods: {
+    buscarPacicenteAuto(){
+      this.setDni=this.valorAutocomplete.split(":")[1]
+      this.buscarPacicente()
+    },
+
     buscarPacicente() {
       //this.desserts=[]
       //this.editedItem=[]
