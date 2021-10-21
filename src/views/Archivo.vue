@@ -323,7 +323,7 @@ export default {
               })
               .then((res) => {
                 //this.autoComplite = res.data[0].ape_pat + " " + res.data[0].ape_mat + " " + res.data[0].nombres;
-                for (let i = 0; i < 4; i++)
+                for (let i = 0; i < res.data.length; i++)
                 {
                   this.autoComplite.push(res.data[i].ape_pat + " " + res.data[i].ape_mat + " " + res.data[i].nombres+ " DNI:"+ res.data[i].num_doc)
                 }
