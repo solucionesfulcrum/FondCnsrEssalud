@@ -250,6 +250,7 @@ export const RUTA_SERVIDOR = process.env.VUE_APP_RUTA_API;
 
 export default {
   data: () => ({
+    usuario:"",
     valorAutocomplete: null,
     autoComplite: [
     ],
@@ -309,6 +310,8 @@ export default {
 
   created() {
     //this.actionBoton='pres'
+      this.usuario=localStorage.getItem("usuario")
+      console.log("usuario",this.usuario)
       this.dialogDataApi=true
       axios
           .post(RUTA_SERVIDOR + "/api/token/", {
@@ -526,9 +529,9 @@ export default {
   },
 
   mounted() {
-    //if (!localStorage.getItem("keyValue")) {
-    //this.$router.push("/");
-    //}
+    if (!localStorage.getItem("keyValue")) {
+    this.$router.push("/");
+    }
   },
 
   components: {

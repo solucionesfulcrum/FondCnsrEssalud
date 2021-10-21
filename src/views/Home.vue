@@ -93,7 +93,9 @@ export default {
           password: this.contra,
         })
         .then((response) => {
+          console.log("respuesta",response)
           localStorage.setItem("keyValue", response.data.access);
+          localStorage.setItem("usuario",this.usuario)
           this.dialog = false
           this.$router.push("/go");
         })
