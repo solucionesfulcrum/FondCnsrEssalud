@@ -197,9 +197,12 @@
                         <v-btn color="blue darken-1" text @click="close">
                           Cancelar
                         </v-btn>
-                        <v-btn color="blue darken-1" text @click="save">
+                        <v-btn v-if="editedIndex === -1 " color="blue darken-1" text @click="save">
                           Guardar
                         </v-btn>
+                        <v-btn v-else color="blue darken-1" text @click="editar">
+                          Editar
+                        </v-btn> 
                       </v-card-actions>
                     </v-form>
                   </v-card>
@@ -325,6 +328,7 @@ export default {
                 headers: { Authorization: this.auth },
               })
               .then((res) => {
+                console.log("datosPacientes",res.data)
                 //this.autoComplite = res.data[0].ape_pat + " " + res.data[0].ape_mat + " " + res.data[0].nombres;
                 for (let i = 0; i < res.data.length; i++)
                 {
@@ -445,9 +449,53 @@ export default {
     },
 
     editItem(item) {
+      console.log("Datos de Item",item)
       this.editedIndex = this.desserts.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
+      console.log("Datos EditedIndex",this.editedItem)
+      console.log("Datos EditedItem",this.editedItem)
+    },
+
+    editar(){
+      
+      axios
+        .post(RUTA_SERVIDOR+"/api/token/", {
+          username: "cnsr",
+          password: "123456",
+        })
+        .then((response) => {
+          this.auth = "Bearer " + response.data.access;
+          axios
+            .patch(
+              RUTA_SERVIDOR+"/archivo/" +
+                this.editedItem.url.split("/")[4] +
+                "/",
+              {
+                  numBalda: this.editedItem.numBalda,
+                  numHisCli: this.editedItem.numHisCli,
+                  user_reg: this.usuario,
+              },
+              {
+                headers: { Authorization: this.auth },
+              }
+            )
+            .then((res) => {
+              this.dialogDataApi = true;
+              console.log("exito", res.status);
+              this.dialog = false;
+              this.datosHistoria()
+            })
+            .catch((res) => {
+              console.warn("Error:", res);
+              this.dialog = false;
+            });
+        })
+        .catch((response) => {
+          response === 404
+            ? console.warn("lo sientimos no tenemos servicios")
+            : console.warn("Error:", response);
+        });
     },
 
     deleteItem(item) {
