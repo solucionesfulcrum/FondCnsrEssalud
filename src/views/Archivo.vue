@@ -24,7 +24,7 @@
           <v-toolbar color="#1973a5" dark>¡Aviso Importante!</v-toolbar>
           <v-card-text>
             <div class="text-h4 pa-5">
-              ¡Paciente no se encuentra registrado!, ponerce en contacto con el
+              ¡Paciente no se encuentra registrado!, ponerse en contacto con el
               admistrador de sistema o ingresar al siguiente enlace,
               <a href="http://10.0.52.70:8030/admin/" target="_blank"
                 >Agregar Paciente</a

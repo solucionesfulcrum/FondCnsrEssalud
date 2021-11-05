@@ -39,6 +39,12 @@
       height="120px"
     ></v-img>
     </div>
+    <div v-if="this.img==='7'">
+    <v-img
+      :src="require('../../assets/dialisisMaq.jpeg')"
+      height="120px"
+    ></v-img>
+    </div>
     <v-card-title>
       {{img}}-{{title}}
     </v-card-title>

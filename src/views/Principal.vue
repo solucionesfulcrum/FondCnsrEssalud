@@ -24,6 +24,11 @@
                     <CardModulos title="Escaneados" detalle_titulo="Examenes de laboratorio escaneado" img="5"/>
                   </div>
               </v-flex>
+               <v-flex xs12 sm3>
+                  <div>
+                    <CardModulos title="Maquinas" detalle_titulo="Mantenimientos de maquinas de Hemodialisis" img="7"/>
+                  </div>
+              </v-flex>
               <v-flex xs12 sm3>
                   <div>
                     <CardModulos title="Archivo" detalle_titulo="Gestion de Archivo, Historias Clinicas Fisicas" img="6"/>

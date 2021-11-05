@@ -1312,7 +1312,7 @@ export default {
       });
     },
 
-    closeEditFormAdmin(){
+    closeEditFormAdmin() {
       this.dialogEditAdm = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
@@ -1330,8 +1330,6 @@ export default {
 
     edit() {
       console.log("esto es para editar", this.datosEdit.split("/")[4]);
-      
-
       axios
         .post(RUTA_SERVIDOR+"/api/token/", {
           username: "cnsr",

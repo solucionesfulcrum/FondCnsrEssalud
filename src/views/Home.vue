@@ -63,6 +63,7 @@
         </v-container>
       </v-form>
     </v-card>
+    <span>V 1.0.0</span>
   </div>
 </template>
 
@@ -85,23 +86,23 @@ export default {
     };
   },
   methods: {
-      ingresar() {
-      this.dialog = true  
+    ingresar() {
+      this.dialog = true;
       axios
-        .post(RUTA_SERVIDOR+"/api/token/", {
+        .post(RUTA_SERVIDOR + "/api/token/", {
           username: this.usuario,
           password: this.contra,
         })
         .then((response) => {
-          console.log("respuesta",response)
+          console.log("respuesta", response);
           localStorage.setItem("keyValue", response.data.access);
-          localStorage.setItem("usuario",this.usuario)
-          this.dialog = false
+          localStorage.setItem("usuario", this.usuario);
+          this.dialog = false;
           this.$router.push("/go");
         })
         .catch((response) => {
           this.value = true;
-          this.dialog = false
+          this.dialog = false;
         });
     },
     actualizar() {
