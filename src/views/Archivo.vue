@@ -2,6 +2,9 @@
   <div>
     <NavBar />
     <div>
+      <v-alert :value="alertExitoso" type="success">
+        Se registro Correctamente.
+      </v-alert>
       <v-dialog v-model="dialogDataApi" hide-overlay persistent width="300">
         <v-card color="#1973a5" dark>
           <v-card-text>
@@ -85,10 +88,154 @@
               @keyup.enter="buscarPacicente"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="7">
+          <v-col cols="12" md="3">
             <v-btn class="mt-10" icon color="#1973a5" @click="buscarPacicente">
               <v-icon>mdi-magnify</v-icon>
             </v-btn>
+          </v-col>
+          <v-col class="mt-10" cols="12" md="4">
+            <v-dialog v-model="dialogAddPaciente" max-width="500px">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  color="primary"
+                  dark
+                  class="mb-2"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-icon>mdi-plus</v-icon>
+                  Paciente
+                </v-btn>
+              </template>
+              <v-card>
+                <v-form ref="forAddPaciente" v-model="validPaciente" lazy-validation>
+                  <v-card-title>
+                    <span class="text-h5">{{ formTitle }}</span>
+                  </v-card-title>
+
+                  <v-card-text>
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12" sm="6" md="6">
+                          <v-combobox
+                            v-model="paciente.tipoDoc"
+                            filled
+                            outlined
+                            solo
+                            :rules="[rules.required, rules.counter]"
+                            :items="itemsTipDoc"
+                          ></v-combobox>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="6">
+                          <v-text-field
+                            v-model="paciente.numDniPacinte"
+                            :rules="[rules.required, rules.counterDni]"
+                            label="Número de Dni"
+                            type="number"
+                          ></v-text-field>
+                          <v-alert :value="alert" type="error">
+                            DNI ya registrado.
+                          </v-alert>
+                        </v-col>
+                        <v-col cols="12" sm="12" md="12">
+                          <v-text-field
+                            v-model="paciente.apePaterno"
+                            :rules="[rules.required]"
+                            label="Apellido Paterno"
+                            :maxlength="40"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="12" md="12">
+                          <v-text-field
+                            v-model="paciente.apeMaterno"
+                            :rules="[rules.required]"
+                            label="Apellido Materno"
+                            :maxlength="50"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="12" md="12">
+                          <v-text-field
+                            v-model="paciente.nombresPac"
+                            :rules="[rules.required]"
+                            label="Nombres"
+                            :maxlength="50"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="6">
+                          <v-combobox
+                            v-model="paciente.sexoPaciente"
+                            filled
+                            outlined
+                            solo
+                            :rules="[rules.required, rules.counter]"
+                            :items="itemsTipSex"
+                          ></v-combobox>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="6">
+                          <v-menu
+                            ref="menu"
+                            v-model="menu"
+                            :close-on-content-click="false"
+                            :return-value.sync="paciente.fechaNacimiento"
+                            transition="scale-transition"
+                            offset-y
+                            min-width="auto"
+                          >
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-text-field
+                                v-model="paciente.fechaNacimiento"
+                                label="Fecha de Nacimiento"
+                                prepend-icon="mdi-calendar"
+                                readonly
+                                v-bind="attrs"
+                                v-on="on"
+                                :rules="[rules.required, rules.counter]"
+                              ></v-text-field>
+                            </template>
+                            <v-date-picker
+                              v-model="editedItem.date"
+                              no-title
+                              scrollable
+                              :max="maximo"
+                            >
+                              <v-spacer></v-spacer>
+                              <v-btn text color="primary" @click="menu = false">
+                                Cancel
+                              </v-btn>
+                              <v-btn
+                                text
+                                color="primary"
+                                @click="$refs.menu.save(editedItem.date)"
+                              >
+                                OK
+                              </v-btn>
+                            </v-date-picker>
+                          </v-menu>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-card-text>
+
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="closeAddPaciente">
+                      Cancelar
+                    </v-btn>
+                    <v-btn
+                      v-if="editedIndex === -1"
+                      color="blue darken-1"
+                      text
+                      @click="saveAddPaciente"
+                    >
+                      Guardar
+                    </v-btn>
+                    <v-btn v-else color="blue darken-1" text @click="editar">
+                      Editar
+                    </v-btn>
+                  </v-card-actions>
+                </v-form>
+              </v-card>
+            </v-dialog>
           </v-col>
         </v-row>
 
@@ -118,7 +265,8 @@
             </div>
           </v-col>
         </v-row>
-        <!--      <v-text-field label="Apellido Paterno" required></v-text-field>
+        <!--
+          <v-text-field label="Apellido Paterno" required></v-text-field>
             </v-col>
             <v-col cols="12" md="3">
               <v-text-field label="Apellido Materno" required></v-text-field>
@@ -197,12 +345,22 @@
                         <v-btn color="blue darken-1" text @click="close">
                           Cancelar
                         </v-btn>
-                        <v-btn v-if="editedIndex === -1 " color="blue darken-1" text @click="save">
+                        <v-btn
+                          v-if="editedIndex === -1"
+                          color="blue darken-1"
+                          text
+                          @click="save"
+                        >
                           Guardar
                         </v-btn>
-                        <v-btn v-else color="blue darken-1" text @click="editar">
+                        <v-btn
+                          v-else
+                          color="blue darken-1"
+                          text
+                          @click="editar"
+                        >
                           Editar
-                        </v-btn> 
+                        </v-btn>
                       </v-card-actions>
                     </v-form>
                   </v-card>
@@ -253,15 +411,25 @@ export const RUTA_SERVIDOR = process.env.VUE_APP_RUTA_API;
 
 export default {
   data: () => ({
-    usuario:"",
+    alertExitoso: false,
+    alert: false,
+    maximo: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      .toISOString()
+      .substr(0, 10),
+    menu: false,
+    itemsTipDoc: ["DNI", "CE"],
+    itemsTipSex: ["MASCULINO", "FEMENINO"],
+    usuario: "",
     valorAutocomplete: null,
-    autoComplite: [
-    ],
+    autoComplite: [],
     valid: true,
+    validPaciente: true,
     rules: {
       required: (value) => !!value || "Campo Obligatorio.",
-      counter: (value) => value.length <= 20 || "Max 20 characters",
+      counter: (value) => value.length <= 20 || "Max 20 caracteres",
+      counterDni: (value) => value.length < 9 || "Max 8 caracteres",
     },
+    maxDni: 8,
     maxdat: 21,
     dialogRespuesta: false,
     dialogDataApi: false,
@@ -270,6 +438,7 @@ export default {
     datosArchivo: [],
     setDni: "",
     dialog: false,
+    dialogAddPaciente: false,
     dialogDelete: false,
     headers: [
       {
@@ -294,6 +463,25 @@ export default {
       numBalda: "",
       estado: "",
     },
+    pacienteEditedIndex: -1,
+    paciente: {
+      tipoDoc: "",
+      numDniPacinte: "",
+      apePaterno: "",
+      apeMaterno: "",
+      nombresPac: "",
+      sexoPaciente: "",
+      fechaNacimiento: "",
+    },
+    defaultPaciente: {
+      tipoDoc: "",
+      numDniPacinte: "",
+      apePaterno: "",
+      apeMaterno: "",
+      nombresPac: "",
+      sexoPaciente: "",
+      fechaNacimiento: "",
+    },
   }),
 
   computed: {
@@ -313,53 +501,60 @@ export default {
 
   created() {
     //this.actionBoton='pres'
-      this.usuario=localStorage.getItem("usuario")
-      console.log("usuario",this.usuario)
-      this.dialogDataApi=true
-      axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
-            username: "cnsr",
-            password: "123456",
+    this.usuario = localStorage.getItem("usuario");
+    console.log("usuario", this.usuario);
+    this.dialogDataApi = true;
+    axios
+      .post(RUTA_SERVIDOR + "/api/token/", {
+        username: "cnsr",
+        password: "123456",
+      })
+      .then((response) => {
+        this.auth = "Bearer " + response.data.access;
+        axios
+          .get(RUTA_SERVIDOR + "/paciente/", {
+            headers: { Authorization: this.auth },
           })
-          .then((response) => {
-            this.auth = "Bearer " + response.data.access;
-            axios
-              .get(RUTA_SERVIDOR + "/paciente/", {
-                headers: { Authorization: this.auth },
-              })
-              .then((res) => {
-                console.log("datosPacientes",res.data)
-                //this.autoComplite = res.data[0].ape_pat + " " + res.data[0].ape_mat + " " + res.data[0].nombres;
-                for (let i = 0; i < res.data.length; i++)
-                {
-                  this.autoComplite.push(res.data[i].ape_pat + " " + res.data[i].ape_mat + " " + res.data[i].nombres+ " DNI:"+ res.data[i].num_doc)
-                }
-                console.log("autocomplite", this.autoComplite);
-                this.dialogDataApi=false
-                //this.datosPaciente.length != 0
-                 // ? this.datosHistoria()
-                  //: //: ((this.dialogDataApi = false),
-                    // (this.aviso = "Datos de paciente no encontrados"),
-                    //(this.dialogAviso = true);
-                //);
-                //this.pres()
-              })
-              .catch((res) => {
-                console.warn("Error:", res);
-                this.dialog = false;
-              });
+          .then((res) => {
+            console.log("datosPacientes", res.data);
+            //this.autoComplite = res.data[0].ape_pat + " " + res.data[0].ape_mat + " " + res.data[0].nombres;
+            for (let i = 0; i < res.data.length; i++) {
+              this.autoComplite.push(
+                res.data[i].ape_pat +
+                  " " +
+                  res.data[i].ape_mat +
+                  " " +
+                  res.data[i].nombres +
+                  " DNI:" +
+                  res.data[i].num_doc
+              );
+            }
+            console.log("autocomplite", this.autoComplite);
+            this.dialogDataApi = false;
+            //this.datosPaciente.length != 0
+            // ? this.datosHistoria()
+            //: //: ((this.dialogDataApi = false),
+            // (this.aviso = "Datos de paciente no encontrados"),
+            //(this.dialogAviso = true);
+            //);
+            //this.pres()
           })
-          .catch((response) => {
-            response === 404
-              ? console.warn("lo sientimos no tenemos servicios")
-              : console.warn("Error:", response);
+          .catch((res) => {
+            console.warn("Error:", res);
+            this.dialog = false;
           });
+      })
+      .catch((response) => {
+        response === 404
+          ? console.warn("lo sientimos no tenemos servicios")
+          : console.warn("Error:", response);
+      });
   },
 
   methods: {
-    buscarPacicenteAuto(){
-      this.setDni=this.valorAutocomplete.split(":")[1]
-      this.buscarPacicente()
+    buscarPacicenteAuto() {
+      this.setDni = this.valorAutocomplete.split(":")[1];
+      this.buscarPacicente();
     },
 
     buscarPacicente() {
@@ -367,6 +562,7 @@ export default {
       //this.editedItem=[]
       //console.log("datos de paciente", this.datosPaciente);
       //this.adminForm = "";
+      this.alertExitoso = false;
       if (this.setDni == "") {
         this.dialogAviso = true;
       } else {
@@ -449,18 +645,17 @@ export default {
     },
 
     editItem(item) {
-      console.log("Datos de Item",item)
+      console.log("Datos de Item", item);
       this.editedIndex = this.desserts.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
-      console.log("Datos EditedIndex",this.editedItem)
-      console.log("Datos EditedItem",this.editedItem)
+      console.log("Datos EditedIndex", this.editedItem);
+      console.log("Datos EditedItem", this.editedItem);
     },
 
-    editar(){
-      
+    editar() {
       axios
-        .post(RUTA_SERVIDOR+"/api/token/", {
+        .post(RUTA_SERVIDOR + "/api/token/", {
           username: "cnsr",
           password: "123456",
         })
@@ -468,13 +663,14 @@ export default {
           this.auth = "Bearer " + response.data.access;
           axios
             .patch(
-              RUTA_SERVIDOR+"/archivo/" +
+              RUTA_SERVIDOR +
+                "/archivo/" +
                 this.editedItem.url.split("/")[4] +
                 "/",
               {
-                  numBalda: this.editedItem.numBalda,
-                  numHisCli: this.editedItem.numHisCli,
-                  user_reg: this.usuario,
+                numBalda: this.editedItem.numBalda,
+                numHisCli: this.editedItem.numHisCli,
+                user_reg: this.usuario,
               },
               {
                 headers: { Authorization: this.auth },
@@ -484,7 +680,7 @@ export default {
               this.dialogDataApi = true;
               console.log("exito", res.status);
               this.dialog = false;
-              this.datosHistoria()
+              this.datosHistoria();
             })
             .catch((res) => {
               console.warn("Error:", res);
@@ -514,6 +710,22 @@ export default {
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
+      });
+    },
+
+    closePaciente() {
+      this.dialogAddPaciente = false;
+      this.$nextTick(() => {
+        this.paciente = Object.assign({}, this.defaultPaciente);
+        this.pacienteEditedIndex = -1;
+      });
+    },
+
+    closeAddPaciente() {
+      this.dialogAddPaciente = false;
+      this.$nextTick(() => {
+        this.paciente = Object.assign({}, this.defaultPaciente);
+        this.pacienteEditedIndex = -1;
       });
     },
 
@@ -559,6 +771,7 @@ export default {
               )
               .then((res) => {
                 console.log("exito", res.status);
+                //setTimeout(this.alertExitoso(), 3000);
                 this.close();
                 this.datosHistoria();
                 //this.exclu();
@@ -575,11 +788,81 @@ export default {
           });
       }
     },
+
+    saveAddPaciente() {
+      console.log("datapaciente", this.paciente);
+      this.$refs.forAddPaciente.validate();
+      if (
+        !this.paciente.tipoDoc ||
+        !this.paciente.numDniPacinte ||
+        !this.paciente.apePaterno ||
+        !this.paciente.apeMaterno ||
+        !this.paciente.sexoPaciente ||
+        !this.paciente.fechaNacimiento ||
+        this.paciente.numDniPacinte.length > 8 ||
+        this.paciente.numDniPacinte.length < 8
+      ) {
+        this.$refs.forAddPaciente.validate();
+        console.log("validate");
+      } else {
+        this.dialogDataApi = true;
+        axios
+          .post(RUTA_SERVIDOR + "/api/token/", {
+            username: "cnsr",
+            password: "123456",
+          })
+          .then((response) => {
+            this.auth = "Bearer " + response.data.access;
+            axios
+              .post(
+                RUTA_SERVIDOR + "/paciente/",
+                {
+                  tipo_doc: this.paciente.tipoDoc,
+                  num_doc: this.paciente.numDniPacinte,
+                  ape_pat: this.paciente.apePaterno,
+                  ape_mat: this.paciente.apeMaterno,
+                  nombres: this.paciente.nombresPac,
+                  fecha_nac: this.paciente.fechaNacimiento,
+                  sexo: this.paciente.sexoPaciente,
+                },
+                {
+                  headers: { Authorization: this.auth },
+                }
+              )
+              .then((res) => {
+                this.setDni = this.paciente.numDniPacinte;
+                this.dialogDataApi = false;
+                console.log("exito", res.status);
+                this.closePaciente();
+                this.alert = false;
+                this.alertExitoso = true;
+                this.buscarPacicente();
+
+                //setTimeout(this.alertExitoso = false, 3000000);
+                //this.close();
+                //this.datosHistoria();
+                //this.exclu();
+              })
+              .catch((res) => {
+                console.log("Error1:", res);
+                console.log("paciente ya existe");
+                this.dialogDataApi = false;
+                this.alert = true;
+                //this.dialog = false;
+              });
+          })
+          .catch((response) => {
+            response === 404
+              ? console.log("lo sientimos no tenemos servicios")
+              : console.log("Error:", response);
+          });
+      }
+    },
   },
 
   mounted() {
     if (!localStorage.getItem("keyValue")) {
-    this.$router.push("/");
+      this.$router.push("/");
     }
   },
 
