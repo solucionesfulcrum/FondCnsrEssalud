@@ -507,7 +507,7 @@ export default {
     axios
       .post(RUTA_SERVIDOR + "/api/token/", {
         username: "cnsr",
-        password: "123456",
+        password: "Essalud22",
       })
       .then((response) => {
         this.auth = "Bearer " + response.data.access;
@@ -569,7 +569,7 @@ export default {
         axios
           .post(RUTA_SERVIDOR + "/api/token/", {
             username: "cnsr",
-            password: "123456",
+            password: "Essalud22",
           })
           .then((response) => {
             this.auth = "Bearer " + response.data.access;
@@ -607,7 +607,7 @@ export default {
       axios
         .post(RUTA_SERVIDOR + "/api/token/", {
           username: "cnsr",
-          password: "123456",
+          password: "Essalud22",
         })
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
@@ -657,7 +657,7 @@ export default {
       axios
         .post(RUTA_SERVIDOR + "/api/token/", {
           username: "cnsr",
-          password: "123456",
+          password: "Essalud22",
         })
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
@@ -752,7 +752,7 @@ export default {
         axios
           .post(RUTA_SERVIDOR + "/api/token/", {
             username: "cnsr",
-            password: "123456",
+            password: "Essalud22",
           })
           .then((response) => {
             this.auth = "Bearer " + response.data.access;
@@ -809,7 +809,7 @@ export default {
         axios
           .post(RUTA_SERVIDOR + "/api/token/", {
             username: "cnsr",
-            password: "123456",
+            password: "Essalud22",
           })
           .then((response) => {
             this.auth = "Bearer " + response.data.access;

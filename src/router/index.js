@@ -20,7 +20,7 @@ const routes = [
     component: () => import('../views/AyudaDiag.vue')
   },
   {
-    path: '/consultaexterna',
+    path: '/consultaexterna/',
     name: 'ConsultaExterna',
     component: () => import('../views/ConsultaExterna.vue')
   },
@@ -33,6 +33,12 @@ const routes = [
     path: '/archivo',
     name: 'Archivo',
     component: () => import('../views/Archivo.vue')
+  },
+  ,
+  {
+    path: '/atencion/:id',
+    name: 'Atencion',
+    component: () => import('../views/ConsultaExterna.vue')
   },
 ]
 

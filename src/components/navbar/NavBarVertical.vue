@@ -1,79 +1,60 @@
 <template>
-<v-card
-    class="justify-content-star"
-    height="1000"
-    width="220"
-  >
-    <v-navigation-drawer
-      permanent
-      width="100%"
-    >
-      <v-row
-        class="fill-height"
-        no-gutters
-      >
-        <v-navigation-drawer
-          dark
-          mini-variant
-          mini-variant-width="56"
-          permanent
-          color="#1973a5"
-        >
-          <v-list-item class="px-2">
-            <v-list-item-avatar>
-              <v-img  :src="require('../../assets/logo_mini.png')" ></v-img>
-            </v-list-item-avatar>
-          </v-list-item>
+  <v-card class="mx-auto" width="256" tile>
+    <v-navigation-drawer permanent>
+      <v-list>
+        <v-list-item>
+          <v-list-item-avatar>
+            <v-img :src="require('../../assets/logo_mini.png')"></v-img>
+          </v-list-item-avatar>
+        </v-list-item>
 
-          <v-divider></v-divider>
-
-          <v-list
-            dense
-            nav
-          >
-            <v-list-item
-              v-for="item in items"
-              :key="item.title"
+        <v-list-item link>
+          <v-list-item-content>
+            <v-list-item-title class="text-h6"> CNSR </v-list-item-title>
+            <v-list-item-subtitle
+              >ESSALUD {{ selectedItem }}</v-list-item-subtitle
             >
-              <v-list-item-action>
-                <v-icon>{{ item.icon }}</v-icon>
-              </v-list-item-action>
+          </v-list-item-content>
 
-              <v-list-item-content>
-                <v-list-item-title>{{ item.title }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-navigation-drawer>
+          <v-list-item-action>
+            <v-icon>mdi-menu-down</v-icon>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
+      <v-divider></v-divider>
+      <v-list nav dense>
+        <v-list-item-group v-model="selectedItem" color="primary">
+          <v-list-item v-for="(item, i) in items" :key="i">
+            <v-list-item-icon>
+              <v-icon v-text="item.icon"></v-icon>
+            </v-list-item-icon>
 
-        <v-list class="grow">
-          <v-list-item
-            v-for="link in links"
-            :key="link"
-            link
-          >
-            <v-list-item-title v-text="link"></v-list-item-title>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.text"></v-list-item-title>
+            </v-list-item-content>
           </v-list-item>
-        </v-list>
-      </v-row>
+        </v-list-item-group>
+      </v-list>
     </v-navigation-drawer>
   </v-card>
 </template>
 
 <script>
-  export default {
-    data(){
-      return{
-        items: [
-          { title: 'Home', icon: 'mdi-view-dashboard' },
-          { title: 'About', icon: 'mdi-forum' },
-        ],
-        links: ['Home', 'Contacts', 'Settings'],
-        mini: true,
-      }
+export default {
+  name: "navBarV",
+  data: () => ({
+    selectedItem: 0,
+    items: [
+      { text: "Anemia", icon: "mdi-folder" },
+      { text: "Nutrición", icon: "mdi-folder" },
+    ],
+  }),
+  props: {
+    arbolCod: {
+      type: Function,
+      default: null,
     },
-    methods: {
-       
-    },
-  }
+  },
+  methods: {},
+};
 </script>
