@@ -1,65 +1,99 @@
 <template>
-    <div>
-        <v-dialog v-model="dialogDataApi" hide-overlay persistent width="300">
-          <v-card color="#1973a5" dark>
-            <v-card-text>
-              Cargando Datos
-              <v-progress-linear
-                indeterminate
-                color="white"
-                class="mb-0"
-              ></v-progress-linear>
-            </v-card-text>
-          </v-card>
-        </v-dialog>
+  <div>
+    <div class="text-center">
+      <v-dialog v-model="dialogCalendar" class="col-sm-12">
+        <v-card>
+          <v-card-title class="col-md-12 text-h5 grey lighten-2">
+            <span class="col-md-11">CALENDARIO</span>  
+            <v-btn
+              class="col-md-1"
+              color="primary"
+              text
+              @click="dialogCalendar = false"
+            >
+              X (Cerrar)
+            </v-btn>
+          </v-card-title>
 
-        <v-dialog
-          transition="dialog-bottom-transition"
-          max-width="600"
-          v-model="dialogAviso"
-        >
-          <v-card>
-            <v-toolbar color="#1973a5" dark>¡Aviso Importante!</v-toolbar>
-            <v-card-text>
-              <div class="text-h4 pa-5">
-                ¡Paciente no se encuentra registrado!, ponerce en contacto con
-                el admistrador de sistema.
-              </div>
-            </v-card-text>
-            <v-card-actions class="justify-end">
-              <v-btn text @click="dialogAviso = false">cerrar</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+          <div class="col-sm-12"><CalendarioAnemia /></div>
 
-        <v-container>
-          <v-card class="mx-auto my-5" max-width="900">
-            <v-system-bar color="#1973a5" dark>
-              DATOS DE PACIENTE - CONTROL DE ANEMIA CLINICAS CONTRATADOS
-            </v-system-bar>
-            <v-row justify="center">
-              <v-col cols="12" md="3">
-                <v-text-field
-                  class="mx-auto mt-8"
-                  v-model="setDni"
-                  label="DNI"
-                  required
-                  :maxlength="8"
-                  @keyup.enter="buscarPacicente"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" md="7">
-                <v-btn
-                  class="mt-10"
-                  icon
-                  color="#1973a5"
-                  @click="buscarPacicente"
-                >
-                  <v-icon>mdi-magnify</v-icon>
-                </v-btn>
-              </v-col>
-            </v-row>
-            <!--
+          <v-divider></v-divider>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" text @click="dialogCalendar = false">
+              Cerrar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </div>
+    <v-dialog v-model="dialogDataApi" hide-overlay persistent width="300">
+      <v-card color="#1973a5" dark>
+        <v-card-text>
+          Cargando Datos
+          <v-progress-linear
+            indeterminate
+            color="white"
+            class="mb-0"
+          ></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
+      transition="dialog-bottom-transition"
+      max-width="600"
+      v-model="dialogAviso"
+    >
+      <v-card>
+        <v-toolbar color="#1973a5" dark>¡Aviso Importante!</v-toolbar>
+        <v-card-text>
+          <div class="text-h4 pa-5">
+            ¡Paciente no se encuentra registrado!, ponerce en contacto con el
+            admistrador de sistema.
+          </div>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn text @click="dialogAviso = false">cerrar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-container>
+      <v-card class="mx-auto my-5" max-width="900">
+        <v-system-bar color="#1973a5" dark>
+          DATOS DE PACIENTE - CONTROL DE ANEMIA CLINICAS CONTRATADOS
+        </v-system-bar>
+        <v-row justify="center">
+          <v-col cols="12" md="3">
+            <v-text-field
+              class="mx-auto mt-8"
+              v-model="setDni"
+              label="DNI"
+              required
+              :maxlength="8"
+              @keyup.enter="buscarPacicente"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-btn class="mt-10" icon color="#1973a5" @click="buscarPacicente">
+              <v-icon>mdi-magnify</v-icon>
+            </v-btn>
+          </v-col>
+          <v-col cols="12" md="3">
+            <v-btn
+              class="mt-10"
+              icon
+              color="#1973a5"
+              @click="activarCalendario"
+            >
+              Calendario Anemia
+              <v-icon>mdi-calendar</v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+        <!--
           <v-row justify="center">
             <v-col cols="12" md="3">
               <v-text-field label="Apellido Paterno" required></v-text-field>
@@ -77,959 +111,919 @@
             </v-col>
           </v-row>
           -->
-          </v-card>
+      </v-card>
 
-          <v-card
-            class="mx-auto my-5"
-            max-width="900"
-            v-if="adminForm == '0' || adminForm == '1' || adminForm == '2'"
-          >
-            <v-tabs background-color="#1973a5" center-active dark>
-              <v-tab @click="pres">Prescripción</v-tab>
-              <v-tab @click="adm">Administración</v-tab>
-              <v-tab @click="exclu">Exclusión (MES)</v-tab>
-            </v-tabs>
-          </v-card>
+      <v-card
+        class="mx-auto my-5"
+        max-width="900"
+        v-if="adminForm == '0' || adminForm == '1' || adminForm == '2'"
+      >
+        <v-tabs background-color="#1973a5" center-active dark>
+          <v-tab @click="pres">Prescripción</v-tab>
+          <v-tab @click="adm">Administración</v-tab>
+          <v-tab @click="exclu">Exclusión (MES)</v-tab>
+        </v-tabs>
+      </v-card>
 
-          <v-card class="mx-auto my-5" max-width="900" v-if="adminForm == '0'">
-            <v-data-table
-              :headers="headers"
-              :items="desserts"
-              class="elevation-1"
-            >
-              <template v-slot:top>
-                <v-toolbar flat>
-                  <v-toolbar-title v-if="datosPaciente.length != 0">
-                    {{
-                      datosPaciente[0].nombres +
-                      " " +
-                      datosPaciente[0].ape_pat +
-                      " " +
-                      datosPaciente[0].ape_mat
-                    }}
-                    | {{ vista }}</v-toolbar-title
+      <v-card class="mx-auto my-5" max-width="900" v-if="adminForm == '0'">
+        <v-data-table :headers="headers" :items="desserts" class="elevation-1">
+          <template v-slot:top>
+            <v-toolbar flat>
+              <v-toolbar-title v-if="datosPaciente.length != 0">
+                {{
+                  datosPaciente[0].nombres +
+                  " " +
+                  datosPaciente[0].ape_pat +
+                  " " +
+                  datosPaciente[0].ape_mat
+                }}
+                | {{ vista }}</v-toolbar-title
+              >
+              <v-divider class="mx-4" inset vertical></v-divider>
+              <v-spacer></v-spacer>
+              <!--Registrar-->
+              <v-dialog v-model="dialog" max-width="700px">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    color="#1973a5"
+                    dark
+                    class="mb-2"
+                    v-bind="attrs"
+                    v-on="on"
                   >
-                  <v-divider class="mx-4" inset vertical></v-divider>
-                  <v-spacer></v-spacer>
-                  <!--Registrar-->
-                  <v-dialog v-model="dialog" max-width="700px">
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        color="#1973a5"
-                        dark
-                        class="mb-2"
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                        {{ actionBoton }}
+                    {{ actionBoton }}
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-form ref="form" v-model="valid" lazy-validation>
+                    <v-card-title>
+                      <span class="text-h5">{{ actionBoton }}</span>
+                    </v-card-title>
+                    <v-card-text>
+                      <v-container>
+                        <v-row>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-menu
+                              ref="menu"
+                              v-model="menu"
+                              :close-on-content-click="false"
+                              :return-value.sync="editedItem.date"
+                              transition="scale-transition"
+                              offset-y
+                              min-width="auto"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="editedItem.date"
+                                  label="Fecha"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker
+                                v-model="editedItem.date"
+                                no-title
+                                scrollable
+                                :min="minimo"
+                                :max="maximo"
+                              >
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="menu = false"
+                                >
+                                  Cancel
+                                </v-btn>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="$refs.menu.save(editedItem.date)"
+                                >
+                                  OK
+                                </v-btn>
+                              </v-date-picker>
+                            </v-menu>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="8">
+                            <v-text-field
+                              v-model="editedItem.name"
+                              :rules="[rules.required, rules.counter]"
+                              label="Nombre Nefrólogo"
+                              :maxlength="maxdat"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field
+                              v-model="editedItem.med"
+                              label="Medicamento"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-select
+                              v-model="editedItem.dos"
+                              :items="dosisE"
+                              :rules="[rules.required]"
+                              label="Dosis (UI)"
+                            ></v-select>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-select
+                              v-model="editedItem.via"
+                              :rules="[rules.required, rules.counter]"
+                              :items="via"
+                              label="Via Administración"
+                            ></v-select>
+                          </v-col>
+                          <!--HIERRO-->
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field
+                              v-model="editedItem.medHierro"
+                              label="Medicamento"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-select
+                              v-model="editedItem.dosHierro"
+                              :items="dosisH"
+                              :rules="[rules.required]"
+                              label="Dosis (UI)"
+                            ></v-select>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-select
+                              v-model="editedItem.viaHierro"
+                              :rules="[rules.required, rules.counter]"
+                              :items="via"
+                              label="Via Administración"
+                            ></v-select>
+                          </v-col>
+                          <!--HIERRO-->
+                        </v-row>
+                      </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="blue darken-1" text @click="close">
+                        Cancelar
                       </v-btn>
-                    </template>
-                    <v-card>
-                      <v-form ref="form" v-model="valid" lazy-validation>
-                        <v-card-title>
-                          <span class="text-h5">{{ actionBoton }}</span>
-                        </v-card-title>
-                        <v-card-text>
-                          <v-container>
-                            <v-row>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-menu
-                                  ref="menu"
-                                  v-model="menu"
-                                  :close-on-content-click="false"
-                                  :return-value.sync="editedItem.date"
-                                  transition="scale-transition"
-                                  offset-y
-                                  min-width="auto"
+                      <v-btn color="blue darken-1" text @click="save">
+                        Guardar
+                      </v-btn>
+                    </v-card-actions>
+                  </v-form>
+                </v-card>
+              </v-dialog>
+              <!--editar-->
+              <v-dialog v-model="dialogEdit" max-width="700px">
+                <v-card>
+                  <v-form ref="form" v-model="valid" lazy-validation>
+                    <v-card-title>
+                      <span class="text-h5">{{ actionBoton }}</span>
+                    </v-card-title>
+                    <v-card-text>
+                      <v-container>
+                        <v-row>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-menu
+                              ref="menu2"
+                              v-model="menu2"
+                              :close-on-content-click="false"
+                              :return-value.sync="editedItem.date"
+                              transition="scale-transition"
+                              offset-y
+                              min-width="auto"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="editedItem.date"
+                                  label="Fecha"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker
+                                v-model="editedItem.date"
+                                no-title
+                                scrollable
+                                :min="minimo"
+                                :max="maximo"
+                              >
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="menu2 = false"
                                 >
-                                  <template v-slot:activator="{ on, attrs }">
-                                    <v-text-field
-                                      v-model="editedItem.date"
-                                      label="Fecha"
-                                      prepend-icon="mdi-calendar"
-                                      readonly
-                                      v-bind="attrs"
-                                      v-on="on"
-                                    ></v-text-field>
-                                  </template>
-                                  <v-date-picker
-                                    v-model="editedItem.date"
-                                    no-title
-                                    scrollable
-                                    :min="minimo"
-                                    :max="maximo"
-                                  >
-                                    <v-spacer></v-spacer>
-                                    <v-btn
-                                      text
-                                      color="primary"
-                                      @click="menu = false"
-                                    >
-                                      Cancel
-                                    </v-btn>
-                                    <v-btn
-                                      text
-                                      color="primary"
-                                      @click="$refs.menu.save(editedItem.date)"
-                                    >
-                                      OK
-                                    </v-btn>
-                                  </v-date-picker>
-                                </v-menu>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="8">
-                                <v-text-field
-                                  v-model="editedItem.name"
-                                  :rules="[rules.required, rules.counter]"
-                                  label="Nombre Nefrólogo"
-                                  :maxlength="maxdat"
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field
-                                  v-model="editedItem.med"
-                                  label="Medicamento"
-                                  :maxlength="maxdat"
-                                  disabled
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-select
-                                  v-model="editedItem.dos"
-                                  :items="dosisE"
-                                  :rules="[rules.required]"
-                                  label="Dosis (UI)"
-                                ></v-select>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-select
-                                  v-model="editedItem.via"
-                                  :rules="[rules.required, rules.counter]"
-                                  :items="via"
-                                  label="Via Administración"
-                                ></v-select>
-                              </v-col>
-                              <!--HIERRO-->
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field
-                                  v-model="editedItem.medHierro"
-                                  label="Medicamento"
-                                  :maxlength="maxdat"
-                                  disabled
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-select
-                                  v-model="editedItem.dosHierro"
-                                  :items="dosisH"
-                                  :rules="[rules.required]"
-                                  label="Dosis (UI)"
-                                ></v-select>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-select
-                                  v-model="editedItem.viaHierro"
-                                  :rules="[rules.required, rules.counter]"
-                                  :items="via"
-                                  label="Via Administración"
-                                ></v-select>
-                              </v-col>
-                              <!--HIERRO-->
-                            </v-row>
-                          </v-container>
-                        </v-card-text>
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn color="blue darken-1" text @click="close">
-                            Cancelar
-                          </v-btn>
-                          <v-btn color="blue darken-1" text @click="save">
-                            Guardar
-                          </v-btn>
-                        </v-card-actions>
-                      </v-form>
-                    </v-card>
-                  </v-dialog>
-                  <!--editar-->
-                  <v-dialog v-model="dialogEdit" max-width="700px">
-                    <v-card>
-                      <v-form ref="form" v-model="valid" lazy-validation>
-                        <v-card-title>
-                          <span class="text-h5">{{ actionBoton }}</span>
-                        </v-card-title>
-                        <v-card-text>
-                          <v-container>
-                            <v-row>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-menu
-                                  ref="menu2"
-                                  v-model="menu2"
-                                  :close-on-content-click="false"
-                                  :return-value.sync="editedItem.date"
-                                  transition="scale-transition"
-                                  offset-y
-                                  min-width="auto"
+                                  Cancel
+                                </v-btn>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="$refs.menu2.save(editedItem.date)"
                                 >
-                                  <template v-slot:activator="{ on, attrs }">
-                                    <v-text-field
-                                      v-model="editedItem.date"
-                                      label="Fecha"
-                                      prepend-icon="mdi-calendar"
-                                      readonly
-                                      v-bind="attrs"
-                                      v-on="on"
-                                    ></v-text-field>
-                                  </template>
-                                  <v-date-picker
-                                    v-model="editedItem.date"
-                                    no-title
-                                    scrollable
-                                    :min="minimo"
-                                    :max="maximo"
-                                  >
-                                    <v-spacer></v-spacer>
-                                    <v-btn
-                                      text
-                                      color="primary"
-                                      @click="menu2 = false"
-                                    >
-                                      Cancel
-                                    </v-btn>
-                                    <v-btn
-                                      text
-                                      color="primary"
-                                      @click="$refs.menu2.save(editedItem.date)"
-                                    >
-                                      OK
-                                    </v-btn>
-                                  </v-date-picker>
-                                </v-menu>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="8">
-                                <v-text-field
-                                  v-model="editedItem.name"
-                                  :rules="[rules.required, rules.counter]"
-                                  label="Nombre Nefrólogo"
-                                  :maxlength="maxdat"
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field
-                                  v-model="editedItem.med"
-                                  label="Medicamento"
-                                  :maxlength="maxdat"
-                                  disabled
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-select
-                                  v-model="editedItem.dos"
-                                  :items="dosisE"
-                                  :rules="[rules.required]"
-                                  label="Dosis (UI)"
-                                ></v-select>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-select
-                                  v-model="editedItem.via"
-                                  :rules="[rules.required, rules.counter]"
-                                  :items="via"
-                                  label="Via Administración"
-                                ></v-select>
-                              </v-col>
-                              <!--HIERRO-->
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field
-                                  v-model="editedItem.medHierro"
-                                  label="Medicamento"
-                                  :maxlength="maxdat"
-                                  disabled
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-select
-                                  v-model="editedItem.dosHierro"
-                                  :items="dosisH"
-                                  :rules="[rules.required]"
-                                  label="Dosis (UI)"
-                                ></v-select>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-select
-                                  v-model="editedItem.viaHierro"
-                                  :rules="[rules.required, rules.counter]"
-                                  :items="via"
-                                  label="Via Administración"
-                                ></v-select>
-                              </v-col>
-                              <!--HIERRO-->
-                            </v-row>
-                          </v-container>
-                        </v-card-text>
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn color="blue darken-1" text @click="closeEdit">
-                            Cancelar
-                          </v-btn>
-                          <v-btn color="blue darken-1" text @click="edit">
-                            Editar
-                          </v-btn>
-                        </v-card-actions>
-                      </v-form>
-                    </v-card>
-                  </v-dialog>
-                  <v-dialog v-model="dialogDelete" max-width="500px">
-                    <v-card>
-                      <v-card-title class="text-h5"
-                        >Esta seguro de eliminar la Prescipción?</v-card-title
-                      >
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="blue darken-1" text @click="closeDelete"
-                          >Cancel</v-btn
-                        >
-                        <v-btn
-                          color="blue darken-1"
-                          text
-                          @click="deleteItemConfirm"
-                          >OK</v-btn
-                        >
-                        <v-spacer></v-spacer>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
-                </v-toolbar>
-              </template>
-              <template v-slot:[`item.actions`]="{ item }">
-                <v-icon small class="mr-2" @click="editItem(item)">
-                  mdi-pencil
-                </v-icon>
-                <!--<v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>-->
-              </template>
-            </v-data-table>
-          </v-card>
-
-          <v-card class="mx-auto my-5" max-width="900" v-if="adminForm == '1'">
-            <v-data-table
-              :headers="headers"
-              :items="desserts"
-              class="elevation-1"
-            >
-              <template v-slot:top>
-                <v-toolbar flat>
-                  <v-toolbar-title v-if="datosPaciente.length != 0">
-                    {{
-                      datosPaciente[0].nombres +
-                      " " +
-                      datosPaciente[0].ape_pat +
-                      " " +
-                      datosPaciente[0].ape_mat
-                    }}
-                    | {{ vista }}</v-toolbar-title
+                                  OK
+                                </v-btn>
+                              </v-date-picker>
+                            </v-menu>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="8">
+                            <v-text-field
+                              v-model="editedItem.name"
+                              :rules="[rules.required, rules.counter]"
+                              label="Nombre Nefrólogo"
+                              :maxlength="maxdat"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field
+                              v-model="editedItem.med"
+                              label="Medicamento"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-select
+                              v-model="editedItem.dos"
+                              :items="dosisE"
+                              :rules="[rules.required]"
+                              label="Dosis (UI)"
+                            ></v-select>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-select
+                              v-model="editedItem.via"
+                              :rules="[rules.required, rules.counter]"
+                              :items="via"
+                              label="Via Administración"
+                            ></v-select>
+                          </v-col>
+                          <!--HIERRO-->
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field
+                              v-model="editedItem.medHierro"
+                              label="Medicamento"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-select
+                              v-model="editedItem.dosHierro"
+                              :items="dosisH"
+                              :rules="[rules.required]"
+                              label="Dosis (UI)"
+                            ></v-select>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-select
+                              v-model="editedItem.viaHierro"
+                              :rules="[rules.required, rules.counter]"
+                              :items="via"
+                              label="Via Administración"
+                            ></v-select>
+                          </v-col>
+                          <!--HIERRO-->
+                        </v-row>
+                      </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="blue darken-1" text @click="closeEdit">
+                        Cancelar
+                      </v-btn>
+                      <v-btn color="blue darken-1" text @click="edit">
+                        Editar
+                      </v-btn>
+                    </v-card-actions>
+                  </v-form>
+                </v-card>
+              </v-dialog>
+              <v-dialog v-model="dialogDelete" max-width="500px">
+                <v-card>
+                  <v-card-title class="text-h5"
+                    >Esta seguro de eliminar la Prescipción?</v-card-title
                   >
-                  <v-divider class="mx-4" inset vertical></v-divider>
-                  <v-spacer></v-spacer>
-                  <v-dialog v-model="dialog" max-width="700px">
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        color="#1973a5"
-                        dark
-                        class="mb-2"
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                        {{ actionBoton }}
-                      </v-btn>
-                    </template>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="closeDelete"
+                      >Cancel</v-btn
+                    >
+                    <v-btn color="blue darken-1" text @click="deleteItemConfirm"
+                      >OK</v-btn
+                    >
+                    <v-spacer></v-spacer>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-toolbar>
+          </template>
+          <template v-slot:[`item.actions`]="{ item }">
+            <v-icon small class="mr-2" @click="editItem(item)">
+              mdi-pencil
+            </v-icon>
+            <!--<v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>-->
+          </template>
+        </v-data-table>
+      </v-card>
+
+      <v-card class="mx-auto my-5" max-width="900" v-if="adminForm == '1'">
+        <v-data-table :headers="headers" :items="desserts" class="elevation-1">
+          <template v-slot:top>
+            <v-toolbar flat>
+              <v-toolbar-title v-if="datosPaciente.length != 0">
+                {{
+                  datosPaciente[0].nombres +
+                  " " +
+                  datosPaciente[0].ape_pat +
+                  " " +
+                  datosPaciente[0].ape_mat
+                }}
+                | {{ vista }}</v-toolbar-title
+              >
+              <v-divider class="mx-4" inset vertical></v-divider>
+              <v-spacer></v-spacer>
+              <v-dialog v-model="dialog" max-width="700px">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    color="#1973a5"
+                    dark
+                    class="mb-2"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    {{ actionBoton }}
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-form ref="form" v-model="valid" lazy-validation>
+                    <v-card-title>
+                      <span class="text-h4">{{ actionBoton }} </span>
+                    </v-card-title>
                     <v-card>
-                      <v-form ref="form" v-model="valid" lazy-validation>
-                        <v-card-title>
-                          <span class="text-h4">{{ actionBoton }} </span>
-                        </v-card-title>
-                        <v-card>
-                          <v-col cols="12" sm="12" md="12"> </v-col>
-                          <v-col cols="12" sm="12" md="12">
-                            <span class="text-h6">Médico Prescribe: </span>
-                            <span>{{ datosPresHis.nomNefro }}</span>
+                      <v-col cols="12" sm="12" md="12"> </v-col>
+                      <v-col cols="12" sm="12" md="12">
+                        <span class="text-h6">Médico Prescribe: </span>
+                        <span>{{ datosPresHis.nomNefro }}</span>
+                      </v-col>
+                      <v-col cols="12" sm="12" md="12">
+                        <span class="text-h6">Dosis Eritropoyetina:</span>
+                        <span>{{ datosPresHis.dosisPres }} UI</span>
+                        <span class="text-h6">Dosis Hierro: </span>
+                        <span> {{ datosPresHis.dosisHiePres }} UI </span>
+                      </v-col>
+                    </v-card>
+                    <v-card-text>
+                      <v-container>
+                        <v-row>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-menu
+                              ref="menu"
+                              v-model="menu"
+                              :close-on-content-click="false"
+                              :return-value.sync="editedItem.date"
+                              transition="scale-transition"
+                              offset-y
+                              min-width="auto"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="editedItem.date"
+                                  label="Fecha"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker
+                                v-model="editedItem.date"
+                                no-title
+                                scrollable
+                                :min="minimo"
+                                :max="maximo"
+                              >
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="menu = false"
+                                >
+                                  Cancel
+                                </v-btn>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="$refs.menu.save(editedItem.date)"
+                                >
+                                  OK
+                                </v-btn>
+                              </v-date-picker>
+                            </v-menu>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="8">
+                            <v-text-field
+                              v-model="editedItem.name"
+                              :rules="[rules.required, rules.counter]"
+                              label="Nombre Completo Enfermera"
+                              :maxlength="maxdat"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field
+                              v-model="editedItem.med"
+                              label="Medicamento"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-select
+                              v-model="editedItem.dos"
+                              :items="dosisE"
+                              :rules="[rules.required]"
+                              label="Dosis (UI)-Administrada"
+                            ></v-select>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-select
+                              v-model="editedItem.via"
+                              :rules="[rules.required, rules.counter]"
+                              :items="via"
+                              label="Via Administración"
+                            ></v-select>
+                          </v-col>
+                          <!--HIERRO-->
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field
+                              v-model="editedItem.medHierro"
+                              label="Medicamento"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-select
+                              v-model="editedItem.dosHierro"
+                              :items="dosisH"
+                              :rules="[rules.required]"
+                              label="Dosis (UI)-Administrada"
+                            ></v-select>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-select
+                              v-model="editedItem.viaHierro"
+                              :rules="[rules.required, rules.counter]"
+                              :items="via"
+                              label="Via Administración"
+                            ></v-select>
+                          </v-col>
+                          <!--HIERRO-->
+                        </v-row>
+                      </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="blue darken-1" text @click="closeFormAdmin">
+                        Cancelar
+                      </v-btn>
+                      <v-btn color="blue darken-1" text @click="saveFormAdmin">
+                        Guardar
+                      </v-btn>
+                    </v-card-actions>
+                  </v-form>
+                </v-card>
+              </v-dialog>
+              <!--Editar administracion-->
+              <v-dialog v-model="dialogEditAdm" max-width="700px">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    color="#1973a5"
+                    dark
+                    class="mb-2"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    {{ actionBoton }}
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-form ref="form" v-model="valid" lazy-validation>
+                    <v-card-title>
+                      <span class="text-h5">{{ actionBoton }}</span>
+                    </v-card-title>
+                    <v-card-text>
+                      <v-container>
+                        <v-row>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-menu
+                              ref="menu2"
+                              v-model="menu2"
+                              :close-on-content-click="false"
+                              :return-value.sync="editedItem.date"
+                              transition="scale-transition"
+                              offset-y
+                              min-width="auto"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="editedItem.date"
+                                  label="Fecha"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker
+                                v-model="editedItem.date"
+                                no-title
+                                scrollable
+                                :min="minimo"
+                                :max="maximo"
+                              >
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="menu2 = false"
+                                >
+                                  Cancel
+                                </v-btn>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="$refs.menu2.save(editedItem.date)"
+                                >
+                                  OK
+                                </v-btn>
+                              </v-date-picker>
+                            </v-menu>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="8">
+                            <v-text-field
+                              v-model="editedItem.name"
+                              :rules="[rules.required, rules.counter]"
+                              label="Nombre Completo Enfermera"
+                              :maxlength="maxdat"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field
+                              v-model="editedItem.med"
+                              label="Medicamento"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-select
+                              v-model="editedItem.dos"
+                              :items="dosisE"
+                              :rules="[rules.required]"
+                              label="Dosis (UI)-Administrada"
+                            ></v-select>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-select
+                              v-model="editedItem.via"
+                              :rules="[rules.required, rules.counter]"
+                              :items="via"
+                              label="Via Administración"
+                            ></v-select>
+                          </v-col>
+                          <!--HIERRO-->
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field
+                              v-model="editedItem.medHierro"
+                              label="Medicamento"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-select
+                              v-model="editedItem.dosHierro"
+                              :items="dosisH"
+                              :rules="[rules.required]"
+                              label="Dosis (UI)-Administrada"
+                            ></v-select>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-select
+                              v-model="editedItem.viaHierro"
+                              :rules="[rules.required, rules.counter]"
+                              :items="via"
+                              label="Via Administración"
+                            ></v-select>
+                          </v-col>
+                          <!--HIERRO-->
+                        </v-row>
+                      </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="closeEditFormAdmin"
+                      >
+                        Cancelar
+                      </v-btn>
+                      <v-btn color="blue darken-1" text @click="editarAdm">
+                        Editar
+                      </v-btn>
+                    </v-card-actions>
+                  </v-form>
+                </v-card>
+              </v-dialog>
+              <!--fin de edicion de administracion-->
+              <v-dialog v-model="dialogDelete" max-width="500px">
+                <v-card>
+                  <v-card-title class="text-h5"
+                    >Esta seguro de eliminar la Prescipción?</v-card-title
+                  >
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="closeDelete"
+                      >Cancel</v-btn
+                    >
+                    <v-btn color="blue darken-1" text @click="deleteItemConfirm"
+                      >OK</v-btn
+                    >
+                    <v-spacer></v-spacer>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-toolbar>
+          </template>
+          <template v-slot:[`item.actions`]="{ item }">
+            <v-icon small class="mr-2" @click="editItemAdm(item)">
+              mdi-pencil
+            </v-icon>
+            <!--<v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>-->
+          </template>
+        </v-data-table>
+      </v-card>
+
+      <v-card class="mx-auto my-5" max-width="900" v-if="adminForm == '2'">
+        <v-data-table :headers="headers" :items="desserts" class="elevation-1">
+          <template v-slot:top>
+            <v-toolbar flat>
+              <v-toolbar-title v-if="datosPaciente.length != 0">
+                {{
+                  datosPaciente[0].nombres +
+                  " " +
+                  datosPaciente[0].ape_pat +
+                  " " +
+                  datosPaciente[0].ape_mat
+                }}
+                | {{ vista }}</v-toolbar-title
+              >
+              <v-divider class="mx-4" inset vertical></v-divider>
+              <v-spacer></v-spacer>
+              <v-dialog v-model="dialog" max-width="700px">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    color="#1973a5"
+                    dark
+                    class="mb-2"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    {{ actionBoton }}
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-form ref="form" v-model="valid" lazy-validation>
+                    <v-card-title>
+                      <span class="text-h5">{{ actionBoton }}</span>
+                    </v-card-title>
+                    <v-card-text>
+                      <v-container>
+                        <v-row>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-menu
+                              ref="menu"
+                              v-model="menu"
+                              :close-on-content-click="false"
+                              :return-value.sync="editedItem.date"
+                              transition="scale-transition"
+                              offset-y
+                              min-width="auto"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="editedItem.date"
+                                  label="Fecha"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker
+                                v-model="editedItem.date"
+                                no-title
+                                scrollable
+                                :min="minimo"
+                                :max="maximo"
+                              >
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="menu = false"
+                                >
+                                  Cancel
+                                </v-btn>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="$refs.menu.save(editedItem.date)"
+                                >
+                                  OK
+                                </v-btn>
+                              </v-date-picker>
+                            </v-menu>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="8">
+                            <v-text-field
+                              v-model="editedItem.razonExclu"
+                              :rules="[rules.required, rules.counter]"
+                              label="Razón o Motivo"
+                              :maxlength="maxdat"
+                            ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="12" md="12">
-                            <span class="text-h6">Dosis Eritropoyetina:</span>
-                            <span>{{ datosPresHis.dosisPres }} UI</span>
-                            <span class="text-h6">Dosis Hierro: </span>
-                            <span> {{ datosPresHis.dosisHiePres }} UI </span>
+                            <v-text-field
+                              v-model="editedItem.observa"
+                              :rules="[rules.required, rules.counter]"
+                              label="Observación"
+                              :maxlength="maxdat"
+                            ></v-text-field>
                           </v-col>
-                        </v-card>
-                        <v-card-text>
-                          <v-container>
-                            <v-row>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-menu
-                                  ref="menu"
-                                  v-model="menu"
-                                  :close-on-content-click="false"
-                                  :return-value.sync="editedItem.date"
-                                  transition="scale-transition"
-                                  offset-y
-                                  min-width="auto"
-                                >
-                                  <template v-slot:activator="{ on, attrs }">
-                                    <v-text-field
-                                      v-model="editedItem.date"
-                                      label="Fecha"
-                                      prepend-icon="mdi-calendar"
-                                      readonly
-                                      v-bind="attrs"
-                                      v-on="on"
-                                    ></v-text-field>
-                                  </template>
-                                  <v-date-picker
-                                    v-model="editedItem.date"
-                                    no-title
-                                    scrollable
-                                    :min="minimo"
-                                    :max="maximo"
-                                  >
-                                    <v-spacer></v-spacer>
-                                    <v-btn
-                                      text
-                                      color="primary"
-                                      @click="menu = false"
-                                    >
-                                      Cancel
-                                    </v-btn>
-                                    <v-btn
-                                      text
-                                      color="primary"
-                                      @click="$refs.menu.save(editedItem.date)"
-                                    >
-                                      OK
-                                    </v-btn>
-                                  </v-date-picker>
-                                </v-menu>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="8">
-                                <v-text-field
-                                  v-model="editedItem.name"
-                                  :rules="[rules.required, rules.counter]"
-                                  label="Nombre Completo Enfermera"
-                                  :maxlength="maxdat"
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field
-                                  v-model="editedItem.med"
-                                  label="Medicamento"
-                                  :maxlength="maxdat"
-                                  disabled
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-select
-                                  v-model="editedItem.dos"
-                                  :items="dosisE"
-                                  :rules="[rules.required]"
-                                  label="Dosis (UI)-Administrada"
-                                ></v-select>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-select
-                                  v-model="editedItem.via"
-                                  :rules="[rules.required, rules.counter]"
-                                  :items="via"
-                                  label="Via Administración"
-                                ></v-select>
-                              </v-col>
-                              <!--HIERRO-->
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field
-                                  v-model="editedItem.medHierro"
-                                  label="Medicamento"
-                                  :maxlength="maxdat"
-                                  disabled
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-select
-                                  v-model="editedItem.dosHierro"
-                                  :items="dosisH"
-                                  :rules="[rules.required]"
-                                  label="Dosis (UI)-Administrada"
-                                ></v-select>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-select
-                                  v-model="editedItem.viaHierro"
-                                  :rules="[rules.required, rules.counter]"
-                                  :items="via"
-                                  label="Via Administración"
-                                ></v-select>
-                              </v-col>
-                              <!--HIERRO-->
-                            </v-row>
-                          </v-container>
-                        </v-card-text>
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn
-                            color="blue darken-1"
-                            text
-                            @click="closeFormAdmin"
-                          >
-                            Cancelar
-                          </v-btn>
-                          <v-btn
-                            color="blue darken-1"
-                            text
-                            @click="saveFormAdmin"
-                          >
-                            Guardar
-                          </v-btn>
-                        </v-card-actions>
-                      </v-form>
-                    </v-card>
-                  </v-dialog>
-                  <!--Editar administracion-->
-                  <v-dialog v-model="dialogEditAdm" max-width="700px">
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        color="#1973a5"
-                        dark
-                        class="mb-2"
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                        {{ actionBoton }}
+                        </v-row>
+                      </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="blue darken-1" text @click="closeFormAdmin">
+                        Cancelar
                       </v-btn>
-                    </template>
-                    <v-card>
-                      <v-form ref="form" v-model="valid" lazy-validation>
-                        <v-card-title>
-                          <span class="text-h5">{{ actionBoton }}</span>
-                        </v-card-title>
-                        <v-card-text>
-                          <v-container>
-                            <v-row>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-menu
-                                  ref="menu2"
-                                  v-model="menu2"
-                                  :close-on-content-click="false"
-                                  :return-value.sync="editedItem.date"
-                                  transition="scale-transition"
-                                  offset-y
-                                  min-width="auto"
-                                >
-                                  <template v-slot:activator="{ on, attrs }">
-                                    <v-text-field
-                                      v-model="editedItem.date"
-                                      label="Fecha"
-                                      prepend-icon="mdi-calendar"
-                                      readonly
-                                      v-bind="attrs"
-                                      v-on="on"
-                                    ></v-text-field>
-                                  </template>
-                                  <v-date-picker
-                                    v-model="editedItem.date"
-                                    no-title
-                                    scrollable
-                                    :min="minimo"
-                                    :max="maximo"
-                                  >
-                                    <v-spacer></v-spacer>
-                                    <v-btn
-                                      text
-                                      color="primary"
-                                      @click="menu2 = false"
-                                    >
-                                      Cancel
-                                    </v-btn>
-                                    <v-btn
-                                      text
-                                      color="primary"
-                                      @click="$refs.menu2.save(editedItem.date)"
-                                    >
-                                      OK
-                                    </v-btn>
-                                  </v-date-picker>
-                                </v-menu>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="8">
-                                <v-text-field
-                                  v-model="editedItem.name"
-                                  :rules="[rules.required, rules.counter]"
-                                  label="Nombre Completo Enfermera"
-                                  :maxlength="maxdat"
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field
-                                  v-model="editedItem.med"
-                                  label="Medicamento"
-                                  :maxlength="maxdat"
-                                  disabled
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-select
-                                  v-model="editedItem.dos"
-                                  :items="dosisE"
-                                  :rules="[rules.required]"
-                                  label="Dosis (UI)-Administrada"
-                                ></v-select>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-select
-                                  v-model="editedItem.via"
-                                  :rules="[rules.required, rules.counter]"
-                                  :items="via"
-                                  label="Via Administración"
-                                ></v-select>
-                              </v-col>
-                              <!--HIERRO-->
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field
-                                  v-model="editedItem.medHierro"
-                                  label="Medicamento"
-                                  :maxlength="maxdat"
-                                  disabled
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-select
-                                  v-model="editedItem.dosHierro"
-                                  :items="dosisH"
-                                  :rules="[rules.required]"
-                                  label="Dosis (UI)-Administrada"
-                                ></v-select>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-select
-                                  v-model="editedItem.viaHierro"
-                                  :rules="[rules.required, rules.counter]"
-                                  :items="via"
-                                  label="Via Administración"
-                                ></v-select>
-                              </v-col>
-                              <!--HIERRO-->
-                            </v-row>
-                          </v-container>
-                        </v-card-text>
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn
-                            color="blue darken-1"
-                            text
-                            @click="closeEditFormAdmin"
-                          >
-                            Cancelar
-                          </v-btn>
-                          <v-btn color="blue darken-1" text @click="editarAdm">
-                            Editar
-                          </v-btn>
-                        </v-card-actions>
-                      </v-form>
-                    </v-card>
-                  </v-dialog>
-                  <!--fin de edicion de administracion-->
-                  <v-dialog v-model="dialogDelete" max-width="500px">
-                    <v-card>
-                      <v-card-title class="text-h5"
-                        >Esta seguro de eliminar la Prescipción?</v-card-title
-                      >
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="blue darken-1" text @click="closeDelete"
-                          >Cancel</v-btn
-                        >
-                        <v-btn
-                          color="blue darken-1"
-                          text
-                          @click="deleteItemConfirm"
-                          >OK</v-btn
-                        >
-                        <v-spacer></v-spacer>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
-                </v-toolbar>
-              </template>
-              <template v-slot:[`item.actions`]="{ item }">
-                <v-icon small class="mr-2" @click="editItemAdm(item)">
-                  mdi-pencil
-                </v-icon>
-                <!--<v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>-->
-              </template>
-            </v-data-table>
-          </v-card>
-
-          <v-card class="mx-auto my-5" max-width="900" v-if="adminForm == '2'">
-            <v-data-table
-              :headers="headers"
-              :items="desserts"
-              class="elevation-1"
-            >
-              <template v-slot:top>
-                <v-toolbar flat>
-                  <v-toolbar-title v-if="datosPaciente.length != 0">
-                    {{
-                      datosPaciente[0].nombres +
-                      " " +
-                      datosPaciente[0].ape_pat +
-                      " " +
-                      datosPaciente[0].ape_mat
-                    }}
-                    | {{ vista }}</v-toolbar-title
+                      <v-btn color="blue darken-1" text @click="saveFormExclu">
+                        Guardar
+                      </v-btn>
+                    </v-card-actions>
+                  </v-form>
+                </v-card>
+              </v-dialog>
+              <!--Editar Eclusion-->
+              <v-dialog v-model="dialogEditExclu" max-width="700px">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    color="#1973a5"
+                    dark
+                    class="mb-2"
+                    v-bind="attrs"
+                    v-on="on"
                   >
-                  <v-divider class="mx-4" inset vertical></v-divider>
-                  <v-spacer></v-spacer>
-                  <v-dialog v-model="dialog" max-width="700px">
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        color="#1973a5"
-                        dark
-                        class="mb-2"
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                        {{ actionBoton }}
-                      </v-btn>
-                    </template>
-                    <v-card>
-                      <v-form ref="form" v-model="valid" lazy-validation>
-                        <v-card-title>
-                          <span class="text-h5">{{ actionBoton }}</span>
-                        </v-card-title>
-                        <v-card-text>
-                          <v-container>
-                            <v-row>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-menu
-                                  ref="menu"
-                                  v-model="menu"
-                                  :close-on-content-click="false"
-                                  :return-value.sync="editedItem.date"
-                                  transition="scale-transition"
-                                  offset-y
-                                  min-width="auto"
+                    {{ actionBoton }}
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-form ref="form" v-model="valid" lazy-validation>
+                    <v-card-title>
+                      <span class="text-h5">{{ actionBoton }}</span>
+                    </v-card-title>
+                    <v-card-text>
+                      <v-container>
+                        <v-row>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-menu
+                              ref="menu2"
+                              v-model="menu2"
+                              :close-on-content-click="false"
+                              :return-value.sync="editedItem.date"
+                              transition="scale-transition"
+                              offset-y
+                              min-width="auto"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="editedItem.date"
+                                  label="Fecha"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker
+                                v-model="editedItem.date"
+                                no-title
+                                scrollable
+                                :min="minimo"
+                                :max="maximo"
+                              >
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="menu2 = false"
                                 >
-                                  <template v-slot:activator="{ on, attrs }">
-                                    <v-text-field
-                                      v-model="editedItem.date"
-                                      label="Fecha"
-                                      prepend-icon="mdi-calendar"
-                                      readonly
-                                      v-bind="attrs"
-                                      v-on="on"
-                                    ></v-text-field>
-                                  </template>
-                                  <v-date-picker
-                                    v-model="editedItem.date"
-                                    no-title
-                                    scrollable
-                                    :min="minimo"
-                                    :max="maximo"
-                                  >
-                                    <v-spacer></v-spacer>
-                                    <v-btn
-                                      text
-                                      color="primary"
-                                      @click="menu = false"
-                                    >
-                                      Cancel
-                                    </v-btn>
-                                    <v-btn
-                                      text
-                                      color="primary"
-                                      @click="$refs.menu.save(editedItem.date)"
-                                    >
-                                      OK
-                                    </v-btn>
-                                  </v-date-picker>
-                                </v-menu>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="8">
-                                <v-text-field
-                                  v-model="editedItem.razonExclu"
-                                  :rules="[rules.required, rules.counter]"
-                                  label="Razón o Motivo"
-                                  :maxlength="maxdat"
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="12" md="12">
-                                <v-text-field
-                                  v-model="editedItem.observa"
-                                  :rules="[rules.required, rules.counter]"
-                                  label="Observación"
-                                  :maxlength="maxdat"
-                                ></v-text-field>
-                              </v-col>
-                            </v-row>
-                          </v-container>
-                        </v-card-text>
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn
-                            color="blue darken-1"
-                            text
-                            @click="closeFormAdmin"
-                          >
-                            Cancelar
-                          </v-btn>
-                          <v-btn
-                            color="blue darken-1"
-                            text
-                            @click="saveFormExclu"
-                          >
-                            Guardar
-                          </v-btn>
-                        </v-card-actions>
-                      </v-form>
-                    </v-card>
-                  </v-dialog>
-                  <!--Editar Eclusion-->
-                  <v-dialog v-model="dialogEditExclu" max-width="700px">
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        color="#1973a5"
-                        dark
-                        class="mb-2"
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                        {{ actionBoton }}
-                      </v-btn>
-                    </template>
-                    <v-card>
-                      <v-form ref="form" v-model="valid" lazy-validation>
-                        <v-card-title>
-                          <span class="text-h5">{{ actionBoton }}</span>
-                        </v-card-title>
-                        <v-card-text>
-                          <v-container>
-                            <v-row>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-menu
-                                  ref="menu2"
-                                  v-model="menu2"
-                                  :close-on-content-click="false"
-                                  :return-value.sync="editedItem.date"
-                                  transition="scale-transition"
-                                  offset-y
-                                  min-width="auto"
+                                  Cancel
+                                </v-btn>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="$refs.menu2.save(editedItem.date)"
                                 >
-                                  <template v-slot:activator="{ on, attrs }">
-                                    <v-text-field
-                                      v-model="editedItem.date"
-                                      label="Fecha"
-                                      prepend-icon="mdi-calendar"
-                                      readonly
-                                      v-bind="attrs"
-                                      v-on="on"
-                                    ></v-text-field>
-                                  </template>
-                                  <v-date-picker
-                                    v-model="editedItem.date"
-                                    no-title
-                                    scrollable
-                                    :min="minimo"
-                                    :max="maximo"
-                                  >
-                                    <v-spacer></v-spacer>
-                                    <v-btn
-                                      text
-                                      color="primary"
-                                      @click="menu2 = false"
-                                    >
-                                      Cancel
-                                    </v-btn>
-                                    <v-btn
-                                      text
-                                      color="primary"
-                                      @click="$refs.menu2.save(editedItem.date)"
-                                    >
-                                      OK
-                                    </v-btn>
-                                  </v-date-picker>
-                                </v-menu>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="8">
-                                <v-text-field
-                                  v-model="editedItem.razonExclu"
-                                  :rules="[rules.required, rules.counter]"
-                                  label="Razón o Motivo"
-                                  :maxlength="maxdat"
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="12" md="12">
-                                <v-text-field
-                                  v-model="editedItem.observa"
-                                  :rules="[rules.required, rules.counter]"
-                                  label="Observación"
-                                  :maxlength="maxdat"
-                                ></v-text-field>
-                              </v-col>
-                            </v-row>
-                          </v-container>
-                        </v-card-text>
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn
-                            color="blue darken-1"
-                            text
-                            @click="closeFormExclu"
-                          >
-                            Cancelar
-                          </v-btn>
-                          <v-btn color="blue darken-1" text @click="editExclu">
-                            editar
-                          </v-btn>
-                        </v-card-actions>
-                      </v-form>
-                    </v-card>
-                  </v-dialog>
-                  <!--fin de edicion de administracion-->
-                  <v-dialog v-model="dialogDelete" max-width="500px">
-                    <v-card>
-                      <v-card-title class="text-h5"
-                        >Esta seguro de eliminar la Prescipción?</v-card-title
-                      >
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="blue darken-1" text @click="closeDelete"
-                          >Cancel</v-btn
-                        >
-                        <v-btn
-                          color="blue darken-1"
-                          text
-                          @click="deleteItemConfirm"
-                          >OK</v-btn
-                        >
-                        <v-spacer></v-spacer>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
-                </v-toolbar>
-              </template>
-              <template v-slot:[`item.actions`]="{ item }">
-                <v-icon small class="mr-2" @click="editItemExclu(item)">
-                  mdi-pencil
-                </v-icon>
-                <!--<v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>-->
-              </template>
-            </v-data-table>
-          </v-card>
-        </v-container>
-    </div>
+                                  OK
+                                </v-btn>
+                              </v-date-picker>
+                            </v-menu>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="8">
+                            <v-text-field
+                              v-model="editedItem.razonExclu"
+                              :rules="[rules.required, rules.counter]"
+                              label="Razón o Motivo"
+                              :maxlength="maxdat"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="12" md="12">
+                            <v-text-field
+                              v-model="editedItem.observa"
+                              :rules="[rules.required, rules.counter]"
+                              label="Observación"
+                              :maxlength="maxdat"
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                      </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="blue darken-1" text @click="closeFormExclu">
+                        Cancelar
+                      </v-btn>
+                      <v-btn color="blue darken-1" text @click="editExclu">
+                        editar
+                      </v-btn>
+                    </v-card-actions>
+                  </v-form>
+                </v-card>
+              </v-dialog>
+              <!--fin de edicion de administracion-->
+              <v-dialog v-model="dialogDelete" max-width="500px">
+                <v-card>
+                  <v-card-title class="text-h5"
+                    >Esta seguro de eliminar la Prescipción?</v-card-title
+                  >
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="closeDelete"
+                      >Cancel</v-btn
+                    >
+                    <v-btn color="blue darken-1" text @click="deleteItemConfirm"
+                      >OK</v-btn
+                    >
+                    <v-spacer></v-spacer>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-toolbar>
+          </template>
+          <template v-slot:[`item.actions`]="{ item }">
+            <v-icon small class="mr-2" @click="editItemExclu(item)">
+              mdi-pencil
+            </v-icon>
+            <!--<v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>-->
+          </template>
+        </v-data-table>
+      </v-card>
+    </v-container>
+  </div>
 </template>
 
 <script>
-
 import axios from "axios";
 export const RUTA_SERVIDOR = process.env.VUE_APP_RUTA_API;
+import CalendarioAnemia from "./CalendarioAnemia.vue";
 
 export default {
   data: () => ({
+    dialogCalendar: false,
     datosPresHis: [],
     datosEdit: "",
     dialogEditExclu: false,
@@ -1778,6 +1772,10 @@ export default {
       this.cabezeraMov();
       this.actionBoton = "Registro Movimiento";
     },
+
+    activarCalendario() {
+      this.dialogCalendar=true;
+    },
   },
 
   mounted() {
@@ -1787,8 +1785,7 @@ export default {
   },
 
   components: {
-    
-    
+    CalendarioAnemia,
   },
 };
 </script>

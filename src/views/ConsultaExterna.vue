@@ -41,8 +41,8 @@
           </v-navigation-drawer>
         </v-card>
       </div>
-      <div v-if="selectedItem == 0" class="col-sm-10"><CExternaAnem /></div>
-      <div v-if="selectedItem == 1" class="col-sm-10"><CExternaNut /></div>
+        <div v-if="selectedItem == 0" class="col-sm-10"><CExternaAnem /></div>
+        <div v-if="selectedItem == 1" class="col-sm-10"><CExternaNut /></div>
       </div>
     </div>
 </template>
@@ -50,7 +50,8 @@
 <script>
 import NavBar from "../components/navbar/NavBar.vue";
 import CExternaNut from "./CExternaNut.vue";
-import CExternaAnem from "./CExternaAnem.vue"
+import CExternaAnem from "./CExternaAnem.vue";
+import CalendarioAnemia from "./CalendarioAnemia.vue";
 export default {
   data() {
     return {
@@ -67,6 +68,7 @@ export default {
     NavBar,
     CExternaNut,
     CExternaAnem,
+    CalendarioAnemia,
   },
 };
 </script>
