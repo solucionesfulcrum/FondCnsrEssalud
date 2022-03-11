@@ -3,7 +3,7 @@
     <NavBar />
     <div class="row">
       <div class="col-sm-2">
-        <v-card class="mx-auto" width="256" tile>
+        <v-card class="mx-auto" width="100%" height="100vh" tile>
           <v-navigation-drawer permanent>
             <v-list>
               <v-list-item>
@@ -55,10 +55,11 @@ import CalendarioAnemia from "./CalendarioAnemia.vue";
 export default {
   data() {
     return {
-    selectedItem: 0,
+    selectedItem: null,
     items: [
       { text: "Anemia", icon: "mdi-folder" },
       { text: "Nutrición", icon: "mdi-folder" },
+      { text: "Reportes", icon: "mdi-folder" },
     ],
     };
   },
