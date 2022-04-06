@@ -7,16 +7,13 @@
           <v-navigation-drawer permanent>
             <v-list>
               <v-list-item>
-                <v-list-item-avatar>
-                </v-list-item-avatar>
+                <v-list-item-avatar> </v-list-item-avatar>
               </v-list-item>
 
               <v-list-item link>
                 <v-list-item-content>
                   <v-list-item-title class="text-h6"> CNSR </v-list-item-title>
-                  <v-list-item-subtitle
-                    >ESSALUD</v-list-item-subtitle
-                  >
+                  <v-list-item-subtitle>ESSALUD</v-list-item-subtitle>
                 </v-list-item-content>
 
                 <v-list-item-action>
@@ -27,7 +24,7 @@
             <v-divider></v-divider>
             <v-list nav dense>
               <v-list-item-group v-model="selectedItem" color="primary">
-                <v-list-item v-for="(item, i) in items" :key="i">
+                <v-list-item v-for="(item, i) in items2" :key="i">
                   <v-list-item-icon>
                     <v-icon v-text="item.icon"></v-icon>
                   </v-list-item-icon>
@@ -41,10 +38,10 @@
           </v-navigation-drawer>
         </v-card>
       </div>
-        <div v-if="selectedItem == 0" class="col-sm-10"><CExternaAnem /></div>
-        <div v-if="selectedItem == 1" class="col-sm-10"><CExternaNut /></div>
-      </div>
+      <div v-if="selectedItem == 0" class="col-sm-10"><CExternaAnem /></div>
+      <div v-if="selectedItem == 1" class="col-sm-10"><CExternaNut /></div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -52,15 +49,16 @@ import NavBar from "../components/navbar/NavBar.vue";
 import CExternaNut from "./CExternaNut.vue";
 import CExternaAnem from "./CExternaAnem.vue";
 import CalendarioAnemia from "./CalendarioAnemia.vue";
+
 export default {
   data() {
     return {
-    selectedItem: null,
-    items: [
-      { text: "Anemia", icon: "mdi-folder" },
-      { text: "Nutrición", icon: "mdi-folder" },
-      { text: "Reportes", icon: "mdi-folder" },
-    ],
+      selectedItem: null,
+      items2: [
+        { text: "Anemia", icon: "mdi-folder" },
+        { text: "Nutrición", icon: "mdi-folder" },
+        { text: "Reportes", icon: "mdi-folder" },
+      ],
     };
   },
   methods: {},

@@ -53,6 +53,11 @@
               <v-icon>mdi-magnify</v-icon>
             </v-btn>
           </v-col>
+          <v-col v-if="desserts.length!=0" cols="12" md="4">
+            <v-btn class="mt-10" icon color="#1973a5" @click="generatePDF">
+              Generar PDF<v-icon>mdi-arrow-down-bold-box</v-icon>
+            </v-btn>
+          </v-col>
         </v-row>
         <!--
           <v-row justify="center">
@@ -74,13 +79,13 @@
           -->
       </v-card>
 
-      <v-card class="mx-auto my-5" max-width="900">
+      <v-card class="mx-auto my-5" max-width="900" v-if="desserts.length!=0">
         <v-tabs background-color="#1973a5" center-active dark>
           <v-tab @click="nutricion">Nutrición</v-tab>
         </v-tabs>
       </v-card>
 
-      <v-card class="mx-auto my-5" max-width="900" v-if="adminForm == '0'">
+      <v-card class="mx-auto my-5" max-width="900" v-if="desserts.length!=0">
         <v-data-table :headers="headers" :items="desserts" class="elevation-1">
           <template v-slot:top>
             <v-toolbar flat>
@@ -215,7 +220,9 @@
                                 <v-btn
                                   text
                                   color="primary"
-                                  @click="$refs.menu4.save(editedItem.dateEvalu)"
+                                  @click="
+                                    $refs.menu4.save(editedItem.dateEvalu)
+                                  "
                                 >
                                   OK
                                 </v-btn>
@@ -399,7 +406,9 @@
                                 <v-btn
                                   text
                                   color="primary"
-                                  @click="$refs.menu4.save(editedItem.dateIngreso)"
+                                  @click="
+                                    $refs.menu4.save(editedItem.dateIngreso)
+                                  "
                                 >
                                   OK
                                 </v-btn>
@@ -444,7 +453,9 @@
                                 <v-btn
                                   text
                                   color="primary"
-                                  @click="$refs.menu4.save(editedItem.dateEvalu)"
+                                  @click="
+                                    $refs.menu4.save(editedItem.dateEvalu)
+                                  "
                                 >
                                   OK
                                 </v-btn>
@@ -517,28 +528,28 @@
                               :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
-                           <v-col cols="12" sm="6" md="3">
+                          <v-col cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.ingestaCalorica"
                               label="Ingesta Calorica"
                               :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
-                           <v-col cols="12" sm="6" md="3">
+                          <v-col cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.ingestaProteica"
                               label="Ingesta Proteica"
                               :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
-                           <v-col cols="12" sm="6" md="3">
+                          <v-col cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.diagNut"
                               label="Diagnostico Nutricional"
                               :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
-                           <v-col cols="12" sm="6" md="3">
+                          <v-col cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.interNut"
                               label="Intervención Nutricional"
@@ -595,9 +606,20 @@
 import axios from "axios";
 export const RUTA_SERVIDOR = process.env.VUE_APP_RUTA_API;
 import CalendarioAnemia from "./CalendarioAnemia.vue";
+import jsPDF from 'jspdf'
+import 'jspdf-autotable'
 
 export default {
   data: () => ({
+    //EXPORT PDF
+      heading: "REPORTE PACIENTES NUTRICIÓN",
+      items: [
+        { title: "Item 1", body: "I am item 1 body text" },
+        { title: "Item 2", body: "I am item 2 body text" },
+        { title: "Item 3", body: "I am item 3 body text" },
+        { title: "Item 4", body: "I am item 4 body text" },
+      ],
+    //
     dialogDataApi: false,
     dialogAviso: false,
     dialog: false,
@@ -731,6 +753,62 @@ export default {
   },
 
   methods: {
+    generatePDF() {
+      const columns = [
+        { title: "Paciente", dataKey: "datosPaciente" },
+        { title: "diagNutricional", dataKey: "diagNutricional" },
+        { title: "ValGlobalSub", dataKey: "ValGlobalSub" },
+        { title: "albSerica", dataKey: "albSerica" },
+        { title: "fechaEvaluacion", dataKey: "fechaEvaluacion" },
+        { title: "fechaIngreso", dataKey: "fechaIngreso" },
+        { title: "frecuencia", dataKey: "frecuencia" },
+        { title: "imc", dataKey: "imc" },
+        { title: "ingestaCalorica", dataKey: "ingestaCalorica" },
+        { title: "ingestaProteica", dataKey: "ingestaProteica" },
+        { title: "interveNutricional", dataKey: "interveNutricional" },
+        { title: "peso", dataKey: "peso" },
+        { title: "porcentajeCMB", dataKey: "porcentajeCMB" },
+        { title: "porcentajeEPT", dataKey: "porcentajeEPT" },
+        { title: "talla", dataKey: "talla" },
+        { title: "turno", dataKey: "turno" },
+      ];
+      const doc = new jsPDF({
+        orientation: "landscape",
+        unit: "in",
+        format: "letter"
+      });
+      // text is placed using x, y coordinates
+      doc.setFontSize(16).text(this.heading, 0.5, 1.0);
+      // create a line under heading 
+      doc.setLineWidth(0.01).line(0.5, 1.1, 8.0, 1.1);
+      // Using autoTable plugin
+      doc.autoTable({
+        columns,
+        body: this.desserts,
+        margin: { left: 0.5, top: 1.25 },
+        styles: { fontSize: 5 },
+      });
+      // Using array of sentences
+      /*doc
+        .setFont("helvetica")
+        .setFontSize(12)
+        .text(this.desserts, 0.5, 3.5, { align: "left", maxWidth: "7.5" });
+      */
+      // Creating footer and saving file
+      doc
+        .setFont("times")
+        .setFontSize(11)
+        //.setFontStyle("italic")
+        .setTextColor(0, 0, 255)
+        .text(
+          "Este reporte debe ser firmado y entregado, siguiendo el flujo normal",
+          0.5,
+          doc.internal.pageSize.height - 0.5
+        )
+        doc.save(`${this.heading}.pdf`);
+        console.log(this.desserts[0].datosPaciente.nombres, "aqui tas")
+    },
+
     initialize() {
       this.desserts = [];
     },
@@ -761,8 +839,8 @@ export default {
                 ? this.nut()
                 : //(this.dialogDataApi = false),
                   (this.aviso = "Datos de paciente no encontrados");
-                  //,
-                  //(this.dialogAviso = true)
+              //,
+              //(this.dialogAviso = true)
               //this.pres()
             })
             .catch((res) => {
@@ -801,21 +879,21 @@ export default {
       //this.editedIndex;
       //this.editedIndex = this.desserts.indexOf(item);
       /*this.editedItem.date = item.fechaPres;*/
-      this.editedItem.dateIngreso = item.fechaIngreso
-      this.editedItem.dateEvalu = item.fechaEvaluacion
-      this.editedItem.frecuencia = item.frecuencia
-      this.editedItem.turno = item.turno
-      this.editedItem.peso = item.peso
-      this.editedItem.talla = item.talla
-      this.editedItem.imc = item.imc
-      this.editedItem.cmb = item.porcentajeCMB
-      this.editedItem.ept = item.porcentajeEPT
-      this.editedItem.albSerica = item.albSerica
-      this.editedItem.vgs = item.ValGlobalSub
-      this.editedItem.ingestaCalorica =item.ingestaCalorica
-      this.editedItem.ingestaProteica  =item.ingestaProteica
-      this.editedItem.diagNut = item.diagNutricional
-      this.editedItem.interNut = item.interveNutricional
+      this.editedItem.dateIngreso = item.fechaIngreso;
+      this.editedItem.dateEvalu = item.fechaEvaluacion;
+      this.editedItem.frecuencia = item.frecuencia;
+      this.editedItem.turno = item.turno;
+      this.editedItem.peso = item.peso;
+      this.editedItem.talla = item.talla;
+      this.editedItem.imc = item.imc;
+      this.editedItem.cmb = item.porcentajeCMB;
+      this.editedItem.ept = item.porcentajeEPT;
+      this.editedItem.albSerica = item.albSerica;
+      this.editedItem.vgs = item.ValGlobalSub;
+      this.editedItem.ingestaCalorica = item.ingestaCalorica;
+      this.editedItem.ingestaProteica = item.ingestaProteica;
+      this.editedItem.diagNut = item.diagNutricional;
+      this.editedItem.interNut = item.interveNutricional;
       /*this.editedItem.name = item.nomNefro;
       this.editedItem.dos = item.dosisPres;
       this.editedItem.dosHierro = item.dosisHiePres;

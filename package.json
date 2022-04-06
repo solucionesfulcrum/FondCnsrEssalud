@@ -10,6 +10,8 @@
     "@mdi/font": "5.9.55",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.5.23",
     "roboto-fontface": "*",
     "vue": "^2.6.11",
     "vue-axios": "^3.2.5",
