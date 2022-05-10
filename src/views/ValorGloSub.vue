@@ -79,13 +79,13 @@
           -->
       </v-card>
 
-      <v-card class="mx-auto my-5" max-width="900">
+      <v-card class="mx-auto my-5" max-width="900" v-if="desserts.length != 0">
         <v-tabs background-color="#1973a5" center-active dark>
           <v-tab @click="nutricion">Nutrición</v-tab>
         </v-tabs>
       </v-card>
 
-      <v-card class="mx-auto my-5" max-width="900">
+      <v-card class="mx-auto my-5" max-width="900" v-if="desserts.length != 0">
         <v-data-table :headers="headers" :items="desserts" class="elevation-1">
           <template v-slot:top>
             <v-toolbar flat>
@@ -285,6 +285,7 @@
                           >
                             <v-text-field
                               v-model="editedItem.ept"
+                              :rules="[rules.required, rules.counter]"
                               label="%E.P.T."
                               :maxlength="maxdat"
                             ></v-text-field>
@@ -305,6 +306,7 @@
                           >
                             <v-text-field
                               v-model="editedItem.vgs"
+                              :rules="[rules.required, rules.counter]"
                               label="VGS"
                               :maxlength="maxdat"
                             ></v-text-field>
@@ -1015,25 +1017,18 @@ export default {
 
     save() {
       console.log("click");
-      if (
-        !this.editedItem.turno ||
-        !this.editedItem.frecuencia ||
-        !this.editedItem.dateIngreso ||
-        !this.editedItem.dateEvalu ||
-        !this.editedItem.peso ||
-        !this.editedItem.talla ||
-        !this.editedItem.cmb ||
-        //!this.editedItem.ept ||
-        !this.editedItem.albSerica ||
-        //!this.editedItem.vgs ||
-        !this.editedItem.ingestaCalorica ||
-        !this.editedItem.ingestaProteica ||
-        !this.editedItem.diagNut ||
-        !this.editedItem.interNut 
+      /*if (
+        !this.editedItem.name ||
+        !this.editedItem.med ||
+        !this.editedItem.dos ||
+        !this.editedItem.via ||
+        !this.editedItem.dosHierro ||
+        !this.editedItem.viaHierro ||
+        !this.editedItem.medHierro
       ) {
         this.$refs.form.validate();
-        console.log("validate");
-      } else {
+        console.log("validate");*/
+      //} else {
       axios
         .post(RUTA_SERVIDOR + "/api/token/", {
           username: "cnsr",
@@ -1082,7 +1077,7 @@ export default {
             ? console.warn("lo sientimos no tenemos servicios")
             : console.warn("Error:", response);
         });
-      }
+      //}
       //console.log('holaaaaaaaa',this.editedItem)
     },
 

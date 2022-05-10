@@ -114,7 +114,10 @@
               </v-btn>
             </v-toolbar>
             <v-card-text>
-              <span v-html="selectedEvent.details"></span>
+              <span v-html="selectedEvent.start"></span><br>
+              {{"Personal: "}}<span v-html="selectedEvent.personal"></span><br>
+              {{"Dosis Epoetina: "}}<span v-html="selectedEvent.dosisEpo"></span><br>
+              {{"Dosis Hierro: "}}<span v-html="selectedEvent.dosisHie"></span><br>
             </v-card-text>
             <v-card-actions>
               <v-btn
@@ -134,6 +137,7 @@
 
 <script>
 export default {
+    props: ['pres','adm'],
     data: () => ({
       focus: '',
       type: 'month',
@@ -192,15 +196,14 @@ export default {
         const min = new Date(`${start.date}T00:00:00`)
         const max = new Date(`${end.date}T23:59:59`)
         const days = (max.getTime() - min.getTime()) / 86400000
-        const eventCount = this.rnd(days, days + 20)
-
-        for (let i = 0; i < eventCount; i++) {
-          const allDay = this.rnd(0, 3) === 0
-          const firstTimestamp = this.rnd(min.getTime(), max.getTime())
-          const first = new Date(firstTimestamp - (firstTimestamp % 900000))
-          const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
-          const second = new Date(first.getTime() + secondTimestamp)
-
+        //const eventCount = this.rnd(days, days + 20)
+        //console.log("averiguando",this.rnd(days, days + 20))
+        for (let i = 0; i < this.pres.length; i++) {
+          //const allDay = this.rnd(0, 3) === 0
+          //const firstTimestamp = this.rnd(min.getTime(), max.getTime())
+          //const first = new Date(firstTimestamp - (firstTimestamp % 900000))
+          //const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
+          //const second = new Date(first.getTime() + secondTimestamp)
           /*events.push({
             name: this.names[this.rnd(0, this.names.length - 1)],
             start: first,
@@ -209,28 +212,53 @@ export default {
             timed: !allDay,
           })*/
 
+          let datoFecha = this.pres[i].fechaPres
+          let yata = datoFecha.split("-")
+          console.log("prop",this.pres[i].fechaPres)
+          console.log("covitiendo",new Date(yata[0], parseInt(yata[1],10)-1, yata[2]))
           events.push({
             name: "Preescrito",
-            start: new Date(firstTimestamp - (firstTimestamp % 900000)),
-            end: new Date(first.getTime() + secondTimestamp),
+            start: new Date(yata[0], parseInt(yata[1],10)-1, yata[2]),
+            end: new Date(yata[0], parseInt(yata[1],10)-1, yata[2]),
             color: "blue",
             timed: false,
+            personal: this.pres[i].nomNefro,
+            dosisEpo: this.pres[i].dosisPres,
+            dosisHie: this.pres[i].dosisHiePres,
           })
-          events.push({
+          /*events.push({
             name: "Administrado",
             start: new Date(firstTimestamp - (firstTimestamp % 900000)),
             end: new Date(first.getTime() + secondTimestamp),
             color: "red",
             timed: false,
+          })*/
+        }
+
+        for (let i = 0; i < this.adm.length; i++) {
+          let datoFecha1 = this.adm[i].fechaAdmi
+          let yata1 = datoFecha1.split("-")
+          console.log("prop",this.adm[i].fechaAdmi)
+          console.log("covitiendo",new Date(yata1[0], parseInt(yata1[1],10)-1, yata1[2]))
+          events.push({
+            name: "Administrado",
+            start: new Date(yata1[0], parseInt(yata1[1],10)-1, yata1[2]),
+            end: new Date(yata1[0], parseInt(yata1[1],10)-1, yata1[2]),
+            color: "red",
+            timed: false,
+            personal: this.adm[i].nomEnfer,
+            dosisEpo: this.adm[i].dosisAdmi,
+            dosisHie: this.adm[i].dosisHieAdmi,
           })
         }
         
         this.events = events
-        //console.log('events', events[0].end)
-        console.log('details', this.selectedEvent)
+        console.log('events', events)
+        console.log('details', this.events)
       },
       rnd (a, b) {
         return Math.floor((b - a + 1) * Math.random()) + a
+        
       },
     },
   }

@@ -4,7 +4,7 @@
       <v-dialog v-model="dialogCalendar" class="col-sm-12">
         <v-card>
           <v-card-title class="col-md-12 text-h5 grey lighten-2">
-            <span class="col-md-11">CALENDARIO</span>  
+            <span class="col-md-11">CALENDARIO</span>
             <v-btn
               class="col-md-1"
               color="primary"
@@ -15,7 +15,9 @@
             </v-btn>
           </v-card-title>
 
-          <div class="col-sm-12"><CalendarioAnemia /></div>
+          <div class="col-sm-12">
+            <CalendarioAnemia :pres="desserts" :adm="desserts1" />
+          </div>
 
           <v-divider></v-divider>
 
@@ -437,7 +439,7 @@
       </v-card>
 
       <v-card class="mx-auto my-5" max-width="900" v-if="adminForm == '1'">
-        <v-data-table :headers="headers" :items="desserts" class="elevation-1">
+        <v-data-table :headers="headers" :items="desserts1" class="elevation-1">
           <template v-slot:top>
             <v-toolbar flat>
               <v-toolbar-title v-if="datosPaciente.length != 0">
@@ -776,7 +778,7 @@
       </v-card>
 
       <v-card class="mx-auto my-5" max-width="900" v-if="adminForm == '2'">
-        <v-data-table :headers="headers" :items="desserts" class="elevation-1">
+        <v-data-table :headers="headers" :items="desserts2" class="elevation-1">
           <template v-slot:top>
             <v-toolbar flat>
               <v-toolbar-title v-if="datosPaciente.length != 0">
@@ -1066,6 +1068,8 @@ export default {
     actionBoton: "nueva",
     headers: [],
     desserts: [],
+    desserts1: [],
+    desserts2: [],
     editedIndex: -1,
     editedItem: {
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
@@ -1134,7 +1138,7 @@ export default {
         axios
           .post(RUTA_SERVIDOR + "/api/token/", {
             username: "cnsr",
-            password: "Essalud22",
+            password: "123456",
           })
           .then((response) => {
             this.auth = "Bearer " + response.data.access;
@@ -1146,7 +1150,7 @@ export default {
                 this.datosPaciente = res.data;
                 console.log("datosPaciente", this.datosPaciente);
                 this.datosPaciente.length != 0
-                  ? this.pres()
+                  ? (this.adm(),this.pres())
                   : ((this.dialogDataApi = false),
                     (this.aviso = "Datos de paciente no encontrados"),
                     (this.dialogAviso = true));
@@ -1320,7 +1324,7 @@ export default {
       axios
         .post(RUTA_SERVIDOR + "/api/token/", {
           username: "cnsr",
-          password: "Essalud22",
+          password: "123456",
         })
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
@@ -1367,7 +1371,7 @@ export default {
       axios
         .post(RUTA_SERVIDOR + "/api/token/", {
           username: "cnsr",
-          password: "Essalud22",
+          password: "123456",
         })
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
@@ -1416,7 +1420,7 @@ export default {
       axios
         .post(RUTA_SERVIDOR + "/api/token/", {
           username: "cnsr",
-          password: "Essalud22",
+          password: "123456",
         })
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
@@ -1495,7 +1499,7 @@ export default {
         axios
           .post(RUTA_SERVIDOR + "/api/token/", {
             username: "cnsr",
-            password: "Essalud22",
+            password: "123456",
           })
           .then((response) => {
             this.auth = "Bearer " + response.data.access;
@@ -1554,7 +1558,7 @@ export default {
         axios
           .post(RUTA_SERVIDOR + "/api/token/", {
             username: "cnsr",
-            password: "Essalud22",
+            password: "123456",
           })
           .then((response) => {
             this.auth = "Bearer " + response.data.access;
@@ -1606,7 +1610,7 @@ export default {
         axios
           .post(RUTA_SERVIDOR + "/api/token/", {
             username: "cnsr",
-            password: "Essalud22",
+            password: "123456",
           })
           .then((response) => {
             this.auth = "Bearer " + response.data.access;
@@ -1651,7 +1655,7 @@ export default {
       axios
         .post(RUTA_SERVIDOR + "/api/token/", {
           username: "cnsr",
-          password: "Essalud22",
+          password: "123456",
         })
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
@@ -1690,11 +1694,11 @@ export default {
       this.actionBoton = "Registro Admistración";
       this.dialogDataApi = true;
       //consulta api datos Prescripcion
-      console.log("datos desert", this.desserts);
+      console.log("datos desert1", this.desserts1);
       axios
         .post(RUTA_SERVIDOR + "/api/token/", {
           username: "cnsr",
-          password: "Essalud22",
+          password: "123456",
         })
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
@@ -1708,9 +1712,9 @@ export default {
               }
             )
             .then((res) => {
-              this.desserts = res.data;
+              this.desserts1 = res.data;
               //console.log(this.dataAdmi);
-              console.log("datosAministra", this.desserts);
+              console.log("datosAministra", this.desserts1);
               //this.datosPresHis = this.desserts[0].datosPres
               this.dialogDataApi = false;
             })
@@ -1736,7 +1740,7 @@ export default {
       axios
         .post(RUTA_SERVIDOR + "/api/token/", {
           username: "cnsr",
-          password: "Essalud22",
+          password: "123456",
         })
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
@@ -1750,7 +1754,7 @@ export default {
               }
             )
             .then((res) => {
-              this.desserts = res.data;
+              this.desserts2 = res.data;
               //console.log(this.dataAdmi);
               console.log("datosAministra", this.desserts);
               this.dialogDataApi = false;
@@ -1774,7 +1778,7 @@ export default {
     },
 
     activarCalendario() {
-      this.dialogCalendar=true;
+      this.dialogCalendar = true;
     },
   },
 

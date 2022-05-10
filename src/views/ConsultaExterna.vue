@@ -40,6 +40,7 @@
       </div>
       <div v-if="selectedItem == 0" class="col-sm-10"><CExternaAnem /></div>
       <div v-if="selectedItem == 1" class="col-sm-10"><CExternaNut /></div>
+      <div v-if="selectedItem == 2" class="col-sm-10"><ValorGloSub /></div>
     </div>
   </div>
 </template>
@@ -49,6 +50,7 @@ import NavBar from "../components/navbar/NavBar.vue";
 import CExternaNut from "./CExternaNut.vue";
 import CExternaAnem from "./CExternaAnem.vue";
 import CalendarioAnemia from "./CalendarioAnemia.vue";
+import ValorGloSub from "./ValorGloSub.vue";
 
 export default {
   data() {
@@ -57,6 +59,7 @@ export default {
       items2: [
         { text: "Anemia", icon: "mdi-folder" },
         { text: "Nutrición", icon: "mdi-folder" },
+        { text: "VGS", icon: "mdi-folder" },
         { text: "Reportes", icon: "mdi-folder" },
       ],
     };
@@ -68,6 +71,7 @@ export default {
     CExternaNut,
     CExternaAnem,
     CalendarioAnemia,
+    ValorGloSub,
   },
 };
 </script>
