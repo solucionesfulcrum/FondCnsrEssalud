@@ -109,6 +109,7 @@ export default {
                 sessionStorage.setItem("usuario", res.data[0].usuario);
                 sessionStorage.setItem("nombre", res.data[0].nombre);
                 sessionStorage.setItem("perfil", res.data[0].perfil);
+                sessionStorage.setItem("url", res.data[0].url);
                 this.$router.push("/go");
               } else {
                 console.log("Clave incorrecta");
@@ -118,12 +119,14 @@ export default {
             .catch((res) => {
               console.warn("Error:", res);
               this.dialog = false;
+              this.value = true;
             });
         })
         .catch((response) => {
           response === 404
             ? console.warn("lo sientimos no tenemos servicios")
             : console.warn("Error:", response);
+            this.value = true;
         });
     },
     actualizar() {

@@ -190,6 +190,9 @@ export default {
                     },
                     {
                       InterNutricional: res.data[i].interveNutricional,
+                    },
+                    {
+                      Registro: res.data[i].userReg,
                     }
                   )
                 );

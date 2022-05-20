@@ -626,6 +626,7 @@ export default {
     //perfil data
     perfil:"",
     nombre:"",
+    url:"",
     //EXPORT PDF
     dataPdfExport: [],
     heading: "REPORTE PACIENTES NUTRICIÓN",
@@ -996,6 +997,7 @@ export default {
                 ingestaProteica: this.editedItem.ingestaProteica,
                 diagNutricional: this.editedItem.diagNut,
                 interveNutricional: this.editedItem.interNut,
+                usuario: this.url
               },
               {
                 headers: { Authorization: this.auth },
@@ -1094,7 +1096,7 @@ export default {
                   ingestaProteica: this.editedItem.ingestaProteica,
                   diagNutricional: this.editedItem.diagNut,
                   interveNutricional: this.editedItem.interNut,
-                  userReg: this.nombre
+                  usuario: this.url
                 },
                 {
                   headers: { Authorization: this.auth },
@@ -1175,6 +1177,8 @@ export default {
   created() {
     this.perfil = sessionStorage.getItem("perfil");
     this.nombre = sessionStorage.getItem("nombre");
+    this.url = sessionStorage.getItem("url");
+    console.log("Url", this.url);
     console.log("Perfil", this.perfil);
     console.log("Nombre", this.nombre);
   },

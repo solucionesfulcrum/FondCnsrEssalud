@@ -58,7 +58,7 @@ export default {
   },
   methods: {
     actionOut() {
-      localStorage.removeItem("keyValue");
+      sessionStorage.removeItem("keyValue");
       this.dialog = false;
       this.$router.push("/");
     },
