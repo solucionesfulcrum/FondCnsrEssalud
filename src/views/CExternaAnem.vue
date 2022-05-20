@@ -1150,7 +1150,7 @@ export default {
                 this.datosPaciente = res.data;
                 console.log("datosPaciente", this.datosPaciente);
                 this.datosPaciente.length != 0
-                  ? (this.adm(),this.pres())
+                  ? (this.adm(), this.pres())
                   : ((this.dialogDataApi = false),
                     (this.aviso = "Datos de paciente no encontrados"),
                     (this.dialogAviso = true));
@@ -1783,7 +1783,7 @@ export default {
   },
 
   mounted() {
-    if (!localStorage.getItem("keyValue")) {
+    if (!sessionStorage.getItem("keyValue")) {
       this.$router.push("/");
     }
   },

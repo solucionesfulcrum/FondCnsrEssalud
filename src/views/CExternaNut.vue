@@ -251,6 +251,7 @@
                               :rules="[rules.required, rules.counter]"
                               label="Peso (Kilogramos)"
                               :maxlength="maxdat"
+                              type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
@@ -259,6 +260,7 @@
                               :rules="[rules.required, rules.counter]"
                               label="Talla (Metros)"
                               :maxlength="maxdat"
+                              type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
@@ -275,6 +277,7 @@
                               :rules="[rules.required, rules.counter]"
                               label="%C.M.B."
                               :maxlength="maxdat"
+                              type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col
@@ -287,6 +290,7 @@
                               v-model="editedItem.ept"
                               label="%E.P.T."
                               :maxlength="maxdat"
+                              type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
@@ -295,6 +299,7 @@
                               :rules="[rules.required, rules.counter]"
                               label="ALB Sérica"
                               :maxlength="maxdat"
+                              type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col
@@ -315,6 +320,7 @@
                               :rules="[rules.required, rules.counter]"
                               label="Ingesta Calorica"
                               :maxlength="maxdat"
+                              type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
@@ -323,6 +329,7 @@
                               :rules="[rules.required, rules.counter]"
                               label="Ingesta Proteica"
                               :maxlength="maxdat"
+                              type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
@@ -481,6 +488,7 @@
                               v-model="editedItem.peso"
                               label="Peso (Kilogramos)"
                               :maxlength="maxdat"
+                              type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
@@ -488,6 +496,7 @@
                               v-model="editedItem.talla"
                               label="Talla (Metros)"
                               :maxlength="maxdat"
+                              type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
@@ -503,6 +512,7 @@
                               v-model="editedItem.cmb"
                               label="%C.M.B."
                               :maxlength="maxdat"
+                              type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
@@ -510,6 +520,7 @@
                               v-model="editedItem.ept"
                               label="%E.P.T."
                               :maxlength="maxdat"
+                              type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
@@ -517,6 +528,7 @@
                               v-model="editedItem.albSerica"
                               label="ALB Sérica"
                               :maxlength="maxdat"
+                              type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
@@ -531,6 +543,7 @@
                               v-model="editedItem.ingestaCalorica"
                               label="Ingesta Calorica"
                               :maxlength="maxdat"
+                              type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
@@ -538,6 +551,7 @@
                               v-model="editedItem.ingestaProteica"
                               label="Ingesta Proteica"
                               :maxlength="maxdat"
+                              type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
@@ -609,6 +623,9 @@ import "jspdf-autotable";
 
 export default {
   data: () => ({
+    //perfil data
+    perfil:"",
+    nombre:"",
     //EXPORT PDF
     dataPdfExport: [],
     heading: "REPORTE PACIENTES NUTRICIÓN",
@@ -651,15 +668,15 @@ export default {
         .substr(0, 10),
       frecuencia: "",
       turno: "",
-      peso: 0.0,
-      talla: 0.0,
+      peso: Number,
+      talla: Number,
       imc: 0.0,
-      cmb: 0.0,
-      ept: 0.0,
-      albSerica: 0.0,
+      cmb: Number,
+      ept: Number,
+      albSerica: Number,
       vgs: "",
-      ingestaCalorica: 0,
-      ingestaProteica: 0,
+      ingestaCalorica: Number,
+      ingestaProteica: Number,
       diagNut: "",
       interNut: "",
     },
@@ -690,15 +707,15 @@ export default {
         .substr(0, 10),
       frecuencia: "",
       turno: "",
-      peso: 0.0,
-      talla: 0.0,
+      peso: Number,
+      talla: Number,
       imc: 0.0,
-      cmb: 0.0,
-      ept: 0.0,
-      albSerica: 0.0,
+      cmb: Number,
+      ept: Number,
+      albSerica: Number,
       vgs: "",
-      ingestaCalorica: 0,
-      ingestaProteica: 0,
+      ingestaCalorica: Number,
+      ingestaProteica: Number,
       diagNut: "",
       interNut: "",
     },
@@ -712,15 +729,15 @@ export default {
         .substr(0, 10),
       frecuencia: "",
       turno: "",
-      peso: 0.0,
-      talla: 0.0,
+      peso: Number,
+      talla: Number,
       imc: 0.0,
-      cmb: 0.0,
-      ept: 0.0,
-      albSerica: 0.0,
+      cmb: Number,
+      ept: Number,
+      albSerica: Number,
       vgs: "",
-      ingestaCalorica: 0,
-      ingestaProteica: 0,
+      ingestaCalorica: Number,
+      ingestaProteica: Number,
       diagNut: "",
       interNut: "",
     },
@@ -756,7 +773,19 @@ export default {
       console.log("datos deseert elemt", this.desserts);
       for (let i = 0; i < this.desserts.length; i++) {
         //this.dataPdfExport.push(this.desserts[i].datosPaciente.nombres,this.desserts[i]);
-        this.dataPdfExport.push(Object.assign({datapacfull:this.desserts[i].datosPaciente.nombres+" "+this.desserts[i].datosPaciente.ape_pat+" "+this.desserts[i].datosPaciente.ape_mat},this.desserts[i]));
+        this.dataPdfExport.push(
+          Object.assign(
+            {
+              datapacfull:
+                this.desserts[i].datosPaciente.nombres +
+                " " +
+                this.desserts[i].datosPaciente.ape_pat +
+                " " +
+                this.desserts[i].datosPaciente.ape_mat,
+            },
+            this.desserts[i]
+          )
+        );
       }
 
       console.log("dataPdfExport", this.dataPdfExport);
@@ -956,7 +985,9 @@ export default {
                 fechaEvaluacion: this.editedItem.dateEvalu,
                 peso: this.editedItem.peso,
                 talla: this.editedItem.talla,
-                imc: this.editedItem.peso/(this.editedItem.talla*this.editedItem.talla),
+                imc:
+                  this.editedItem.peso /
+                  (this.editedItem.talla * this.editedItem.talla),
                 porcentajeCMB: this.editedItem.cmb,
                 porcentajeEPT: this.editedItem.ept,
                 albSerica: this.editedItem.albSerica,
@@ -1029,59 +1060,62 @@ export default {
         !this.editedItem.ingestaCalorica ||
         !this.editedItem.ingestaProteica ||
         !this.editedItem.diagNut ||
-        !this.editedItem.interNut 
+        !this.editedItem.interNut
       ) {
         this.$refs.form.validate();
         console.log("validate");
       } else {
-      axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
-          username: "cnsr",
-          password: "123456",
-        })
-        .then((response) => {
-          this.auth = "Bearer " + response.data.access;
-          axios
-            .post(
-              RUTA_SERVIDOR + "/nutricion/",
-              {
-                paciente: this.datosPaciente[0].url,
-                turno: this.editedItem.turno,
-                frecuencia: this.editedItem.frecuencia,
-                fechaIngreso: this.editedItem.dateIngreso,
-                fechaEvaluacion: this.editedItem.dateEvalu,
-                peso: this.editedItem.peso,
-                talla: this.editedItem.talla,
-                imc: this.editedItem.peso/(this.editedItem.talla*this.editedItem.talla),
-                porcentajeCMB: this.editedItem.cmb,
-                porcentajeEPT: this.editedItem.ept,
-                albSerica: this.editedItem.albSerica,
-                ValGlobalSub: this.editedItem.vgs,
-                ingestaCalorica: this.editedItem.ingestaCalorica,
-                ingestaProteica: this.editedItem.ingestaProteica,
-                diagNutricional: this.editedItem.diagNut,
-                interveNutricional: this.editedItem.interNut,
-              },
-              {
-                headers: { Authorization: this.auth },
-              }
-            )
-            .then((res) => {
-              console.log("exito", res.status);
-              this.close();
-              console.log(this.editedItem);
-              this.nut();
-            })
-            .catch((res) => {
-              console.log("Error:", res);
-              this.dialog = false;
-            });
-        })
-        .catch((response) => {
-          response === 404
-            ? console.warn("lo sientimos no tenemos servicios")
-            : console.warn("Error:", response);
-        });
+        axios
+          .post(RUTA_SERVIDOR + "/api/token/", {
+            username: "cnsr",
+            password: "123456",
+          })
+          .then((response) => {
+            this.auth = "Bearer " + response.data.access;
+            axios
+              .post(
+                RUTA_SERVIDOR + "/nutricion/",
+                {
+                  paciente: this.datosPaciente[0].url,
+                  turno: this.editedItem.turno,
+                  frecuencia: this.editedItem.frecuencia,
+                  fechaIngreso: this.editedItem.dateIngreso,
+                  fechaEvaluacion: this.editedItem.dateEvalu,
+                  peso: this.editedItem.peso,
+                  talla: this.editedItem.talla,
+                  imc:
+                    this.editedItem.peso /
+                    (this.editedItem.talla * this.editedItem.talla),
+                  porcentajeCMB: this.editedItem.cmb,
+                  porcentajeEPT: this.editedItem.ept,
+                  albSerica: this.editedItem.albSerica,
+                  ValGlobalSub: this.editedItem.vgs,
+                  ingestaCalorica: this.editedItem.ingestaCalorica,
+                  ingestaProteica: this.editedItem.ingestaProteica,
+                  diagNutricional: this.editedItem.diagNut,
+                  interveNutricional: this.editedItem.interNut,
+                  userReg: this.nombre
+                },
+                {
+                  headers: { Authorization: this.auth },
+                }
+              )
+              .then((res) => {
+                console.log("exito", res.status);
+                this.close();
+                console.log(this.editedItem);
+                this.nut();
+              })
+              .catch((res) => {
+                console.log("Error:", res);
+                this.dialog = false;
+              });
+          })
+          .catch((response) => {
+            response === 404
+              ? console.warn("lo sientimos no tenemos servicios")
+              : console.warn("Error:", response);
+          });
       }
       //console.log('holaaaaaaaa',this.editedItem)
     },
@@ -1133,9 +1167,16 @@ export default {
   },
 
   mounted() {
-    if (!localStorage.getItem("keyValue")) {
+    if (!sessionStorage.getItem("keyValue")) {
       this.$router.push("/");
     }
+  },
+
+  created() {
+    this.perfil = sessionStorage.getItem("perfil");
+    this.nombre = sessionStorage.getItem("nombre");
+    console.log("Perfil", this.perfil);
+    console.log("Nombre", this.nombre);
   },
 
   components: {

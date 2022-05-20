@@ -35,7 +35,7 @@
     <v-container>
       <v-card class="mx-auto my-5" max-width="900">
         <v-system-bar color="#1973a5" dark>
-          DATOS DE PACIENTE - CONTROL NUTRICIONAL CLINICAS CONTRATADOS
+          DATOS DE PACIENTE - VALORACIÓN GLOBAL SUBJETIVA
         </v-system-bar>
         <v-row class="start ml-10">
           <v-col cols="12" md="4">
@@ -59,33 +59,15 @@
             </v-btn>
           </v-col>
         </v-row>
-        <!--
-          <v-row justify="center">
-            <v-col cols="12" md="3">
-              <v-text-field label="Apellido Paterno" required></v-text-field>
-            </v-col>
-            <v-col cols="12" md="3">
-              <v-text-field label="Apellido Materno" required></v-text-field>
-            </v-col>
-            <v-col cols="12" md="3">
-              <v-text-field label="Nombres" required></v-text-field>
-            </v-col>
-            <v-col cols="12" md="1">
-              <v-btn class="mt-3" icon color="#1973a5">
-                <v-icon>mdi-magnify</v-icon>
-              </v-btn>
-            </v-col>
-          </v-row>
-          -->
       </v-card>
 
-      <v-card class="mx-auto my-5" max-width="900" v-if="desserts.length != 0">
+      <v-card class="mx-auto my-5" max-width="900">
         <v-tabs background-color="#1973a5" center-active dark>
-          <v-tab @click="nutricion">Nutrición</v-tab>
+          <v-tab @click="nutricion">VGS</v-tab>
         </v-tabs>
       </v-card>
 
-      <v-card class="mx-auto my-5" max-width="900" v-if="desserts.length != 0">
+      <v-card class="mx-auto my-5" max-width="900">
         <v-data-table :headers="headers" :items="desserts" class="elevation-1">
           <template v-slot:top>
             <v-toolbar flat>
@@ -116,234 +98,235 @@
                 </template>
                 <v-card>
                   <v-form ref="form" v-model="valid" lazy-validation>
-                    <v-card-title>
-                      <div cols="12" sm="6" md="6" class="">
-                        <v-checkbox v-model="nuevoValid"></v-checkbox>
-                      </div>
-                      <span>Click si el paciente es nuevo</span>
-                    </v-card-title>
                     <v-card-text>
                       <v-container>
-                        <v-row>
-                          <v-col
-                            v-if="nuevoValid === true"
-                            cols="12"
-                            sm="6"
-                            md="3"
-                          >
-                            <v-menu
-                              ref="menu3"
-                              v-model="menu3"
-                              :close-on-content-click="false"
-                              :return-value.sync="editedItem.dateIngreso"
-                              transition="scale-transition"
-                              offset-y
-                              min-width="auto"
+                        <v-expansion-panels v-model="panel" multiple>
+                          <v-expansion-panel>
+                            <v-expansion-panel-header
+                              ><b>A. Historia</b></v-expansion-panel-header
                             >
-                              <template v-slot:activator="{ on, attrs }">
-                                <v-text-field
-                                  v-model="editedItem.dateIngreso"
-                                  label="Fecha de Ingreso"
-                                  prepend-icon="mdi-calendar"
-                                  readonly
-                                  v-bind="attrs"
-                                  v-on="on"
-                                ></v-text-field>
-                              </template>
-                              <v-date-picker
-                                v-model="editedItem.dateIngreso"
-                                no-title
-                                scrollable
-                                :min="minimo"
-                                :max="maximo"
-                              >
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                  text
-                                  color="primary"
-                                  @click="menu3 = false"
-                                >
-                                  Cancel
-                                </v-btn>
-                                <v-btn
-                                  text
-                                  color="primary"
-                                  @click="
-                                    $refs.menu3.save(editedItem.dateIngreso)
-                                  "
-                                >
-                                  OK
-                                </v-btn>
-                              </v-date-picker>
-                            </v-menu>
-                          </v-col>
-                          <v-col
-                            v-if="nuevoValid === true"
-                            cols="12"
-                            sm="6"
-                            md="3"
-                          >
-                            <v-menu
-                              ref="menu4"
-                              v-model="menu4"
-                              :close-on-content-click="false"
-                              :return-value.sync="editedItem.dateEvalu"
-                              transition="scale-transition"
-                              offset-y
-                              min-width="auto"
+                            <v-expansion-panel-content>
+                              <v-row>
+                                <v-col cols="12" sm="12" md="12">
+                                  1. Cambios en el peso corporal
+                                </v-col>
+                                <v-col cols="12" sm="6" md="6">
+                                  <v-menu
+                                    ref="menu4"
+                                    v-model="menu4"
+                                    :close-on-content-click="false"
+                                    :return-value.sync="editedItem.dateEvalu"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="auto"
+                                  >
+                                    <template v-slot:activator="{ on, attrs }">
+                                      <v-text-field
+                                        v-model="editedItem.dateEvalu"
+                                        label="Fecha de Evaluacion"
+                                        prepend-icon="mdi-calendar"
+                                        readonly
+                                        v-bind="attrs"
+                                        v-on="on"
+                                      ></v-text-field>
+                                    </template>
+                                    <v-date-picker
+                                      v-model="editedItem.dateEvalu"
+                                      no-title
+                                      scrollable
+                                      :min="minimo"
+                                      :max="maximo"
+                                    >
+                                      <v-spacer></v-spacer>
+                                      <v-btn
+                                        text
+                                        color="primary"
+                                        @click="menu4 = false"
+                                      >
+                                        Cancel
+                                      </v-btn>
+                                      <v-btn
+                                        text
+                                        color="primary"
+                                        @click="
+                                          $refs.menu4.save(editedItem.dateEvalu)
+                                        "
+                                      >
+                                        OK
+                                      </v-btn>
+                                    </v-date-picker>
+                                  </v-menu>
+                                </v-col>
+                                <v-col cols="12" sm="6" md="6">
+                                  <v-text-field
+                                    v-model="editedItem.peso"
+                                    :rules="[rules.required, rules.counter]"
+                                    label="Pérdida total de peso en los últimos 6 meses"
+                                    :maxlength="maxdat"
+                                  ></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6" md="6">
+                                  <v-text-field
+                                    v-model="editedItem.peso"
+                                    :rules="[rules.required, rules.counter]"
+                                    label="Porcentaje de pérdida"
+                                    :maxlength="maxdat"
+                                  ></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6" md="6">
+                                  <v-select
+                                    v-model="editedItem.frecuencia"
+                                    :items="itemsCaSem"
+                                    :rules="[rules.required]"
+                                    label="Cambios en las últimas 2 semanas"
+                                  ></v-select>
+                                </v-col>
+                                <v-col cols="12" sm="12" md="12">
+                                  2. Cambios en la dieta, en relación con lo
+                                  normal
+                                </v-col>
+                                <v-col cols="12" sm="6" md="6">
+                                  <v-text-field
+                                    v-model="editedItem.peso"
+                                    :rules="[rules.required, rules.counter]"
+                                    label="Duración en semanas"
+                                    :maxlength="maxdat"
+                                  ></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6" md="6">
+                                  <v-text-field
+                                    v-model="editedItem.peso"
+                                    :rules="[rules.required, rules.counter]"
+                                    label="Duración en semanas"
+                                    :maxlength="maxdat"
+                                  ></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6" md="6">
+                                  <v-select
+                                    v-model="editedItem.frecuencia"
+                                    :items="itemsCaSem"
+                                    :rules="[rules.required]"
+                                    label="Tipo de Dieta"
+                                  ></v-select>
+                                </v-col>
+                                <v-col cols="12" sm="12" md="12">
+                                  3. Síntomas gastrointestinales (persistentes
+                                  por más de 2 semanas)
+                                </v-col>
+                                <v-col cols="12" sm="6" md="6">
+                                  <v-select
+                                    v-model="editedItem.frecuencia"
+                                    :items="itemsCaSem"
+                                    :rules="[rules.required]"
+                                    label="Sintomas Gastrointestinales"
+                                  ></v-select>
+                                </v-col>
+                                <v-col cols="12" sm="12" md="12">
+                                  4. Capacidad funcional (relacionada al
+                                  deterioro nutricional)
+                                </v-col>
+                                <v-col cols="12" sm="6" md="6">
+                                  <v-select
+                                    v-model="editedItem.frecuencia"
+                                    :items="itemsCaSem"
+                                    :rules="[rules.required]"
+                                    label="Capacidad Funcional"
+                                  ></v-select>
+                                </v-col>
+                                <v-col cols="12" sm="6" md="6">
+                                  <v-select
+                                    v-model="editedItem.frecuencia"
+                                    :items="itemsCaSem"
+                                    :rules="[rules.required]"
+                                    label="Cambio en las 2 ultimas semanas"
+                                  ></v-select>
+                                </v-col>
+                                <v-col cols="12" sm="6" md="6">
+                                  <v-text-field
+                                    v-model="editedItem.peso"
+                                    :rules="[rules.required, rules.counter]"
+                                    label="Duración en semanas"
+                                    :maxlength="maxdat"
+                                  ></v-text-field>
+                                </v-col>
+                              </v-row>
+                            </v-expansion-panel-content>
+                          </v-expansion-panel>
+
+                          <v-expansion-panel>
+                            <v-expansion-panel-header
+                              ><b>B. Examen Físico</b></v-expansion-panel-header
                             >
-                              <template v-slot:activator="{ on, attrs }">
-                                <v-text-field
-                                  v-model="editedItem.dateEvalu"
-                                  label="Fecha de Evaluacion Nutricional"
-                                  prepend-icon="mdi-calendar"
-                                  readonly
-                                  v-bind="attrs"
-                                  v-on="on"
-                                ></v-text-field>
-                              </template>
-                              <v-date-picker
-                                v-model="editedItem.dateEvalu"
-                                no-title
-                                scrollable
-                                :min="minimo"
-                                :max="maximo"
-                              >
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                  text
-                                  color="primary"
-                                  @click="menu4 = false"
-                                >
-                                  Cancel
-                                </v-btn>
-                                <v-btn
-                                  text
-                                  color="primary"
-                                  @click="
-                                    $refs.menu4.save(editedItem.dateEvalu)
-                                  "
-                                >
-                                  OK
-                                </v-btn>
-                              </v-date-picker>
-                            </v-menu>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-select
-                              v-model="editedItem.frecuencia"
-                              :items="itemsFrecuencia"
-                              :rules="[rules.required]"
-                              label="Frecuencia"
-                            ></v-select>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-select
-                              v-model="editedItem.turno"
-                              :items="itemsTurno"
-                              :rules="[rules.required]"
-                              label="Turno"
-                            ></v-select>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.peso"
-                              :rules="[rules.required, rules.counter]"
-                              label="Peso (Kilogramos)"
-                              :maxlength="maxdat"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.talla"
-                              :rules="[rules.required, rules.counter]"
-                              label="Talla (Metros)"
-                              :maxlength="maxdat"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.imc"
-                              label="IMC"
-                              :maxlength="maxdat"
-                              disabled
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.cmb"
-                              :rules="[rules.required, rules.counter]"
-                              label="%C.M.B."
-                              :maxlength="maxdat"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col
-                            v-if="nuevoValid === true"
-                            cols="12"
-                            sm="6"
-                            md="3"
-                          >
-                            <v-text-field
-                              v-model="editedItem.ept"
-                              :rules="[rules.required, rules.counter]"
-                              label="%E.P.T."
-                              :maxlength="maxdat"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.albSerica"
-                              :rules="[rules.required, rules.counter]"
-                              label="ALB Sérica"
-                              :maxlength="maxdat"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col
-                            v-if="nuevoValid === true"
-                            cols="12"
-                            sm="6"
-                            md="3"
-                          >
-                            <v-text-field
-                              v-model="editedItem.vgs"
-                              :rules="[rules.required, rules.counter]"
-                              label="VGS"
-                              :maxlength="maxdat"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.ingestaCalorica"
-                              :rules="[rules.required, rules.counter]"
-                              label="Ingesta Calorica"
-                              :maxlength="maxdat"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.ingestaProteica"
-                              :rules="[rules.required, rules.counter]"
-                              label="Ingesta Proteica"
-                              :maxlength="maxdat"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.diagNut"
-                              :rules="[rules.required, rules.counter]"
-                              label="Diagnostico Nutricional"
-                              :maxlength="maxdat"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.interNut"
-                              :rules="[rules.required, rules.counter]"
-                              label="Intervención Nutricional"
-                              :maxlength="maxdat"
-                            ></v-text-field>
-                          </v-col>
-                        </v-row>
+                            <v-expansion-panel-content>
+                              <v-row>
+                                <v-col cols="12" sm="12" md="12">
+                                  (en cada punto calificar : A=normal, B = leve,
+                                  B = moderado, C = severo)
+                                </v-col>
+                                <v-col cols="12" sm="6" md="6">
+                                  <v-select
+                                    v-model="editedItem.frecuencia"
+                                    :items="itemsCaSem"
+                                    :rules="[rules.required]"
+                                    label="Pérd. grasa subcutánea (tríceps,  tórax)"
+                                  ></v-select>
+                                </v-col>
+                                <v-col cols="12" sm="6" md="6">
+                                  <v-select
+                                    v-model="editedItem.frecuencia"
+                                    :items="itemsCaSem"
+                                    :rules="[rules.required]"
+                                    label="Atrofia muscular (cuádriceps, deltoides)"
+                                  ></v-select>
+                                </v-col>
+                                <v-col cols="12" sm="4" md="4">
+                                  <v-select
+                                    v-model="editedItem.frecuencia"
+                                    :items="itemsCaSem"
+                                    :rules="[rules.required]"
+                                    label="Edema de tobillos"
+                                  ></v-select>
+                                </v-col>
+                                <v-col cols="12" sm="4" md="4">
+                                  <v-select
+                                    v-model="editedItem.frecuencia"
+                                    :items="itemsCaSem"
+                                    :rules="[rules.required]"
+                                    label="Edema sacro"
+                                  ></v-select>
+                                </v-col>
+                                <v-col cols="12" sm="4" md="4">
+                                  <v-select
+                                    v-model="editedItem.frecuencia"
+                                    :items="itemsCaSem"
+                                    :rules="[rules.required]"
+                                    label="Ascitis"
+                                  ></v-select>
+                                </v-col>
+                              </v-row>
+                            </v-expansion-panel-content>
+                          </v-expansion-panel>
+
+                          <v-expansion-panel>
+                            <v-expansion-panel-header
+                              ><b
+                                >C. Diagnóstico de la Valoración Global
+                                Subjetiva</b
+                              ></v-expansion-panel-header
+                            >
+                            <v-expansion-panel-content>
+                              <v-row
+                                ><v-col cols="12" sm="12" md="12">
+                                  <v-select
+                                    v-model="editedItem.frecuencia"
+                                    :items="itemsCaSem"
+                                    :rules="[rules.required]"
+                                    label="Diagnóstico de la Valoración Global Subjetiva"
+                                  ></v-select> </v-col
+                              ></v-row>
+                            </v-expansion-panel-content>
+                          </v-expansion-panel>
+                        </v-expansion-panels>
                       </v-container>
                     </v-card-text>
                     <v-card-actions>
@@ -461,14 +444,6 @@
                                 </v-btn>
                               </v-date-picker>
                             </v-menu>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-select
-                              v-model="editedItem.frecuencia"
-                              :items="itemsFrecuencia"
-                              :rules="[rules.required]"
-                              label="Frecuencia"
-                            ></v-select>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-select
@@ -611,6 +586,8 @@ import "jspdf-autotable";
 
 export default {
   data: () => ({
+    //expacion panel
+    panel: [0, 1, 2],
     //EXPORT PDF
     dataPdfExport: [],
     heading: "REPORTE PACIENTES NUTRICIÓN",
@@ -624,9 +601,8 @@ export default {
     dialogDataApi: false,
     dialogAviso: false,
     dialog: false,
-    itemsFrecuencia: ["L-M-V", "M-J-S"],
+    itemsCaSem: ["Aumento", "Ninguno", "Disminución"],
     itemsTurno: ["1er Turno", "2do Turno", "3er Turno", "4to Turno"],
-    nuevoValid: false,
     datosPresHis: [],
     datosEdit: "",
     dialogEditExclu: false,
@@ -645,9 +621,6 @@ export default {
       counter: (value) => value.length <= 20 || "Max 20 characters",
     },
     editedItem: {
-      dateIngreso: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-        .toISOString()
-        .substr(0, 10),
       dateEvalu: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
@@ -679,14 +652,11 @@ export default {
     dialogDelete: false,
     dialogEditAdm: false,
     vista: "",
-    actionBoton: "AGREGAR NUTRICIÓN",
+    actionBoton: "AGREGAR VGS",
     headers: [],
     desserts: [],
     editedIndex: -1,
     editedItem: {
-      dateIngreso: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-        .toISOString()
-        .substr(0, 10),
       dateEvalu: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
@@ -706,9 +676,6 @@ export default {
     },
     dataex: "",
     defaultItem: {
-      dateIngreso: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-        .toISOString()
-        .substr(0, 10),
       dateEvalu: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
@@ -758,7 +725,19 @@ export default {
       console.log("datos deseert elemt", this.desserts);
       for (let i = 0; i < this.desserts.length; i++) {
         //this.dataPdfExport.push(this.desserts[i].datosPaciente.nombres,this.desserts[i]);
-        this.dataPdfExport.push(Object.assign({datapacfull:this.desserts[i].datosPaciente.nombres+" "+this.desserts[i].datosPaciente.ape_pat+" "+this.desserts[i].datosPaciente.ape_mat},this.desserts[i]));
+        this.dataPdfExport.push(
+          Object.assign(
+            {
+              datapacfull:
+                this.desserts[i].datosPaciente.nombres +
+                " " +
+                this.desserts[i].datosPaciente.ape_pat +
+                " " +
+                this.desserts[i].datosPaciente.ape_mat,
+            },
+            this.desserts[i]
+          )
+        );
       }
 
       console.log("dataPdfExport", this.dataPdfExport);
@@ -958,7 +937,9 @@ export default {
                 fechaEvaluacion: this.editedItem.dateEvalu,
                 peso: this.editedItem.peso,
                 talla: this.editedItem.talla,
-                imc: this.editedItem.peso/(this.editedItem.talla*this.editedItem.talla),
+                imc:
+                  this.editedItem.peso /
+                  (this.editedItem.talla * this.editedItem.talla),
                 porcentajeCMB: this.editedItem.cmb,
                 porcentajeEPT: this.editedItem.ept,
                 albSerica: this.editedItem.albSerica,
@@ -1047,7 +1028,9 @@ export default {
                 fechaEvaluacion: this.editedItem.dateEvalu,
                 peso: this.editedItem.peso,
                 talla: this.editedItem.talla,
-                imc: this.editedItem.peso/(this.editedItem.talla*this.editedItem.talla),
+                imc:
+                  this.editedItem.peso /
+                  (this.editedItem.talla * this.editedItem.talla),
                 porcentajeCMB: this.editedItem.cmb,
                 porcentajeEPT: this.editedItem.ept,
                 albSerica: this.editedItem.albSerica,
@@ -1128,7 +1111,7 @@ export default {
   },
 
   mounted() {
-    if (!localStorage.getItem("keyValue")) {
+    if (!sessionStorage.getItem("keyValue")) {
       this.$router.push("/");
     }
   },

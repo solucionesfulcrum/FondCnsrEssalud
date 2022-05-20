@@ -88,21 +88,42 @@ export default {
   methods: {
     ingresar() {
       this.dialog = true;
+      this.value = false;
       axios
         .post(RUTA_SERVIDOR + "/api/token/", {
-          username: this.usuario,
-          password: this.contra,
+          username: "cnsr",
+          password: "123456",
         })
         .then((response) => {
-          console.log("respuesta", response);
-          localStorage.setItem("keyValue", response.data.access);
-          localStorage.setItem("usuario", this.usuario);
-          this.dialog = false;
-          this.$router.push("/go");
+          this.auth = "Bearer " + response.data.access;
+          axios
+            .get(RUTA_SERVIDOR + "/usuario/?search=" + this.usuario, {
+              headers: { Authorization: this.auth },
+            })
+            .then((res) => {
+              console.log("respuesta", res.data);
+              this.dialog = false;
+              if (res.data[0].clave == this.contra) {
+                console.log("ingreso exitoso");
+                sessionStorage.setItem("keyValue", response.data.access);
+                sessionStorage.setItem("usuario", res.data[0].usuario);
+                sessionStorage.setItem("nombre", res.data[0].nombre);
+                sessionStorage.setItem("perfil", res.data[0].perfil);
+                this.$router.push("/go");
+              } else {
+                console.log("Clave incorrecta");
+                this.value = true;
+              }
+            })
+            .catch((res) => {
+              console.warn("Error:", res);
+              this.dialog = false;
+            });
         })
         .catch((response) => {
-          this.value = true;
-          this.dialog = false;
+          response === 404
+            ? console.warn("lo sientimos no tenemos servicios")
+            : console.warn("Error:", response);
         });
     },
     actualizar() {

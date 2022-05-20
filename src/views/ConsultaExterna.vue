@@ -14,6 +14,7 @@
                 <v-list-item-content>
                   <v-list-item-title class="text-h6"> CNSR </v-list-item-title>
                   <v-list-item-subtitle>ESSALUD</v-list-item-subtitle>
+                  <v-list-item-subtitle>{{nombre}}</v-list-item-subtitle>
                 </v-list-item-content>
 
                 <v-list-item-action>
@@ -24,13 +25,40 @@
             <v-divider></v-divider>
             <v-list nav dense>
               <v-list-item-group v-model="selectedItem" color="primary">
-                <v-list-item v-for="(item, i) in items2" :key="i">
+                <v-list-item v-if="perfil==1 || perfil==2">
                   <v-list-item-icon>
-                    <v-icon v-text="item.icon"></v-icon>
+                    <v-icon v-text="items2[0].icon"></v-icon>
                   </v-list-item-icon>
 
                   <v-list-item-content>
-                    <v-list-item-title v-text="item.text"></v-list-item-title>
+                    <v-list-item-title v-text="items2[0].text"></v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item v-if="perfil==1 || perfil==2">
+                  <v-list-item-icon>
+                    <v-icon v-text="items2[1].icon"></v-icon>
+                  </v-list-item-icon>
+
+                  <v-list-item-content>
+                    <v-list-item-title v-text="items2[1].text"></v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item v-if="perfil==2">
+                  <v-list-item-icon>
+                    <v-icon v-text="items2[2].icon"></v-icon>
+                  </v-list-item-icon>
+
+                  <v-list-item-content>
+                    <v-list-item-title v-text="items2[2].text"></v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item v-if="perfil==1 || perfil==2">
+                  <v-list-item-icon>
+                    <v-icon v-text="items2[3].icon"></v-icon>
+                  </v-list-item-icon>
+
+                  <v-list-item-content>
+                    <v-list-item-title v-text="items2[3].text"></v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </v-list-item-group>
@@ -40,7 +68,9 @@
       </div>
       <div v-if="selectedItem == 0" class="col-sm-10"><CExternaAnem /></div>
       <div v-if="selectedItem == 1" class="col-sm-10"><CExternaNut /></div>
-      <div v-if="selectedItem == 2" class="col-sm-10"><ValorGloSub /></div>
+      <div v-if="selectedItem == 2 && perfil == 2" class="col-sm-10"><ValorGloSub /></div>
+      <div v-if="selectedItem == 2 && perfil == 1" class="col-sm-10"><Reportes /></div>
+      <div v-if="selectedItem == 3" class="col-sm-10"><Reportes /></div>
     </div>
   </div>
 </template>
@@ -51,10 +81,13 @@ import CExternaNut from "./CExternaNut.vue";
 import CExternaAnem from "./CExternaAnem.vue";
 import CalendarioAnemia from "./CalendarioAnemia.vue";
 import ValorGloSub from "./ValorGloSub.vue";
+import Reportes from "./Reportes.vue";
 
 export default {
   data() {
     return {
+      perfil: "",
+      nombre: "",
       selectedItem: null,
       items2: [
         { text: "Anemia", icon: "mdi-folder" },
@@ -65,13 +98,24 @@ export default {
     };
   },
   methods: {},
-  created() {},
+  mounted() {
+    if (!sessionStorage.getItem("keyValue")) {
+      this.$router.push("/");
+    }
+  },
+  created() {
+    this.perfil = sessionStorage.getItem("perfil");
+    this.nombre = sessionStorage.getItem("nombre");
+    console.log("Perfil", this.perfil);
+    console.log("nombre", this.nombre);
+  },
   components: {
     NavBar,
     CExternaNut,
     CExternaAnem,
     CalendarioAnemia,
     ValorGloSub,
+    Reportes,
   },
 };
 </script>

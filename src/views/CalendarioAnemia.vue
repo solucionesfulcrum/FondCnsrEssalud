@@ -156,6 +156,9 @@ export default {
     }),
     mounted () {
       this.$refs.calendar.checkChange()
+      if (!sessionStorage.getItem("keyValue")) {
+      this.$router.push("/");
+    }
     },
     methods: {
       viewDay ({ date }) {
