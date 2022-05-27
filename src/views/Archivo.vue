@@ -108,7 +108,11 @@
                 </v-btn>
               </template>
               <v-card>
-                <v-form ref="forAddPaciente" v-model="validPaciente" lazy-validation>
+                <v-form
+                  ref="forAddPaciente"
+                  v-model="validPaciente"
+                  lazy-validation
+                >
                   <v-card-title>
                     <span class="text-h5">{{ formTitle }}</span>
                   </v-card-title>
@@ -160,6 +164,16 @@
                             label="Nombres"
                             :maxlength="50"
                           ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="12" md="12">
+                          <v-combobox
+                            v-model="paciente.casOri"
+                            filled
+                            outlined
+                            solo
+                            :rules="[rules.required, rules.counter]"
+                            :items="itemsCasOri"
+                          ></v-combobox>
                         </v-col>
                         <v-col cols="12" sm="6" md="6">
                           <v-combobox
@@ -419,6 +433,7 @@ export default {
     menu: false,
     itemsTipDoc: ["DNI", "CE"],
     itemsTipSex: ["MASCULINO", "FEMENINO"],
+    itemsCasOri: [],
     usuario: "",
     valorAutocomplete: null,
     autoComplite: [],
@@ -426,8 +441,8 @@ export default {
     validPaciente: true,
     rules: {
       required: (value) => !!value || "Campo Obligatorio.",
-      counter: (value) => value.length <= 20 || "Max 20 caracteres",
-      counterDni: (value) => value.length < 9 || "Max 8 caracteres",
+      counter: (value) => value.length <= 40 || "Max 40 caracteres",
+      counterDni: (value) => value.length < 10 || "Max 10 caracteres",
     },
     maxDni: 8,
     maxdat: 21,
@@ -472,6 +487,7 @@ export default {
       nombresPac: "",
       sexoPaciente: "",
       fechaNacimiento: "",
+      casOri:"",
     },
     defaultPaciente: {
       tipoDoc: "",
@@ -481,6 +497,7 @@ export default {
       nombresPac: "",
       sexoPaciente: "",
       fechaNacimiento: "",
+      casOri:"",
     },
   }),
 
@@ -501,13 +518,13 @@ export default {
 
   created() {
     //this.actionBoton='pres'
-    this.usuario = localStorage.getItem("usuario");
+    this.usuario = sessionStorage.getItem("usuario");
     console.log("usuario", this.usuario);
     this.dialogDataApi = true;
     axios
       .post(RUTA_SERVIDOR + "/api/token/", {
         username: "cnsr",
-        password: "Essalud22",
+        password: "123456",
       })
       .then((response) => {
         this.auth = "Bearer " + response.data.access;
@@ -538,6 +555,21 @@ export default {
             //(this.dialogAviso = true);
             //);
             //this.pres()
+
+            axios
+              .get(RUTA_SERVIDOR + "/cas/?search=1", {
+                headers: { Authorization: this.auth },
+              })
+              .then((res1) => {
+                for(let i = 0; i < res1.data.length; i++){
+                  console.log("data cas",res1.data[i])
+                  this.itemsCasOri.push(res1.data[i].descripCas+"-"+res1.data[i].url.split("/")[4])
+                }
+              })
+              .catch((res1) => {
+                console.warn("Error:", res1);
+                this.dialog = false;
+              });
           })
           .catch((res) => {
             console.warn("Error:", res);
@@ -569,7 +601,7 @@ export default {
         axios
           .post(RUTA_SERVIDOR + "/api/token/", {
             username: "cnsr",
-            password: "Essalud22",
+            password: "123456",
           })
           .then((response) => {
             this.auth = "Bearer " + response.data.access;
@@ -607,7 +639,7 @@ export default {
       axios
         .post(RUTA_SERVIDOR + "/api/token/", {
           username: "cnsr",
-          password: "Essalud22",
+          password: "123456",
         })
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
@@ -657,7 +689,7 @@ export default {
       axios
         .post(RUTA_SERVIDOR + "/api/token/", {
           username: "cnsr",
-          password: "Essalud22",
+          password: "123456",
         })
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
@@ -752,7 +784,7 @@ export default {
         axios
           .post(RUTA_SERVIDOR + "/api/token/", {
             username: "cnsr",
-            password: "Essalud22",
+            password: "123456",
           })
           .then((response) => {
             this.auth = "Bearer " + response.data.access;
@@ -809,7 +841,7 @@ export default {
         axios
           .post(RUTA_SERVIDOR + "/api/token/", {
             username: "cnsr",
-            password: "Essalud22",
+            password: "123456",
           })
           .then((response) => {
             this.auth = "Bearer " + response.data.access;
@@ -824,6 +856,7 @@ export default {
                   nombres: this.paciente.nombresPac,
                   fecha_nac: this.paciente.fechaNacimiento,
                   sexo: this.paciente.sexoPaciente,
+                  casOri: "http://10.0.52.70:8030/cas/"+this.paciente.casOri.split("-")[1]+"/",
                 },
                 {
                   headers: { Authorization: this.auth },
@@ -861,7 +894,7 @@ export default {
   },
 
   mounted() {
-    if (!localStorage.getItem("keyValue")) {
+    if (!sessionStorage.getItem("keyValue")) {
       this.$router.push("/");
     }
   },

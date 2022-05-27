@@ -58,6 +58,10 @@ export default {
   },
   methods: {
     actionOut() {
+      sessionStorage.removeItem("url");
+      sessionStorage.removeItem("usuario");
+      sessionStorage.removeItem("perfil");
+      sessionStorage.removeItem("nombre");
       sessionStorage.removeItem("keyValue");
       this.dialog = false;
       this.$router.push("/");

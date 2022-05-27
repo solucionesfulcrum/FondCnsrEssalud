@@ -627,7 +627,7 @@ export default {
     perfil:"",
     nombre:"",
     url:"",
-    //EXPORT PDF
+    //EXPORT PDF 
     dataPdfExport: [],
     heading: "REPORTE PACIENTES NUTRICIÓN",
     items: [

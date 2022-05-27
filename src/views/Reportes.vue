@@ -2,16 +2,15 @@
   <v-container>
     <v-card class="mx-auto my-5" max-width="900">
       <v-system-bar color="#1973a5" dark> Reportes </v-system-bar>
-      <v-row class="mt-4 align-items-center">
-        <v-col cols="12" md="12">
-          <v-combobox
-            v-model="select"
-            :items="items"
-            label="Seleccione Clinica"
-            multiple
-            outlined
-            dense
-          ></v-combobox>
+      <v-row class="mt-4 container">
+        <v-col cols="12" sm="12" md="12">
+          <v-autocomplete
+            v-model="valueClinicas"
+            :items="itemsClinicas"
+            solo
+            filled
+            label="Seleccine una Clinica"
+          ></v-autocomplete>
         </v-col>
         <v-col cols="12" sm="6" md="6">
           <v-dialog
@@ -77,11 +76,11 @@
             Generar Excel<v-icon>mdi-arrow-down-bold-box</v-icon>
           </v-btn>
         </v-col>
-        <v-col cols="12" md="4">
+        <!--<v-col cols="12" md="4">
           <v-btn class="mt-10" icon color="#1973a5" @click="generatePDF">
             Generar PDF<v-icon>mdi-arrow-down-bold-box</v-icon>
           </v-btn>
-        </v-col>
+        </v-col>-->
       </v-row>
     </v-card>
   </v-container>
@@ -99,10 +98,12 @@ export default {
   data: () => ({
     dataToExport: [],
     dataNutriServ: [],
+    dataNutriDefault: [],
     dataPdfExport: [],
     heading: "REPORTE PACIENTES NUTRICIÓN",
     select: [],
-    items: ["Clinica A", "Clinica B", "Clinica c", "Clinica D"],
+    itemsClinicas: [],
+    valueClinicas: null,
     date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
       .substr(0, 10),
@@ -115,10 +116,44 @@ export default {
 
   watch: {},
 
-  created() {},
+  created() {
+    axios
+      .post(RUTA_SERVIDOR + "/api/token/", {
+        username: "cnsr",
+        password: "123456",
+      })
+      .then((response) => {
+        this.auth = "Bearer " + response.data.access;
+        axios
+          .get(RUTA_SERVIDOR + "/cas/", {
+            headers: { Authorization: this.auth },
+          })
+          .then((res) => {
+            console.log("clinicas", res.data);
+            for (let i = 0; i < res.data.length; i++) {
+              this.itemsClinicas.push(
+                res.data[i].codCas + "-" + res.data[i].descripCas
+              );
+            }
+          })
+          .catch((res) => {
+            console.warn("Error:", res);
+            this.dialog = false;
+          });
+      })
+      .catch((response) => {
+        response === 404
+          ? console.warn("lo sientimos no tenemos servicios")
+          : console.warn("Error:", response);
+      });
+  },
 
   methods: {
     exportExcel() {
+      //delete this.dataToExport
+      this.dataToExport = []
+      console.log("estamos aqui 1", this.dataToExport);
+      console.log("selectClinica", this.valueClinicas);
       axios
         .post(RUTA_SERVIDOR + "/api/token/", {
           username: "cnsr",
@@ -127,12 +162,18 @@ export default {
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
           axios
-            .get(RUTA_SERVIDOR + "/nutricion/", {
-              headers: { Authorization: this.auth },
-            })
+            .get(
+              RUTA_SERVIDOR +
+                "/nutricion/?search=" +
+                this.valueClinicas.split("-")[0],
+              {
+                headers: { Authorization: this.auth },
+              }
+            )
             .then((res) => {
               this.dataNutriServ = res.data;
-              console.log(this.dataNutriServ);
+              console.log("value clinica", this.valueClinicas);
+              console.log("serv", this.dataNutriServ);
 
               for (let i = 0; i < res.data.length; i++) {
                 //this.dataPdfExport.push(this.desserts[i].datosPaciente.nombres,this.desserts[i]);
@@ -192,7 +233,7 @@ export default {
                       InterNutricional: res.data[i].interveNutricional,
                     },
                     {
-                      Registro: res.data[i].userReg,
+                      Registro: res.data[i].datosUsuario.nombre,
                     }
                   )
                 );
@@ -217,7 +258,7 @@ export default {
         });
     },
     generatePDF() {
-      console.log("datos deseert elemt", this.dataNutriServ);
+      console.log("datos deseert elemt", this.dataToExport);
       for (let i = 0; i < this.dataNutriServ.length; i++) {
         //this.dataPdfExport.push(this.desserts[i].datosPaciente.nombres,this.desserts[i]);
         this.dataPdfExport.push(

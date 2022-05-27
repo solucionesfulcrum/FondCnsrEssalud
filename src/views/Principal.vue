@@ -49,7 +49,7 @@
               />
             </div>
           </v-flex>
-          <v-flex xs12 sm3 v-if="perfil == 0">
+          <v-flex xs12 sm3 v-if="perfil == 3">
             <div>
               <CardModulos
                 title="Archivo"
@@ -58,7 +58,7 @@
               />
             </div>
           </v-flex>
-          <v-flex xs12 sm3 v-if="perfil == 1 || perfil == 2">
+          <v-flex xs12 sm3 v-if="perfil == 1 || perfil == 2 || perfil == 3">
             <div>
               <CardModulos
                 title="Seguridad"
