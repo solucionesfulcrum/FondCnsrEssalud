@@ -34,11 +34,15 @@ const routes = [
     name: 'Archivo',
     component: () => import('../views/Archivo.vue')
   },
-  ,
   {
     path: '/atencion/:id',
     name: 'Atencion',
     component: () => import('../views/ConsultaExterna.vue')
+  },
+  {
+    path: '/seguridad',
+    name: 'Seguridad',
+    component: () => import('../views/Seguridad.vue')
   },
 ]
 

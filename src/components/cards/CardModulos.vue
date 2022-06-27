@@ -85,7 +85,7 @@
           this.$router.push('/AyudaDiag')
         }
         if(this.img==="4"){
-         console.log("ingresando a", this.img)
+         this.$router.push('/Seguridad')
         }
         if(this.img==="5"){
          this.$router.push('/Escaneados')

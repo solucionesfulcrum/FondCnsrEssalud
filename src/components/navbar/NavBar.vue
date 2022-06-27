@@ -8,7 +8,7 @@
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
-      Home
+      Inicio
       <v-btn icon @click="actionPrincipal">
         <v-icon>mdi-home</v-icon>
       </v-btn>

@@ -874,9 +874,8 @@ export default {
               this.datosPaciente.length != 0
                 ? this.nut()
                 : //(this.dialogDataApi = false),
-                  (this.aviso = "Datos de paciente no encontrados");
+                  (this.dialogAviso = true);
               //,
-              //(this.dialogAviso = true)
               //this.pres()
             })
             .catch((res) => {
@@ -1096,7 +1095,8 @@ export default {
                   ingestaProteica: this.editedItem.ingestaProteica,
                   diagNutricional: this.editedItem.diagNut,
                   interveNutricional: this.editedItem.interNut,
-                  usuario: this.url
+                  usuario: this.url,
+                  pacNuevo: this.nuevoValid
                 },
                 {
                   headers: { Authorization: this.auth },
