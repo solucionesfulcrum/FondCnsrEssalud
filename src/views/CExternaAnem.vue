@@ -159,7 +159,7 @@
                 <v-card>
                   <v-form ref="form" v-model="valid" lazy-validation>
                     <v-card-title>
-                      <span class="text-h5">{{ actionBoton }}</span>
+                      <span class="text-h5">{{ "Registro de Prescripción Mensual" }}</span>
                     </v-card-title>
                     <v-card-text>
                       <v-container>
@@ -230,7 +230,7 @@
                               v-model="editedItem.dos"
                               :items="dosisE"
                               :rules="[rules.required]"
-                              label="Dosis (UI)"
+                              label="Dosis (UI) Semanal"
                             ></v-select>
                           </v-col>
                           <v-col cols="12" sm="6" md="4">
