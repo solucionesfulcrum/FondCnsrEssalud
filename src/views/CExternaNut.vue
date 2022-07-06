@@ -79,13 +79,13 @@
           -->
       </v-card>
 
-      <v-card class="mx-auto my-5" max-width="900">
+      <v-card class="mx-auto my-5" max-width="900" v-if="datosPaciente.length != 0">
         <v-tabs background-color="#1973a5" center-active dark>
           <v-tab @click="nutricion">Nutrición</v-tab>
         </v-tabs>
       </v-card>
 
-      <v-card class="mx-auto my-5" max-width="900">
+      <v-card class="mx-auto my-5" max-width="900" v-if="datosPaciente.length != 0">
         <v-data-table :headers="headers" :items="desserts" class="elevation-1">
           <template v-slot:top>
             <v-toolbar flat>

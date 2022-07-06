@@ -72,7 +72,7 @@
             <v-text-field
               class="mx-auto mt-8"
               v-model="setDni"
-              label="DNI"
+              label="N° de documento"
               required
               :maxlength="8"
               @keyup.enter="buscarPacicente"
@@ -85,6 +85,7 @@
           </v-col>
           <v-col cols="12" md="3">
             <v-btn
+              v-if="datosPaciente.length != 0"
               class="mt-10"
               icon
               color="#1973a5"
@@ -118,7 +119,7 @@
       <v-card
         class="mx-auto my-5"
         max-width="900"
-        v-if="adminForm == '0' || adminForm == '1' || adminForm == '2'"
+        v-if="(adminForm == '0' || adminForm == '1' || adminForm == '2') && datosPaciente.length != 0"
       >
         <v-tabs background-color="#1973a5" center-active dark>
           <v-tab @click="pres">Prescripción</v-tab>
@@ -127,7 +128,7 @@
         </v-tabs>
       </v-card>
 
-      <v-card class="mx-auto my-5" max-width="900" v-if="adminForm == '0'">
+      <v-card class="mx-auto my-5" max-width="900" v-if="adminForm == '0' && datosPaciente.length != 0">
         <v-data-table :headers="headers" :items="desserts" class="elevation-1">
           <template v-slot:top>
             <v-toolbar flat>
@@ -159,7 +160,9 @@
                 <v-card>
                   <v-form ref="form" v-model="valid" lazy-validation>
                     <v-card-title>
-                      <span class="text-h5">{{ "Registro de Prescripción Mensual" }}</span>
+                      <span class="text-h5">{{
+                        "Registro de Prescripción Mensual"
+                      }}</span>
                     </v-card-title>
                     <v-card-text>
                       <v-container>
@@ -255,14 +258,14 @@
                               v-model="editedItem.dosHierro"
                               :items="dosisH"
                               :rules="[rules.required]"
-                              label="Dosis (UI)"
+                              label="Dosis (UI) Mensual"
                             ></v-select>
                           </v-col>
                           <v-col cols="12" sm="6" md="4">
                             <v-select
                               v-model="editedItem.viaHierro"
                               :rules="[rules.required, rules.counter]"
-                              :items="via"
+                              :items="via[1]"
                               label="Via Administración"
                             ></v-select>
                           </v-col>
@@ -358,7 +361,7 @@
                               v-model="editedItem.dos"
                               :items="dosisE"
                               :rules="[rules.required]"
-                              label="Dosis (UI)"
+                              label="Dosis (UI) Semanal"
                             ></v-select>
                           </v-col>
                           <v-col cols="12" sm="6" md="4">
@@ -383,14 +386,14 @@
                               v-model="editedItem.dosHierro"
                               :items="dosisH"
                               :rules="[rules.required]"
-                              label="Dosis (UI)"
+                              label="Dosis (UI) Mensual"
                             ></v-select>
                           </v-col>
                           <v-col cols="12" sm="6" md="4">
                             <v-select
                               v-model="editedItem.viaHierro"
                               :rules="[rules.required, rules.counter]"
-                              :items="via"
+                              :items="via[1]"
                               label="Via Administración"
                             ></v-select>
                           </v-col>
@@ -479,9 +482,9 @@
                       </v-col>
                       <v-col cols="12" sm="12" md="12">
                         <span class="text-h6">Dosis Eritropoyetina:</span>
-                        <span>{{ datosPresHis.dosisPres }} UI</span>
+                        <span>{{ datosPresHis.dosisPres }} UI Semanal</span>
                         <span class="text-h6">Dosis Hierro: </span>
-                        <span> {{ datosPresHis.dosisHiePres }} UI </span>
+                        <span> {{ datosPresHis.dosisHiePres }} UI Mensual</span>
                       </v-col>
                     </v-card>
                     <v-card-text>
@@ -585,7 +588,7 @@
                             <v-select
                               v-model="editedItem.viaHierro"
                               :rules="[rules.required, rules.counter]"
-                              :items="via"
+                              :items="via[1]"
                               label="Via Administración"
                             ></v-select>
                           </v-col>
@@ -724,7 +727,7 @@
                             <v-select
                               v-model="editedItem.viaHierro"
                               :rules="[rules.required, rules.counter]"
-                              :items="via"
+                              :items="via[1]"
                               label="Via Administración"
                             ></v-select>
                           </v-col>
@@ -1025,6 +1028,9 @@ import CalendarioAnemia from "./CalendarioAnemia.vue";
 
 export default {
   data: () => ({
+    perfil: "",
+    nombre: "",
+    url:"",
     dialogCalendar: false,
     datosPresHis: [],
     datosEdit: "",
@@ -1039,7 +1045,7 @@ export default {
     valid: true,
     medicamentos: ["ERITROPOYETINA", "HIERRO"],
     via: ["SC", "EV"],
-    dosisE: [1000, 2000, 3000, 4000, 5000, 6000],
+    dosisE: [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000],
     dosisH: [100, 200, 300, 400, 500, 600, 700, 800],
     rules: {
       required: (value) => !!value || "Campo Obligatorio.",
@@ -1120,6 +1126,12 @@ export default {
   created() {
     //this.initialize()
     //this.actionBoton='pres'
+    this.perfil = sessionStorage.getItem("perfil");
+    this.nombre = sessionStorage.getItem("nombre");
+    this.url = sessionStorage.getItem("url");
+    console.log("Url", this.url);
+    console.log("Perfil", this.perfil);
+    console.log("Nombre", this.nombre);
   },
 
   methods: {
@@ -1343,6 +1355,7 @@ export default {
                 dosisHiePres: this.editedItem.dosHierro,
                 viaAdmPres: this.editedItem.via,
                 viaAdmHiePres: this.editedItem.viaHierro,
+                usuario: this.url
               },
               {
                 headers: { Authorization: this.auth },
@@ -1414,8 +1427,10 @@ export default {
         });
     },
 
-    editExclu() {
-      console.log("esto es para editar", this.datosEdit.split("/")[4]);
+    editExclu(item) {
+      console.log("esto es para editar", item);
+      console.log("esto exclu", this.editedItem);
+      console.log("esto paciente", this.datosPaciente);
 
       axios
         .post(RUTA_SERVIDOR + "/api/token/", {
@@ -1427,9 +1442,7 @@ export default {
           axios
             .patch(
               RUTA_SERVIDOR +
-                "/excluAnemia/" +
-                this.datosEdit.split("/")[4] +
-                "/",
+                "/exclusionAnemia/1/",
               {
                 fechaExclu: this.editedItem.fechaExclu,
                 razonExclu: this.editedItem.razonExclu,
@@ -1517,6 +1530,7 @@ export default {
                   dosisHieAdmi: this.editedItem.dosHierro,
                   viaAdm: this.editedItem.via,
                   viaAdmHierro: this.editedItem.viaHierro,
+                  usuario: this.url
                 },
                 {
                   headers: { Authorization: this.auth },
@@ -1575,6 +1589,7 @@ export default {
                   dosisHiePres: this.editedItem.dosHierro,
                   viaAdmPres: this.editedItem.via,
                   viaAdmHiePres: this.editedItem.viaHierro,
+                  usuario: this.url
                 },
                 {
                   headers: { Authorization: this.auth },
@@ -1622,6 +1637,7 @@ export default {
                   fechaExclu: this.editedItem.date,
                   razonExclu: this.editedItem.razonExclu,
                   ObservaExclu: this.editedItem.observa,
+                  usuario: this.url
                 },
                 {
                   headers: { Authorization: this.auth },
