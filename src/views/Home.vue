@@ -63,7 +63,7 @@
         </v-container>
       </v-form>
     </v-card>
-    <span>V 1.0.0</span>
+    <span>V 1.0.1</span>
   </div>
 </template>
 
