@@ -22,12 +22,14 @@
         <v-toolbar color="#1973a5" dark>¡Aviso Importante!</v-toolbar>
         <v-card-text>
           <div class="text-h4 pa-5">
-              ¡Paciente no se encuentra registrado!, ponerse en contacto con el
-              admistrador de sistema Telf: 988 578 051  o ingresar al siguiente enlace:
-              <a href="https://wa.me/message/3NEVQVLLDQV3O1" target="_blank"
-                >Envía un mensaje a Centro Nacional De Salud Renal - DSI por WhatsApp.</a
-              >
-            </div>
+            ¡Paciente no se encuentra registrado!, ponerse en contacto con el
+            admistrador de sistema Telf: 988 578 051 o ingresar al siguiente
+            enlace:
+            <a href="https://wa.me/message/3NEVQVLLDQV3O1" target="_blank"
+              >Envía un mensaje a Centro Nacional De Salud Renal - DSI por
+              WhatsApp.</a
+            >
+          </div>
         </v-card-text>
         <v-card-actions class="justify-end">
           <v-btn text @click="dialogAviso = false">cerrar</v-btn>
@@ -53,7 +55,7 @@
       </v-card>
     </v-dialog>
 
-     <v-dialog
+    <v-dialog
       transition="dialog-bottom-transition"
       max-width="600"
       v-model="dialogAvisoEditar"
@@ -74,78 +76,20 @@
     <v-container>
       <v-card class="mx-auto my-5" max-width="900">
         <v-system-bar color="#1973a5" dark>
-          DATOS DE PACIENTE - CONTROL NUTRICIONAL CLINICAS CONTRATADOS
+          MONITOREO Y SEGUIMIENTO DE COMPRAS DELEGADAS Y LOCALES
         </v-system-bar>
-        <v-row class="start ml-10">
-          <v-col cols="12" md="4">
-            <v-text-field
-              class="mx-auto mt-8"
-              v-model="setDni"
-              label="DNI"
-              required
-              :maxlength="8"
-              @keyup.enter="buscarPacicente"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="4">
-            <v-btn class="mt-10" icon color="#1973a5" @click="buscarPacicente">
-              <v-icon>mdi-magnify</v-icon>
-            </v-btn>
-          </v-col>
-          <v-col v-if="desserts.length != 0" cols="12" md="4">
-            <v-btn class="mt-10" icon color="#1973a5" @click="generatePDF">
-              Generar PDF<v-icon>mdi-arrow-down-bold-box</v-icon>
-            </v-btn>
-          </v-col>
-        </v-row>
-        <!--
-          <v-row justify="center">
-            <v-col cols="12" md="3">
-              <v-text-field label="Apellido Paterno" required></v-text-field>
-            </v-col>
-            <v-col cols="12" md="3">
-              <v-text-field label="Apellido Materno" required></v-text-field>
-            </v-col>
-            <v-col cols="12" md="3">
-              <v-text-field label="Nombres" required></v-text-field>
-            </v-col>
-            <v-col cols="12" md="1">
-              <v-btn class="mt-3" icon color="#1973a5">
-                <v-icon>mdi-magnify</v-icon>
-              </v-btn>
-            </v-col>
-          </v-row>
-          -->
       </v-card>
 
-      <v-card
-        class="mx-auto my-5"
-        max-width="900"
-        v-if="datosPaciente.length != 0"
-      >
+      <v-card class="mx-auto my-5" max-width="900">
         <v-tabs background-color="#1973a5" center-active dark>
-          <v-tab @click="nutricion">Nutrición</v-tab>
+          <v-tab @click="nutricion">Delegación</v-tab>
         </v-tabs>
       </v-card>
 
-      <v-card
-        class="mx-auto my-5"
-        max-width="900"
-        v-if="datosPaciente.length != 0"
-      >
+      <v-card class="mx-auto my-5" max-width="900">
         <v-data-table :headers="headers" :items="desserts" class="elevation-1">
           <template v-slot:top>
             <v-toolbar flat>
-              <v-toolbar-title v-if="datosPaciente.length != 0">
-                {{
-                  datosPaciente[0].nombres +
-                  " " +
-                  datosPaciente[0].ape_pat +
-                  " " +
-                  datosPaciente[0].ape_mat
-                }}
-                | {{ vista }}</v-toolbar-title
-              >
               <v-divider class="mx-4" inset vertical></v-divider>
               <v-spacer></v-spacer>
               <!--Registrar-->
@@ -164,33 +108,68 @@
                 <v-card>
                   <v-form ref="form" v-model="valid" lazy-validation>
                     <v-card-title>
-                      <div cols="12" sm="6" md="6" class="">
-                        <v-checkbox v-model="nuevoValid"></v-checkbox>
-                      </div>
-                      <span>Click si el paciente es nuevo</span>
+                      <span>Registro Bienes Estratégicos</span>
                     </v-card-title>
                     <v-card-text>
                       <v-container>
                         <v-row>
-                          <v-col
-                            v-if="nuevoValid === true"
-                            cols="12"
-                            sm="6"
-                            md="3"
-                          >
+                          <v-col cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.solped"
+                              :rules="[rules.required, rules.counter]"
+                              label="Solicitud Pedido"
+                              :maxlength="maxdat"
+                              type="number"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.codsap"
+                              :rules="[rules.required, rules.counter]"
+                              label="Codigo SAP"
+                              :maxlength="maxdat"
+                              type="number"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.producto"
+                              :rules="[rules.required, rules.counter]"
+                              label="Producto"
+                              :maxlength="maxdat"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="3">
+                            <v-select
+                              v-model="editedItem.unidadMed"
+                              :items="itemsUm"
+                              :rules="[rules.required]"
+                              label="Unidad Medida"
+                            ></v-select>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.cantidad"
+                              :rules="[rules.required, rules.counter]"
+                              label="Cantidad"
+                              :maxlength="maxdat"
+                              type="number"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="3">
                             <v-menu
                               ref="menu3"
                               v-model="menu3"
                               :close-on-content-click="false"
-                              :return-value.sync="editedItem.dateIngreso"
+                              :return-value.sync="editedItem.dateDelegacion"
                               transition="scale-transition"
                               offset-y
                               min-width="auto"
                             >
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                  v-model="editedItem.dateIngreso"
-                                  label="Fecha de Ingreso"
+                                  v-model="editedItem.dateDelegacion"
+                                  label="Fecha de Delegación"
                                   prepend-icon="mdi-calendar"
                                   readonly
                                   v-bind="attrs"
@@ -198,7 +177,7 @@
                                 ></v-text-field>
                               </template>
                               <v-date-picker
-                                v-model="editedItem.dateIngreso"
+                                v-model="editedItem.dateDelegacion"
                                 no-title
                                 scrollable
                                 :min="minimo"
@@ -216,7 +195,7 @@
                                   text
                                   color="primary"
                                   @click="
-                                    $refs.menu3.save(editedItem.dateIngreso)
+                                    $refs.menu3.save(editedItem.dateDelegacion)
                                   "
                                 >
                                   OK
@@ -224,25 +203,28 @@
                               </v-date-picker>
                             </v-menu>
                           </v-col>
-                          <v-col
-                            v-if="nuevoValid === true"
-                            cols="12"
-                            sm="6"
-                            md="3"
-                          >
+                          <v-col cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.perDel"
+                              :rules="[rules.required, rules.counter]"
+                              label="Periodo Delegación"
+                              :maxlength="maxdat"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="3">
                             <v-menu
                               ref="menu4"
                               v-model="menu4"
                               :close-on-content-click="false"
-                              :return-value.sync="editedItem.dateEvalu"
+                              :return-value.sync="editedItem.dateDerivacion"
                               transition="scale-transition"
                               offset-y
                               min-width="auto"
                             >
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                  v-model="editedItem.dateEvalu"
-                                  label="Fecha de Evaluacion Nutricional"
+                                  v-model="editedItem.dateDerivacion"
+                                  label="Fecha de Derivación"
                                   prepend-icon="mdi-calendar"
                                   readonly
                                   v-bind="attrs"
@@ -250,7 +232,7 @@
                                 ></v-text-field>
                               </template>
                               <v-date-picker
-                                v-model="editedItem.dateEvalu"
+                                v-model="editedItem.dateDerivacion"
                                 no-title
                                 scrollable
                                 :min="minimo"
@@ -268,7 +250,7 @@
                                   text
                                   color="primary"
                                   @click="
-                                    $refs.menu4.save(editedItem.dateEvalu)
+                                    $refs.menu4.save(editedItem.dateDerivacion)
                                   "
                                 >
                                   OK
@@ -277,121 +259,224 @@
                             </v-menu>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
-                            <v-select
-                              v-model="editedItem.frecuencia"
-                              :items="itemsFrecuencia"
-                              :rules="[rules.required]"
-                              label="Frecuencia"
-                            ></v-select>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-select
-                              v-model="editedItem.turno"
-                              :items="itemsTurno"
-                              :rules="[rules.required]"
-                              label="Turno"
-                            ></v-select>
+                            <v-menu
+                              ref="menu5"
+                              v-model="menu5"
+                              :close-on-content-click="false"
+                              :return-value.sync="editedItem.dateRequerimiento"
+                              transition="scale-transition"
+                              offset-y
+                              min-width="auto"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="editedItem.dateRequerimiento"
+                                  label="Fecha de Requerimiento"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker
+                                v-model="editedItem.dateRequerimiento"
+                                no-title
+                                scrollable
+                                :min="minimo"
+                                :max="maximo"
+                              >
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="menu5 = false"
+                                >
+                                  Cancel
+                                </v-btn>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="
+                                    $refs.menu5.save(editedItem.dateRequerimiento)
+                                  "
+                                >
+                                  OK
+                                </v-btn>
+                              </v-date-picker>
+                            </v-menu>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
-                              v-model="editedItem.peso"
+                              v-model="editedItem.perSol"
                               :rules="[rules.required, rules.counter]"
-                              label="Peso (Kilogramos)"
+                              label="Periodo Solicitado"
+                              :maxlength="maxdat"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="3">
+                            <v-menu
+                              ref="menu6"
+                              v-model="menu6"
+                              :close-on-content-click="false"
+                              :return-value.sync="editedItem.dateLogistica"
+                              transition="scale-transition"
+                              offset-y
+                              min-width="auto"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="editedItem.dateLogistica"
+                                  label="Fecha Logistica"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker
+                                v-model="editedItem.dateLogistica"
+                                no-title
+                                scrollable
+                                :min="minimo"
+                                :max="maximo"
+                              >
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="menu6 = false"
+                                >
+                                  Cancel
+                                </v-btn>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="
+                                    $refs.menu6.save(editedItem.dateLogistica)
+                                  "
+                                >
+                                  OK
+                                </v-btn>
+                              </v-date-picker>
+                            </v-menu>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.ordenCompra"
+                              :rules="[rules.required, rules.counter]"
+                              label="N° O/C"
                               :maxlength="maxdat"
                               type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
-                              v-model="editedItem.talla"
+                              v-model="editedItem.monto"
                               :rules="[rules.required, rules.counter]"
-                              label="Talla (Metros)"
+                              label="Monto"
                               :maxlength="maxdat"
                               type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.imc"
-                              label="IMC"
-                              :maxlength="maxdat"
-                              disabled
-                            ></v-text-field>
+                            <v-menu
+                              ref="menu7"
+                              v-model="menu7"
+                              :close-on-content-click="false"
+                              :return-value.sync="editedItem.dateIngreso"
+                              transition="scale-transition"
+                              offset-y
+                              min-width="auto"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="editedItem.dateIngreso"
+                                  label="Fecha Ingreso Almacen"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker
+                                v-model="editedItem.dateIngreso"
+                                no-title
+                                scrollable
+                                :min="minimo"
+                                :max="maximo"
+                              >
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="menu7 = false"
+                                >
+                                  Cancel
+                                </v-btn>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="
+                                    $refs.menu7.save(editedItem.dateIngreso)
+                                  "
+                                >
+                                  OK
+                                </v-btn>
+                              </v-date-picker>
+                            </v-menu>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="3">
+                            <v-menu
+                              ref="menu8"
+                              v-model="menu8"
+                              :close-on-content-click="false"
+                              :return-value.sync="editedItem.datePago"
+                              transition="scale-transition"
+                              offset-y
+                              min-width="auto"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="editedItem.datePago"
+                                  label="Fecha Pago"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker
+                                v-model="editedItem.datePago"
+                                no-title
+                                scrollable
+                                :min="minimo"
+                                :max="maximo"
+                              >
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="menu8 = false"
+                                >
+                                  Cancel
+                                </v-btn>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="
+                                    $refs.menu8.save(editedItem.dateIngreso)
+                                  "
+                                >
+                                  OK
+                                </v-btn>
+                              </v-date-picker>
+                            </v-menu>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
-                              v-model="editedItem.cmb"
+                              v-model="editedItem.anulacion"
                               :rules="[rules.required, rules.counter]"
-                              label="%C.M.B."
-                              :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col
-                            v-if="nuevoValid === true"
-                            cols="12"
-                            sm="6"
-                            md="3"
-                          >
-                            <v-text-field
-                              v-model="editedItem.ept"
-                              label="%E.P.T."
-                              :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.albSerica"
-                              :rules="[rules.required, rules.counter]"
-                              label="ALB Sérica"
-                              :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col
-                            v-if="nuevoValid === true"
-                            cols="12"
-                            sm="6"
-                            md="3"
-                          >
-                            <v-text-field
-                              v-model="editedItem.vgs"
-                              label="VGS"
-                              :maxlength="maxdat"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.ingestaCalorica"
-                              :rules="[rules.required, rules.counter]"
-                              label="Ingesta Calorica"
-                              :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.ingestaProteica"
-                              :rules="[rules.required, rules.counter]"
-                              label="Ingesta Proteica"
-                              :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.diagNut"
-                              :rules="[rules.required, rules.counter]"
-                              label="Diagnostico Nutricional"
-                              :maxlength="maxdat"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.interNut"
-                              :rules="[rules.required, rules.counter]"
-                              label="Intervención Nutricional"
+                              label="Solicitud Anulación de Pedido"
                               :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
@@ -673,6 +758,7 @@ export default {
     //perfil data
     perfil: "",
     nombre: "",
+    usuario: "",
     url: "",
     //EXPORT PDF
     dataPdfExport: [],
@@ -691,6 +777,7 @@ export default {
     dialog: false,
     itemsFrecuencia: ["L-M-V", "M-J-S"],
     itemsTurno: ["1er Turno", "2do Turno", "3er Turno", "4to Turno"],
+    itemsUm: ["TB", "G", "UN", "AM", "PBA", "CM3", "FR", "ROL", "AM", "CP"],
     nuevoValid: false,
     datosPresHis: [],
     datosEdit: "",
@@ -720,6 +807,39 @@ export default {
       turno: "",
       peso: Number,
       talla: Number,
+      solped: Number,
+      codsap: Number,
+      producto: "",
+      unidadMed: "",
+      cantidad: Number,
+      dateDelegacion: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      perDel: "",
+      dateDerivacion: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      dateRequerimiento: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      perSol: "",
+      dateLogistica: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      ordenCompra: Number,
+      monto: Number,
+      datePago: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+      anulacion: "",
       imc: 0.0,
       cmb: Number,
       ept: Number,
@@ -744,7 +864,7 @@ export default {
     dialogDelete: false,
     dialogEditAdm: false,
     vista: "",
-    actionBoton: "AGREGAR NUTRICIÓN",
+    actionBoton: "AGREGAR BIEN",
     headers: [],
     desserts: [],
     editedIndex: -1,
@@ -759,6 +879,39 @@ export default {
       turno: "",
       peso: Number,
       talla: Number,
+      solped: Number,
+      codsap: Number,
+      producto: "",
+      unidadMed: "",
+      cantidad: Number,
+      dateDelegacion: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      perDel: "",
+      dateDerivacion: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      dateRequerimiento: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      perSol: "",
+      dateLogistica: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      ordenCompra: Number,
+      monto: Number,
+      datePago: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+      anulacion: "",
       imc: 0.0,
       cmb: Number,
       ept: Number,
@@ -781,6 +934,39 @@ export default {
       turno: "",
       peso: Number,
       talla: Number,
+      solped: Number,
+      codsap: Number,
+      producto: "",
+      unidadMed: "",
+      cantidad: Number,
+      dateDelegacion: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      perDel: "",
+      dateDerivacion: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      dateRequerimiento: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      perSol: "",
+      dateLogistica: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      ordenCompra: Number,
+      monto: Number,
+      datePago: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+      anulacion: "",
       imc: 0.0,
       cmb: Number,
       ept: Number,
@@ -796,6 +982,8 @@ export default {
     menu4: false,
     menu5: false,
     menu6: false,
+    menu7: false,
+    menu8: false,
   }),
 
   computed: {
@@ -1111,7 +1299,7 @@ export default {
           });
       } else {
         this.dialogEdit = false;
-        this.dialogAvisoEditar = true
+        this.dialogAvisoEditar = true;
       }
     },
 
@@ -1141,7 +1329,7 @@ export default {
 
     save() {
       console.log("click");
-      if (
+      /*if (
         !this.editedItem.turno ||
         !this.editedItem.frecuencia ||
         !this.editedItem.dateIngreso ||
@@ -1159,60 +1347,59 @@ export default {
       ) {
         this.$refs.form.validate();
         console.log("validate");
-      } else {
-        axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
-            username: "cnsr",
-            password: "123456",
-          })
-          .then((response) => {
-            this.auth = "Bearer " + response.data.access;
-            axios
-              .post(
-                RUTA_SERVIDOR + "/nutricion/",
-                {
-                  paciente: this.datosPaciente[0].url,
-                  turno: this.editedItem.turno,
-                  frecuencia: this.editedItem.frecuencia,
-                  fechaIngreso: this.editedItem.dateIngreso,
-                  fechaEvaluacion: this.editedItem.dateEvalu,
-                  peso: this.editedItem.peso,
-                  talla: this.editedItem.talla,
-                  imc:
-                    this.editedItem.peso /
-                    (this.editedItem.talla * this.editedItem.talla),
-                  porcentajeCMB: this.editedItem.cmb,
-                  porcentajeEPT: this.editedItem.ept,
-                  albSerica: this.editedItem.albSerica,
-                  ValGlobalSub: this.editedItem.vgs,
-                  ingestaCalorica: this.editedItem.ingestaCalorica,
-                  ingestaProteica: this.editedItem.ingestaProteica,
-                  diagNutricional: this.editedItem.diagNut,
-                  interveNutricional: this.editedItem.interNut,
-                  usuario: this.url,
-                  pacNuevo: this.nuevoValid,
-                },
-                {
-                  headers: { Authorization: this.auth },
-                }
-              )
-              .then((res) => {
-                console.log("exito", res.status);
-                this.close();
-                console.log(this.editedItem);
-                this.nut();
-              })
-              .catch((res) => {
-                console.log("Error:", res);
-                this.dialog = false;
-              });
-          })
-          .catch((response) => {
-            response === 404
-              ? console.warn("lo sientimos no tenemos servicios")
-              : console.warn("Error:", response);
-          });
-      }
+      } else {*/
+      axios
+        .post(RUTA_SERVIDOR + "/api/token/", {
+          username: "cnsr",
+          password: "123456",
+        })
+        .then((response) => {
+          this.auth = "Bearer " + response.data.access;
+          axios
+            .post(
+              RUTA_SERVIDOR + "/delegaciones/",
+              {
+                solPed: this.editedItem.solped,
+                codigoSap: this.editedItem.codsap,
+                producto: this.editedItem.producto,
+                unidadMedida: this.editedItem.unidadMed,
+                cantidad: this.editedItem.cantidad,
+                fechaDelegacion: this.editedItem.dateDelegacion,
+                fechaDerivacion: this.editedItem.dateDerivacion,
+                fechaRequerimiento: this.editedItem.dateRequerimiento,
+                periodoSolicitado: this.editedItem.perDel,
+                fechaLogistica: this.editedItem.dateLogistica,
+                numOrdenCompra: this.editedItem.ordenCompra,
+                monto: this.editedItem.monto,
+                fechaIngresoAlmacen: this.editedItem.dateLogistica,
+                fechaPago: this.editedItem.datePago,
+                anulacionPedido: this.editedItem.anulacion,
+                userOpc: "OPC",
+                userUsuario: "USRER",
+                userLogistica: "LOG",
+                userFinanzas: "FINANZAS",
+                estado: "1",
+              },
+              {
+                headers: { Authorization: this.auth },
+              }
+            )
+            .then((res) => {
+              console.log("exito", res.status);
+              this.close();
+              console.log(this.editedItem);
+            })
+            .catch((res) => {
+              console.log("Error:", res);
+              this.dialog = false;
+            });
+        })
+        .catch((response) => {
+          response === 404
+            ? console.warn("lo sientimos no tenemos servicios")
+            : console.warn("Error:", response);
+        });
+      //}
       //console.log('holaaaaaaaa',this.editedItem)
     },
 
@@ -1272,9 +1459,11 @@ export default {
     this.perfil = sessionStorage.getItem("perfil");
     this.nombre = sessionStorage.getItem("nombre");
     this.url = sessionStorage.getItem("url");
+    this.usuario = sessionStorage.getItem("usuario");
     console.log("Url", this.url);
     console.log("Perfil", this.perfil);
     console.log("Nombre", this.nombre);
+    console.log("usuario", this.usuario);
   },
 
   components: {

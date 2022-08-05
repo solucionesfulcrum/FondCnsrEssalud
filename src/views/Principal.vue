@@ -58,7 +58,16 @@
               />
             </div>
           </v-flex>
-          <v-flex xs12 sm3 v-if="perfil == 1 || perfil == 2 || perfil == 3">
+          <v-flex xs12 sm3 v-if="perfil == 4">
+            <div>
+              <CardModulos
+                title="Bienes Estrategicos"
+                detalle_titulo="Gestiona la delegación de Bienes Estrategicos"
+                img="8"
+              />
+            </div>
+          </v-flex>
+          <v-flex xs12 sm3 v-if="perfil == 1 || perfil == 2 || perfil == 3 || perfil == 4">
             <div>
               <CardModulos
                 title="Seguridad"

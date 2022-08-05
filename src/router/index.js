@@ -44,6 +44,11 @@ const routes = [
     name: 'Seguridad',
     component: () => import('../views/Seguridad.vue')
   },
+  {
+    path: '/bienes',
+    name: 'Bienes',
+    component: () => import('../views/DelegacionesBE.vue')
+  },
 ]
 
 const router = new VueRouter({
