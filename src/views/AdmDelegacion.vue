@@ -113,7 +113,7 @@
                     <v-card-text>
                       <v-container>
                         <v-row>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil == 4" cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.solped"
                               :rules="[rules.required, rules.counter]"
@@ -122,7 +122,7 @@
                               type="number"
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil == 4" cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.codsap"
                               :rules="[rules.required, rules.counter]"
@@ -131,7 +131,7 @@
                               type="number"
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil == 4" cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.producto"
                               :rules="[rules.required, rules.counter]"
@@ -139,7 +139,7 @@
                               :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil == 4" cols="12" sm="6" md="3">
                             <v-select
                               v-model="editedItem.unidadMed"
                               :items="itemsUm"
@@ -147,7 +147,7 @@
                               label="Unidad Medida"
                             ></v-select>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil == 4" cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.cantidad"
                               :rules="[rules.required, rules.counter]"
@@ -156,7 +156,7 @@
                               type="number"
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil == 4" cols="12" sm="6" md="3">
                             <v-menu
                               ref="menu3"
                               v-model="menu3"
@@ -203,7 +203,7 @@
                               </v-date-picker>
                             </v-menu>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil == 4" cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.perDel"
                               :rules="[rules.required, rules.counter]"
@@ -211,7 +211,7 @@
                               :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil == 4" cols="12" sm="6" md="3">
                             <v-menu
                               ref="menu4"
                               v-model="menu4"
@@ -258,7 +258,7 @@
                               </v-date-picker>
                             </v-menu>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil == 5" cols="12" sm="6" md="3">
                             <v-menu
                               ref="menu5"
                               v-model="menu5"
@@ -297,7 +297,9 @@
                                   text
                                   color="primary"
                                   @click="
-                                    $refs.menu5.save(editedItem.dateRequerimiento)
+                                    $refs.menu5.save(
+                                      editedItem.dateRequerimiento
+                                    )
                                   "
                                 >
                                   OK
@@ -305,7 +307,7 @@
                               </v-date-picker>
                             </v-menu>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil==5" cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.perSol"
                               :rules="[rules.required, rules.counter]"
@@ -313,7 +315,7 @@
                               :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil==6" cols="12" sm="6" md="3">
                             <v-menu
                               ref="menu6"
                               v-model="menu6"
@@ -360,7 +362,7 @@
                               </v-date-picker>
                             </v-menu>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil==6" cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.ordenCompra"
                               :rules="[rules.required, rules.counter]"
@@ -369,7 +371,7 @@
                               type="number"
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil==6" cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.monto"
                               :rules="[rules.required, rules.counter]"
@@ -378,7 +380,7 @@
                               type="number"
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil==6" cols="12" sm="6" md="3">
                             <v-menu
                               ref="menu7"
                               v-model="menu7"
@@ -425,7 +427,7 @@
                               </v-date-picker>
                             </v-menu>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil==7" cols="12" sm="6" md="3">
                             <v-menu
                               ref="menu8"
                               v-model="menu8"
@@ -472,7 +474,7 @@
                               </v-date-picker>
                             </v-menu>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil==4" cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.anulacion"
                               :rules="[rules.required, rules.counter]"
@@ -500,15 +502,433 @@
                 <v-card>
                   <v-form ref="form" v-model="valid" lazy-validation>
                     <v-card-title>
-                      <span class="text-h5">Editar Nutrición</span>
+                      <span class="text-h5">Editar Delegación</span>
                     </v-card-title>
                     <v-card-text>
                       <v-container>
                         <v-row>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil==4" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.solped"
+                              :rules="[rules.required, rules.counter]"
+                              label="Solicitud Pedido"
+                              :maxlength="maxdat"
+                              type="number"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==5" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.solped"
+                              :rules="[rules.required, rules.counter]"
+                              label="Solicitud Pedido"
+                              :maxlength="maxdat"
+                              type="number"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==4" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.codsap"
+                              :rules="[rules.required, rules.counter]"
+                              label="Codigo SAP"
+                              :maxlength="maxdat"
+                              type="number"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==5" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.codsap"
+                              :rules="[rules.required, rules.counter]"
+                              label="Codigo SAP"
+                              :maxlength="maxdat"
+                              type="number"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==4" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.producto"
+                              :rules="[rules.required, rules.counter]"
+                              label="Producto"
+                              :maxlength="maxdat"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==5" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.producto"
+                              :rules="[rules.required, rules.counter]"
+                              label="Producto"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==4" cols="12" sm="6" md="3">
+                            <v-select
+                              v-model="editedItem.unidadMed"
+                              :items="itemsUm"
+                              :rules="[rules.required]"
+                              label="Unidad Medida"
+                            ></v-select>
+                          </v-col>
+                          <v-col v-if="perfil==5" cols="12" sm="6" md="3">
+                            <v-select
+                              v-model="editedItem.unidadMed"
+                              :items="itemsUm"
+                              :rules="[rules.required]"
+                              label="Unidad Medida"
+                              disabled
+                            ></v-select>
+                          </v-col>
+                          <v-col v-if="perfil==4" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.cantidad"
+                              :rules="[rules.required, rules.counter]"
+                              label="Cantidad"
+                              :maxlength="maxdat"
+                              type="number"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==5" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.cantidad"
+                              :rules="[rules.required, rules.counter]"
+                              label="Cantidad"
+                              :maxlength="maxdat"
+                              type="number"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==4" cols="12" sm="6" md="3">
+                            <v-menu
+                              ref="menu3"
+                              v-model="menu3"
+                              :close-on-content-click="false"
+                              :return-value.sync="editedItem.dateDelegacion"
+                              transition="scale-transition"
+                              offset-y
+                              min-width="auto"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="editedItem.dateDelegacion"
+                                  label="Fecha de Delegación"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker
+                                v-model="editedItem.dateDelegacion"
+                                no-title
+                                scrollable
+                                :min="minimo"
+                                :max="maximo"
+                              >
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="menu3 = false"
+                                >
+                                  Cancel
+                                </v-btn>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="
+                                    $refs.menu3.save(editedItem.dateDelegacion)
+                                  "
+                                >
+                                  OK
+                                </v-btn>
+                              </v-date-picker>
+                            </v-menu>
+                          </v-col>
+                          <v-col v-if="perfil==5" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.dateDelegacion"
+                              :rules="[rules.required, rules.counter]"
+                              label="Fecha de Delegación"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==4" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.perDel"
+                              :rules="[rules.required, rules.counter]"
+                              label="Periodo Delegación"
+                              :maxlength="maxdat"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==5" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.perDel"
+                              :rules="[rules.required, rules.counter]"
+                              label="Periodo Delegación"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==4" cols="12" sm="6" md="3">
+                            <v-menu
+                              ref="menu4"
+                              v-model="menu4"
+                              :close-on-content-click="false"
+                              :return-value.sync="editedItem.dateDerivacion"
+                              transition="scale-transition"
+                              offset-y
+                              min-width="auto"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="editedItem.dateDerivacion"
+                                  label="Fecha de Derivación"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker
+                                v-model="editedItem.dateDerivacion"
+                                no-title
+                                scrollable
+                                :min="minimo"
+                                :max="maximo"
+                              >
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="menu4 = false"
+                                >
+                                  Cancel
+                                </v-btn>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="
+                                    $refs.menu4.save(editedItem.dateDerivacion)
+                                  "
+                                >
+                                  OK
+                                </v-btn>
+                              </v-date-picker>
+                            </v-menu>
+                          </v-col>
+                          <v-col v-if="perfil==5" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.dateDerivacion"
+                              :rules="[rules.required, rules.counter]"
+                              label="Fecha de Derivación"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==5" cols="12" sm="6" md="3">
                             <v-menu
                               ref="menu5"
                               v-model="menu5"
+                              :close-on-content-click="false"
+                              :return-value.sync="editedItem.dateRequerimiento"
+                              transition="scale-transition"
+                              offset-y
+                              min-width="auto"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="editedItem.dateRequerimiento"
+                                  label="Fecha de Requerimiento"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker
+                                v-model="editedItem.dateRequerimiento"
+                                no-title
+                                scrollable
+                                :min="minimo"
+                                :max="maximo"
+                              >
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="menu5 = false"
+                                >
+                                  Cancel
+                                </v-btn>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="
+                                    $refs.menu5.save(
+                                      editedItem.dateRequerimiento
+                                    )
+                                  "
+                                >
+                                  OK
+                                </v-btn>
+                              </v-date-picker>
+                            </v-menu>
+                          </v-col>
+                          <v-col v-if="perfil==4" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.dateRequerimiento"
+                              :rules="[rules.required, rules.counter]"
+                              label="Fecha de Requerimiento"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==5" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.perSol"
+                              :rules="[rules.required, rules.counter]"
+                              label="Periodo Solicitado"
+                              :maxlength="maxdat"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==4" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.perSol"
+                              :rules="[rules.required, rules.counter]"
+                              label="Periodo Solicitado"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==6" cols="12" sm="6" md="3">
+                            <v-menu
+                              ref="menu6"
+                              v-model="menu6"
+                              :close-on-content-click="false"
+                              :return-value.sync="editedItem.dateLogistica"
+                              transition="scale-transition"
+                              offset-y
+                              min-width="auto"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="editedItem.dateLogistica"
+                                  label="Fecha Logistica"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker
+                                v-model="editedItem.dateLogistica"
+                                no-title
+                                scrollable
+                                :min="minimo"
+                                :max="maximo"
+                              >
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="menu6 = false"
+                                >
+                                  Cancel
+                                </v-btn>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="
+                                    $refs.menu6.save(editedItem.dateLogistica)
+                                  "
+                                >
+                                  OK
+                                </v-btn>
+                              </v-date-picker>
+                            </v-menu>
+                          </v-col>
+                          <v-col v-if="perfil==5" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.dateLogistica"
+                              :rules="[rules.required, rules.counter]"
+                              label="Fecha Logistica"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==4" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.dateLogistica"
+                              :rules="[rules.required, rules.counter]"
+                              label="Fecha Logistica"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==6" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.ordenCompra"
+                              :rules="[rules.required, rules.counter]"
+                              label="N° O/C"
+                              :maxlength="maxdat"
+                              type="number"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==5" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.ordenCompra"
+                              :rules="[rules.required, rules.counter]"
+                              label="N° O/C"
+                              :maxlength="maxdat"
+                              type="number"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==4" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.ordenCompra"
+                              :rules="[rules.required, rules.counter]"
+                              label="N° O/C"
+                              :maxlength="maxdat"
+                              type="number"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==6" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.monto"
+                              :rules="[rules.required, rules.counter]"
+                              label="Monto"
+                              :maxlength="maxdat"
+                              type="number"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==5" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.monto"
+                              :rules="[rules.required, rules.counter]"
+                              label="Monto"
+                              :maxlength="maxdat"
+                              type="number"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==4" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.monto"
+                              :rules="[rules.required, rules.counter]"
+                              label="Monto"
+                              :maxlength="maxdat"
+                              type="number"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==6" cols="12" sm="6" md="3">
+                            <v-menu
+                              ref="menu7"
+                              v-model="menu7"
                               :close-on-content-click="false"
                               :return-value.sync="editedItem.dateIngreso"
                               transition="scale-transition"
@@ -518,7 +938,7 @@
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
                                   v-model="editedItem.dateIngreso"
-                                  label="Fecha"
+                                  label="Fecha Ingreso Almacen"
                                   prepend-icon="mdi-calendar"
                                   readonly
                                   v-bind="attrs"
@@ -536,7 +956,7 @@
                                 <v-btn
                                   text
                                   color="primary"
-                                  @click="menu4 = false"
+                                  @click="menu7 = false"
                                 >
                                   Cancel
                                 </v-btn>
@@ -544,7 +964,7 @@
                                   text
                                   color="primary"
                                   @click="
-                                    $refs.menu4.save(editedItem.dateIngreso)
+                                    $refs.menu7.save(editedItem.dateIngreso)
                                   "
                                 >
                                   OK
@@ -552,20 +972,38 @@
                               </v-date-picker>
                             </v-menu>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil==5" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.dateIngreso"
+                              :rules="[rules.required, rules.counter]"
+                              label="Fecha Ingreso Almacen"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==4" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.dateIngreso"
+                              :rules="[rules.required, rules.counter]"
+                              label="Fecha Ingreso Almacen"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil==7" cols="12" sm="6" md="3">
                             <v-menu
-                              ref="menu5"
-                              v-model="menu5"
+                              ref="menu8"
+                              v-model="menu8"
                               :close-on-content-click="false"
-                              :return-value.sync="editedItem.dateEvalu"
+                              :return-value.sync="editedItem.datePago"
                               transition="scale-transition"
                               offset-y
                               min-width="auto"
                             >
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                  v-model="editedItem.dateEvalu"
-                                  label="Fecha"
+                                  v-model="editedItem.datePago"
+                                  label="Fecha Pago"
                                   prepend-icon="mdi-calendar"
                                   readonly
                                   v-bind="attrs"
@@ -573,7 +1011,7 @@
                                 ></v-text-field>
                               </template>
                               <v-date-picker
-                                v-model="editedItem.dateEvalu"
+                                v-model="editedItem.datePago"
                                 no-title
                                 scrollable
                                 :min="minimo"
@@ -583,7 +1021,7 @@
                                 <v-btn
                                   text
                                   color="primary"
-                                  @click="menu4 = false"
+                                  @click="menu8 = false"
                                 >
                                   Cancel
                                 </v-btn>
@@ -591,7 +1029,7 @@
                                   text
                                   color="primary"
                                   @click="
-                                    $refs.menu4.save(editedItem.dateEvalu)
+                                    $refs.menu8.save(editedItem.dateIngreso)
                                   "
                                 >
                                   OK
@@ -599,105 +1037,39 @@
                               </v-date-picker>
                             </v-menu>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-select
-                              v-model="editedItem.frecuencia"
-                              :items="itemsFrecuencia"
-                              :rules="[rules.required]"
-                              label="Frecuencia"
-                            ></v-select>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-select
-                              v-model="editedItem.turno"
-                              :items="itemsTurno"
-                              :rules="[rules.required]"
-                              label="Turno"
-                            ></v-select>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil==5" cols="12" sm="6" md="3">
                             <v-text-field
-                              v-model="editedItem.peso"
-                              label="Peso (Kilogramos)"
-                              :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.talla"
-                              label="Talla (Metros)"
-                              :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.imc"
-                              label="IMC"
+                              v-model="editedItem.datePago"
+                              :rules="[rules.required, rules.counter]"
+                              label="Fecha Pago"
                               :maxlength="maxdat"
                               disabled
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil==4" cols="12" sm="6" md="3">
                             <v-text-field
-                              v-model="editedItem.cmb"
-                              label="%C.M.B."
+                              v-model="editedItem.datePago"
+                              :rules="[rules.required, rules.counter]"
+                              label="Fecha Pago"
                               :maxlength="maxdat"
-                              type="number"
+                              disabled
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil==4" cols="12" sm="6" md="3">
                             <v-text-field
-                              v-model="editedItem.ept"
-                              label="%E.P.T."
-                              :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.albSerica"
-                              label="ALB Sérica"
-                              :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.vgs"
-                              label="VGS"
+                              v-model="editedItem.anulacion"
+                              :rules="[rules.required, rules.counter]"
+                              label="Solicitud Anulación de Pedido"
                               :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil==5" cols="12" sm="6" md="3">
                             <v-text-field
-                              v-model="editedItem.ingestaCalorica"
-                              label="Ingesta Calorica"
+                              v-model="editedItem.anulacion"
+                              :rules="[rules.required, rules.counter]"
+                              label="Solicitud Anulación de Pedido"
                               :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.ingestaProteica"
-                              label="Ingesta Proteica"
-                              :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.diagNut"
-                              label="Diagnostico Nutricional"
-                              :maxlength="maxdat"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.interNut"
-                              label="Intervención Nutricional"
-                              :maxlength="maxdat"
+                              disabled
                             ></v-text-field>
                           </v-col>
                         </v-row>
@@ -1145,28 +1517,44 @@ export default {
       ];
     },
 
+    cabezeraDelegaciones() {
+      this.headers = [
+        { text: "solPed", value: "solPed" },
+        {
+          text: "producto",
+          align: "start",
+          sortable: false,
+          value: "producto",
+        },
+        { text: "fechaDelegacion", value: "fechaDelegacion" },
+        { text: "fechaDerivacion", value: "fechaDerivacion" },
+        { text: "unidadMedida", value: "unidadMedida" },
+        { text: "Actions", value: "actions", sortable: false },
+      ];
+    },
+
     editItem(item) {
       console.log("item", item);
       //this.botonEditar = "1";
       //this.editedIndex;
       //this.editedIndex = this.desserts.indexOf(item);
       /*this.editedItem.date = item.fechaPres;*/
-      this.editedItem.dateIngreso = item.fechaIngreso;
-      this.editedItem.dateEvalu = item.fechaEvaluacion;
-      this.editedItem.frecuencia = item.frecuencia;
-      this.editedItem.turno = item.turno;
-      this.editedItem.peso = item.peso;
-      this.editedItem.talla = item.talla;
-      this.editedItem.imc = item.imc;
-      this.editedItem.cmb = item.porcentajeCMB;
-      this.editedItem.ept = item.porcentajeEPT;
-      this.editedItem.albSerica = item.albSerica;
-      this.editedItem.vgs = item.ValGlobalSub;
-      this.editedItem.ingestaCalorica = item.ingestaCalorica;
-      this.editedItem.ingestaProteica = item.ingestaProteica;
-      this.editedItem.diagNut = item.diagNutricional;
-      this.editedItem.interNut = item.interveNutricional;
-      this.editedItem.usuario = item.usuario;
+      this.editedItem.solped = item.solPed;
+      this.editedItem.codsap = item.codigoSap;
+      this.editedItem.producto = item.producto;
+      this.editedItem.unidadMed = item.unidadMedida;
+      this.editedItem.cantidad = item.cantidad;
+      this.editedItem.dateDelegacion = item.fechaDelegacion;
+      this.editedItem.perDel = item.pediodoDelegacion;
+      this.editedItem.dateDerivacion = item.fechaDerivacion;
+      this.editedItem.dateRequerimiento = item.fechaRequerimiento;
+      this.editedItem.perSol = item.periodoSolicitado;
+      this.editedItem.dateLogistica = item.fechaLogistica;
+      this.editedItem.ordenCompra = item.numOrdenCompra;
+      this.editedItem.monto = item.monto;
+      this.editedItem.dateIngreso = item.fechaIngresoAlmacen;
+      this.editedItem.datePago = item.fechaPago;
+      this.editedItem.anulacion = item.anulacionPedido;
       /*this.editedItem.name = item.nomNefro;
       this.editedItem.dos = item.dosisPres;
       this.editedItem.dosHierro = item.dosisHiePres;
@@ -1240,67 +1628,69 @@ export default {
     },
 
     edit() {
-      console.log("esto es para editar", this.editedItem);
-      if (this.editedItem.usuario == this.url) {
-        axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
-            username: "cnsr",
-            password: "123456",
-          })
-          .then((response) => {
-            this.auth = "Bearer " + response.data.access;
-            axios
-              .patch(
-                RUTA_SERVIDOR +
-                  "/nutricion/" +
-                  this.datosEdit.split("/")[4] +
-                  "/",
-                {
-                  paciente: this.datosPaciente[0].url,
-                  turno: this.editedItem.turno,
-                  frecuencia: this.editedItem.frecuencia,
-                  fechaIngreso: this.editedItem.dateIngreso,
-                  fechaEvaluacion: this.editedItem.dateEvalu,
-                  peso: this.editedItem.peso,
-                  talla: this.editedItem.talla,
-                  imc:
-                    this.editedItem.peso /
-                    (this.editedItem.talla * this.editedItem.talla),
-                  porcentajeCMB: this.editedItem.cmb,
-                  porcentajeEPT: this.editedItem.ept,
-                  albSerica: this.editedItem.albSerica,
-                  ValGlobalSub: this.editedItem.vgs,
-                  ingestaCalorica: this.editedItem.ingestaCalorica,
-                  ingestaProteica: this.editedItem.ingestaProteica,
-                  diagNutricional: this.editedItem.diagNut,
-                  interveNutricional: this.editedItem.interNut,
-                  usuario: this.url,
-                },
-                {
-                  headers: { Authorization: this.auth },
-                }
-              )
-              .then((res) => {
-                this.dialogDataApi = true;
-                console.log("exito", res.status);
-                this.close();
-                this.nut();
-                this.dialogEdit = false;
-              })
-              .catch((res) => {
-                console.warn("Error:", res);
-                this.dialog = false;
-              });
-          })
-          .catch((response) => {
-            response === 404
-              ? console.warn("lo sientimos no tenemos servicios")
-              : console.warn("Error:", response);
-          });
+      /*console.log("esto es para editar", this.editedItem);
+      if (this.editedItem.usuario == this.url) {*/
+      axios
+        .post(RUTA_SERVIDOR + "/api/token/", {
+          username: "cnsr",
+          password: "123456",
+        })
+        .then((response) => {
+          this.auth = "Bearer " + response.data.access;
+          axios
+            .patch(
+              RUTA_SERVIDOR +
+                "/delegaciones/" +
+                this.datosEdit.split("/")[4] +
+                "/",
+              {
+                solPed: this.editedItem.solped,
+                codigoSap: this.editedItem.codsap,
+                producto: this.editedItem.producto,
+                unidadMedida: this.editedItem.unidadMed,
+                cantidad: this.editedItem.cantidad,
+                fechaDelegacion: this.editedItem.dateDelegacion,
+                pediodoDelegacion: this.editedItem.perDel,
+                fechaDerivacion: this.editedItem.dateDerivacion,
+                fechaRequerimiento: this.editedItem.dateRequerimiento,
+                periodoSolicitado: this.editedItem.perDel,
+                fechaLogistica: this.editedItem.dateLogistica,
+                numOrdenCompra: this.editedItem.ordenCompra,
+                monto: this.editedItem.monto,
+                fechaIngresoAlmacen: this.editedItem.dateLogistica,
+                fechaPago: this.editedItem.datePago,
+                anulacionPedido: this.editedItem.anulacion,
+                userOpc: "OPC",
+                userUsuario: "USRER",
+                userLogistica: "LOG",
+                userFinanzas: "FINANZAS",
+                estado: "1",
+              },
+              {
+                headers: { Authorization: this.auth },
+              }
+            )
+            .then((res) => {
+              this.dialogDataApi = true;
+              console.log("exito", res.status);
+              this.close();
+              this.delegaciones();
+              this.dialogEdit = false;
+            })
+            .catch((res) => {
+              console.warn("Error:", res);
+              this.dialog = false;
+            });
+        })
+        .catch((response) => {
+          response === 404
+            ? console.warn("lo sientimos no tenemos servicios")
+            : console.warn("Error:", response);
+        }); /*
       } else {
         this.dialogEdit = false;
         this.dialogAvisoEditar = true;
-      }
+      }*/
     },
 
     close() {
@@ -1365,6 +1755,7 @@ export default {
                 unidadMedida: this.editedItem.unidadMed,
                 cantidad: this.editedItem.cantidad,
                 fechaDelegacion: this.editedItem.dateDelegacion,
+                pediodoDelegacion: this.editedItem.perDel,
                 fechaDerivacion: this.editedItem.dateDerivacion,
                 fechaRequerimiento: this.editedItem.dateRequerimiento,
                 periodoSolicitado: this.editedItem.perDel,
@@ -1388,6 +1779,7 @@ export default {
               console.log("exito", res.status);
               this.close();
               console.log(this.editedItem);
+              this.delegaciones();
             })
             .catch((res) => {
               console.log("Error:", res);
@@ -1444,6 +1836,42 @@ export default {
             : console.warn("Error:", response);
         });
     },
+    delegaciones() {
+      //this.adminForm = "0";
+      //this.vista = "Prescipción Anemia";
+      this.cabezeraDelegaciones();
+      //this.actionBoton = "Registro Prescripción";
+      this.dialogDataApi = true;
+
+      axios
+        .post(RUTA_SERVIDOR + "/api/token/", {
+          username: "cnsr",
+          password: "123456",
+        })
+        .then((response) => {
+          this.auth = "Bearer " + response.data.access;
+          axios
+            .get(RUTA_SERVIDOR + "/delegaciones/", {
+              headers: { Authorization: this.auth },
+            })
+            .then((res) => {
+              this.desserts = res.data;
+              this.dialogDataApi = false;
+              //this.dataAdmi = res.data[0].url.split("/")[4];
+              //this.datosPresHis = res.data[0];
+              console.log("desert", res.data);
+            })
+            .catch((res) => {
+              console.warn("Error:", res);
+              this.dialog = false;
+            });
+        })
+        .catch((response) => {
+          response === 404
+            ? console.warn("lo sientimos no tenemos servicios")
+            : console.warn("Error:", response);
+        });
+    },
     nutricion() {
       console.log("nutricion");
     },
@@ -1464,6 +1892,7 @@ export default {
     console.log("Perfil", this.perfil);
     console.log("Nombre", this.nombre);
     console.log("usuario", this.usuario);
+    this.delegaciones();
   },
 
   components: {

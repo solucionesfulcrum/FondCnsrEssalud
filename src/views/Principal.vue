@@ -58,7 +58,7 @@
               />
             </div>
           </v-flex>
-          <v-flex xs12 sm3 v-if="perfil == 4">
+          <v-flex xs12 sm3 v-if="perfil == 4 || perfil == 5">
             <div>
               <CardModulos
                 title="Bienes Estrategicos"
@@ -67,7 +67,7 @@
               />
             </div>
           </v-flex>
-          <v-flex xs12 sm3 v-if="perfil == 1 || perfil == 2 || perfil == 3 || perfil == 4">
+          <v-flex xs12 sm3 v-if="perfil == 1 || perfil == 2 || perfil == 3 || perfil == 4 || perfil == 5">
             <div>
               <CardModulos
                 title="Seguridad"
