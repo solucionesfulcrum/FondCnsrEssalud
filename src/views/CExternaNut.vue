@@ -22,12 +22,14 @@
         <v-toolbar color="#1973a5" dark>¡Aviso Importante!</v-toolbar>
         <v-card-text>
           <div class="text-h4 pa-5">
-              ¡Paciente no se encuentra registrado!, ponerse en contacto con el
-              admistrador de sistema Telf: 988 578 051  o ingresar al siguiente enlace:
-              <a href="https://wa.me/message/3NEVQVLLDQV3O1" target="_blank"
-                >Envía un mensaje a Centro Nacional De Salud Renal - DSI por WhatsApp.</a
-              >
-            </div>
+            ¡Paciente no se encuentra registrado!, ponerse en contacto con el
+            admistrador de sistema Telf: 988 578 051 o ingresar al siguiente
+            enlace:
+            <a href="https://wa.me/message/3NEVQVLLDQV3O1" target="_blank"
+              >Envía un mensaje a Centro Nacional De Salud Renal - DSI por
+              WhatsApp.</a
+            >
+          </div>
         </v-card-text>
         <v-card-actions class="justify-end">
           <v-btn text @click="dialogAviso = false">cerrar</v-btn>
@@ -53,7 +55,7 @@
       </v-card>
     </v-dialog>
 
-     <v-dialog
+    <v-dialog
       transition="dialog-bottom-transition"
       max-width="600"
       v-model="dialogAvisoEditar"
@@ -320,22 +322,22 @@
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
-                              v-model="editedItem.cmb"
+                              v-model="editedItem.circuBra"
                               :rules="[rules.required, rules.counter]"
-                              label="%C.M.B."
+                              label="Circunferencia Braquial"
                               :maxlength="maxdat"
                               type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col
-                            v-if="nuevoValid === true"
+                            v-if="nuevoValid === false"
                             cols="12"
                             sm="6"
                             md="3"
                           >
                             <v-text-field
-                              v-model="editedItem.ept"
-                              label="%E.P.T."
+                              v-model="editedItem.medCali"
+                              label="Pliege Tricipital"
                               :maxlength="maxdat"
                               type="number"
                             ></v-text-field>
@@ -355,37 +357,38 @@
                             sm="6"
                             md="3"
                           >
-                            <v-text-field
+                            <v-select
                               v-model="editedItem.vgs"
                               label="VGS"
+                              :items="itemsVgs"
                               :maxlength="maxdat"
-                            ></v-text-field>
+                            ></v-select>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
-                              v-model="editedItem.ingestaCalorica"
+                              v-model="editedItem.ingestaCaloricaT"
                               :rules="[rules.required, rules.counter]"
-                              label="Ingesta Calorica"
+                              label="Ingesta Calorica Total"
                               :maxlength="maxdat"
                               type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
-                              v-model="editedItem.ingestaProteica"
+                              v-model="editedItem.ingestaProteicaT"
                               :rules="[rules.required, rules.counter]"
-                              label="Ingesta Proteica"
+                              label="Ingesta Proteica Total"
                               :maxlength="maxdat"
                               type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
-                            <v-text-field
+                            <v-select
                               v-model="editedItem.diagNut"
                               :rules="[rules.required, rules.counter]"
                               label="Diagnostico Nutricional"
-                              :maxlength="maxdat"
-                            ></v-text-field>
+                              :items="itemsDiagNut"
+                            ></v-select>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
@@ -556,16 +559,16 @@
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
-                              v-model="editedItem.cmb"
-                              label="%C.M.B."
+                              v-model="editedItem.circuBra"
+                              label="Circunferencia Braquial"
                               :maxlength="maxdat"
                               type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
-                              v-model="editedItem.ept"
-                              label="%E.P.T."
+                              v-model="editedItem.medCali"
+                              label="Pliege Tricipital"
                               :maxlength="maxdat"
                               type="number"
                             ></v-text-field>
@@ -579,34 +582,36 @@
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
-                            <v-text-field
+                            <v-select
                               v-model="editedItem.vgs"
                               label="VGS"
+                              :items="itemsVgs"
                               :maxlength="maxdat"
-                            ></v-text-field>
+                            ></v-select>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
-                              v-model="editedItem.ingestaCalorica"
-                              label="Ingesta Calorica"
-                              :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.ingestaProteica"
-                              label="Ingesta Proteica"
+                              v-model="editedItem.ingestaCaloricaT"
+                              label="Ingesta Calorica Total"
                               :maxlength="maxdat"
                               type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
+                              v-model="editedItem.ingestaProteicaT"
+                              label="Ingesta Proteica Total"
+                              :maxlength="maxdat"
+                              type="number"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="3">
+                            <v-select
                               v-model="editedItem.diagNut"
+                              :rules="[rules.required, rules.counter]"
                               label="Diagnostico Nutricional"
-                              :maxlength="maxdat"
-                            ></v-text-field>
+                              :items="itemsDiagNut"
+                            ></v-select>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
@@ -683,6 +688,7 @@ export default {
       { title: "Item 3", body: "I am item 3 body text" },
       { title: "Item 4", body: "I am item 4 body text" },
     ],
+    parValores: [],
     //
     dialogDataApi: false,
     dialogAviso: false,
@@ -690,7 +696,9 @@ export default {
     dialogAvisoEditar: false,
     dialog: false,
     itemsFrecuencia: ["L-M-V", "M-J-S"],
+    itemsVgs: ["A", "B", "C"],
     itemsTurno: ["1er Turno", "2do Turno", "3er Turno", "4to Turno"],
+    itemsDiagNut: ["Obesidad", "Sobrepeso", "Normal","Desnutrición Leve","Desnutrición Moderada","Desnutrición Severa"],
     nuevoValid: false,
     datosPresHis: [],
     datosEdit: "",
@@ -721,12 +729,16 @@ export default {
       peso: Number,
       talla: Number,
       imc: 0.0,
+      circuBra : Number,
       cmb: Number,
+      medCali: Number,
       ept: Number,
       albSerica: Number,
       vgs: "",
       ingestaCalorica: Number,
       ingestaProteica: Number,
+      ingestaCaloricaT: Number,
+      ingestaProteicaT: Number,
       diagNut: "",
       interNut: "",
     },
@@ -748,27 +760,6 @@ export default {
     headers: [],
     desserts: [],
     editedIndex: -1,
-    editedItem: {
-      dateIngreso: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-        .toISOString()
-        .substr(0, 10),
-      dateEvalu: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-        .toISOString()
-        .substr(0, 10),
-      frecuencia: "",
-      turno: "",
-      peso: Number,
-      talla: Number,
-      imc: 0.0,
-      cmb: Number,
-      ept: Number,
-      albSerica: Number,
-      vgs: "",
-      ingestaCalorica: Number,
-      ingestaProteica: Number,
-      diagNut: "",
-      interNut: "",
-    },
     dataex: "",
     defaultItem: {
       dateIngreso: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
@@ -782,12 +773,16 @@ export default {
       peso: Number,
       talla: Number,
       imc: 0.0,
+      circuBra : Number,
       cmb: Number,
+      medCali: Number,
       ept: Number,
       albSerica: Number,
       vgs: "",
       ingestaCalorica: Number,
       ingestaProteica: Number,
+      ingestaCaloricaT: Number,
+      ingestaProteicaT: Number,
       diagNut: "",
       interNut: "",
     },
@@ -920,12 +915,34 @@ export default {
             .then((res) => {
               this.datosPaciente = res.data;
               console.log("datosPaciente", this.datosPaciente);
+              console.log("valores par",res.data[0].edad[0] + "," + res.data[0].sexo);
               this.datosPaciente.length != 0
                 ? this.nut()
                 : //(this.dialogDataApi = false),
                   (this.dialogAviso = true);
               //,
               //this.pres()
+              ///////aqui valor par////
+              axios
+                .get(
+                  RUTA_SERVIDOR +
+                    "/parNutricion/?search=" +
+                    res.data[0].edad[0] +
+                    "," +
+                    res.data[0].sexo,
+                  {
+                    headers: { Authorization: this.auth },
+                  }
+                )
+                .then((res1) => {                 
+                  this.parValores = res1.data
+                   console.log("valores par", this.parValores);
+                })
+                .catch((res1) => {
+                  console.warn("Error:", res1);
+                  this.dialog = false;
+                });
+              ////fin de par///
             })
             .catch((res) => {
               console.warn("Error:", res);
@@ -970,12 +987,16 @@ export default {
       this.editedItem.peso = item.peso;
       this.editedItem.talla = item.talla;
       this.editedItem.imc = item.imc;
+      this.editedItem.circuBra = item.circuBra,
       this.editedItem.cmb = item.porcentajeCMB;
+      this.editedItem.medCali = item.medCali;
       this.editedItem.ept = item.porcentajeEPT;
       this.editedItem.albSerica = item.albSerica;
       this.editedItem.vgs = item.ValGlobalSub;
       this.editedItem.ingestaCalorica = item.ingestaCalorica;
       this.editedItem.ingestaProteica = item.ingestaProteica;
+      this.editedItem.ingestaCaloricaT = item.ingestaCaloricaT;
+      this.editedItem.ingestaProteicaT = item.ingestaProteicaT;
       this.editedItem.diagNut = item.diagNutricional;
       this.editedItem.interNut = item.interveNutricional;
       this.editedItem.usuario = item.usuario;
@@ -1078,12 +1099,16 @@ export default {
                   imc:
                     this.editedItem.peso /
                     (this.editedItem.talla * this.editedItem.talla),
-                  porcentajeCMB: this.editedItem.cmb,
-                  porcentajeEPT: this.editedItem.ept,
+                  circuBra: this.editedItem.circuBra,
+                  porcentajeCMB: (this.editedItem.circuBra*100)/this.parValores[0].cb,
+                  medCali : this.editedItem.medCali,
+                  porcentajeEPT: (this.editedItem.medCali*100)/this.parValores[0].pt,
                   albSerica: this.editedItem.albSerica,
                   ValGlobalSub: this.editedItem.vgs,
-                  ingestaCalorica: this.editedItem.ingestaCalorica,
-                  ingestaProteica: this.editedItem.ingestaProteica,
+                  ingestaCaloricaT: this.editedItem.ingestaCaloricaT,
+                  ingestaProteicaT: this.editedItem.ingestaProteicaT,
+                  ingestaCalorica: this.editedItem.ingestaCaloricaT/this.editedItem.peso,
+                  ingestaProteica: this.editedItem.ingestaProteicaT/this.editedItem.peso,
                   diagNutricional: this.editedItem.diagNut,
                   interveNutricional: this.editedItem.interNut,
                   usuario: this.url,
@@ -1111,7 +1136,7 @@ export default {
           });
       } else {
         this.dialogEdit = false;
-        this.dialogAvisoEditar = true
+        this.dialogAvisoEditar = true;
       }
     },
 
@@ -1181,12 +1206,16 @@ export default {
                   imc:
                     this.editedItem.peso /
                     (this.editedItem.talla * this.editedItem.talla),
-                  porcentajeCMB: this.editedItem.cmb,
-                  porcentajeEPT: this.editedItem.ept,
+                  circuBra: this.editedItem.circuBra,
+                  porcentajeCMB: (this.editedItem.circuBra*100)/this.parValores[0].cb,
+                  medCali : this.editedItem.medCali,
+                  porcentajeEPT: (this.editedItem.medCali*100)/this.parValores[0].pt,
                   albSerica: this.editedItem.albSerica,
                   ValGlobalSub: this.editedItem.vgs,
-                  ingestaCalorica: this.editedItem.ingestaCalorica,
-                  ingestaProteica: this.editedItem.ingestaProteica,
+                  ingestaCaloricaT: this.editedItem.ingestaCaloricaT,
+                  ingestaProteicaT: this.editedItem.ingestaProteicaT,
+                  ingestaCalorica: this.editedItem.ingestaCaloricaT/this.editedItem.peso,
+                  ingestaProteica: this.editedItem.ingestaProteicaT/this.editedItem.peso,
                   diagNutricional: this.editedItem.diagNut,
                   interveNutricional: this.editedItem.interNut,
                   usuario: this.url,
