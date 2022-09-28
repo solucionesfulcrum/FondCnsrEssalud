@@ -710,7 +710,12 @@
                               :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
-                          <v-col v-if="perfil == 5 || perfil == 6 || perfil == 7" cols="12" sm="6" md="3">
+                          <v-col
+                            v-if="perfil == 5 || perfil == 6 || perfil == 7"
+                            cols="12"
+                            sm="6"
+                            md="3"
+                          >
                             <v-text-field
                               v-model="editedItem.posiFinaciera"
                               :rules="[rules.required, rules.counter]"
@@ -810,7 +815,12 @@
                               :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
-                          <v-col v-if="perfil == 5 || perfil == 6 || perfil == 7" cols="12" sm="6" md="3">
+                          <v-col
+                            v-if="perfil == 5 || perfil == 6 || perfil == 7"
+                            cols="12"
+                            sm="6"
+                            md="3"
+                          >
                             <v-text-field
                               v-model="editedItem.tipoBienEstra"
                               :rules="[rules.required, rules.counter]"
@@ -902,7 +912,12 @@
                               type="number"
                             ></v-text-field>
                           </v-col>
-                          <v-col v-if="perfil == 5 || perfil == 6 || perfil == 7" cols="12" sm="6" md="3">
+                          <v-col
+                            v-if="perfil == 5 || perfil == 6 || perfil == 7"
+                            cols="12"
+                            sm="6"
+                            md="3"
+                          >
                             <v-text-field
                               v-model="editedItem.valorTotal"
                               :rules="[rules.required, rules.counter]"
@@ -1132,6 +1147,40 @@
                               disabled
                             ></v-text-field>
                           </v-col>
+                          <v-col v-if="perfil == 5" cols="12" sm="6" md="3">
+                            <v-select
+                              v-model="editedItem.tipoDoc"
+                              :items="itemsTipoDoc"
+                              :rules="[rules.required]"
+                              label="Tipo Documento"
+                            ></v-select>
+                          </v-col>
+                          <v-col v-if="perfil == 4 || perfil == 6 || perfil == 7" cols="12" sm="6" md="3">
+                            <v-select
+                              v-model="editedItem.tipoDoc"
+                              :items="itemsTipoDoc"
+                              :rules="[rules.required]"
+                              label="Tipo Documento"
+                              disabled
+                            ></v-select>
+                          </v-col>
+                          <v-col v-if="perfil == 5" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.numDoc"
+                              :rules="[rules.required, rules.counter]"
+                              label="Nº Documento"
+                              :maxlength="maxdat"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 4 || perfil == 6 || perfil == 7" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.numDoc"
+                              :rules="[rules.required, rules.counter]"
+                              label="Nº Documento"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
                           <v-col v-if="perfil == 6" cols="12" sm="6" md="3">
                             <v-menu
                               ref="menu12"
@@ -1145,7 +1194,7 @@
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
                                   v-model="editedItem.dateLogistica"
-                                  label="Fecha Logistica"
+                                  label="Fecha Recep. Requerimiento"
                                   prepend-icon="mdi-calendar"
                                   readonly
                                   v-bind="attrs"
@@ -1183,7 +1232,7 @@
                             <v-text-field
                               v-model="editedItem.dateLogistica"
                               :rules="[rules.required, rules.counter]"
-                              label="Fecha Logistica"
+                              label="Fecha Recep. Requerimiento"
                               :maxlength="maxdat"
                               disabled
                             ></v-text-field>
@@ -1192,7 +1241,7 @@
                             <v-text-field
                               v-model="editedItem.dateLogistica"
                               :rules="[rules.required, rules.counter]"
-                              label="Fecha Logistica"
+                              label="Fecha Recep. Requerimiento"
                               :maxlength="maxdat"
                               disabled
                             ></v-text-field>
@@ -1201,7 +1250,7 @@
                             <v-text-field
                               v-model="editedItem.dateLogistica"
                               :rules="[rules.required, rules.counter]"
-                              label="Fecha Logistica"
+                              label="Fecha Recep. Requerimiento"
                               :maxlength="maxdat"
                               disabled
                             ></v-text-field>
@@ -1246,10 +1295,71 @@
                             ></v-text-field>
                           </v-col>
                           <v-col v-if="perfil == 6" cols="12" sm="6" md="3">
+                            <v-menu
+                              ref="menu15"
+                              v-model="menu15"
+                              :close-on-content-click="false"
+                              :return-value.sync="editedItem.fechaEmiOrden"
+                              transition="scale-transition"
+                              offset-y
+                              min-width="auto"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="editedItem.fechaEmiOrden"
+                                  label="Fecha Emi. Orden"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker
+                                v-model="editedItem.fechaEmiOrden"
+                                no-title
+                                scrollable
+                                :min="minimo"
+                                :max="maximo"
+                              >
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="menu15 = false"
+                                >
+                                  Cancel
+                                </v-btn>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="
+                                    $refs.menu15.save(editedItem.fechaEmiOrden)
+                                  "
+                                >
+                                  OK
+                                </v-btn>
+                              </v-date-picker>
+                            </v-menu>
+                          </v-col>
+                          <v-col
+                            v-if="perfil == 5 || perfil == 4 || perfil == 7"
+                            cols="12"
+                            sm="6"
+                            md="3"
+                          >
+                            <v-text-field
+                              v-model="editedItem.fechaEmiOrden"
+                              :rules="[rules.required, rules.counter]"
+                              label="Fecha Emi. Orden"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 6" cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.monto"
                               :rules="[rules.required, rules.counter]"
-                              label="Monto"
+                              label="Monto O/C"
                               :maxlength="maxdat"
                               type="number"
                             ></v-text-field>
@@ -1258,7 +1368,7 @@
                             <v-text-field
                               v-model="editedItem.monto"
                               :rules="[rules.required, rules.counter]"
-                              label="Monto"
+                              label="Monto O/C"
                               :maxlength="maxdat"
                               type="number"
                               disabled
@@ -1268,7 +1378,7 @@
                             <v-text-field
                               v-model="editedItem.monto"
                               :rules="[rules.required, rules.counter]"
-                              label="Monto"
+                              label="Monto O/C"
                               :maxlength="maxdat"
                               type="number"
                               disabled
@@ -1278,7 +1388,7 @@
                             <v-text-field
                               v-model="editedItem.monto"
                               :rules="[rules.required, rules.counter]"
-                              label="Monto"
+                              label="Monto O/C"
                               :maxlength="maxdat"
                               type="number"
                               disabled
@@ -1356,6 +1466,14 @@
                               label="Fecha Ingreso Almacen"
                               :maxlength="maxdat"
                               disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 6" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.observaLogistica"
+                              :rules="[rules.required, rules.counter]"
+                              label="Obsr. Log"
+                              :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
                           <v-col v-if="perfil == 7" cols="12" sm="6" md="3">
@@ -1512,6 +1630,7 @@ export default {
     itemsFrecuencia: ["L-M-V", "M-J-S"],
     itemsTurno: ["1er Turno", "2do Turno", "3er Turno", "4to Turno"],
     itemsUm: ["TB", "G", "UN", "AM", "PBA", "CM3", "FR", "ROL", "AM", "CP"],
+    itemsTipoDoc: ["Nota", "Memorando", "Informe", "Hoja de envio", "Proveido"],
     nuevoValid: false,
     datosPresHis: [],
     datosEdit: "",
@@ -1563,6 +1682,8 @@ export default {
         .toISOString()
         .substr(0, 10),
       perSol: "",
+      tipoDoc: "",
+      numDoc: "",
       dateLogistica: new Date(
         Date.now() - new Date().getTimezoneOffset() * 60000
       )
@@ -1577,6 +1698,12 @@ export default {
       posiFinaciera: "",
       tipoBienEstra: "",
       valorTotal: "",
+      fechaEmiOrden: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      observaLogistica: "",
       imc: 0.0,
       cmb: Number,
       ept: Number,
@@ -1639,6 +1766,8 @@ export default {
         .toISOString()
         .substr(0, 10),
       perSol: "",
+      tipoDoc: "",
+      numDoc: "",
       dateLogistica: new Date(
         Date.now() - new Date().getTimezoneOffset() * 60000
       )
@@ -1653,6 +1782,12 @@ export default {
       posiFinaciera: "",
       tipoBienEstra: "",
       valorTotal: "",
+      fechaEmiOrden: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      observaLogistica: "",
       imc: 0.0,
       cmb: Number,
       ept: Number,
@@ -1676,6 +1811,7 @@ export default {
     menu12: false,
     menu13: false,
     menu14: false,
+    menu15: false,
   }),
 
   computed: {
@@ -1877,7 +2013,11 @@ export default {
       this.editedItem.anulacion = item.anulacionPedido;
       this.editedItem.posiFinaciera = item.posiFinaciera;
       this.editedItem.tipoBienEstra = item.tipoBienEstra;
-      this.editedItem.valorTotal = item.valorTotal
+      this.editedItem.valorTotal = item.valorTotal;
+      this.editedItem.fechaEmiOrden = item.fechaEmiOrden;
+      this.editedItem.observaLogistica = item.observaLogistica;
+      this.editedItem.tipoDoc = item.tipoDoc;
+      this.editedItem.numDoc = item.numDoc;
       /*this.editedItem.name = item.nomNefro;
       this.editedItem.dos = item.dosisPres;
       this.editedItem.dosHierro = item.dosisHiePres;
@@ -2021,6 +2161,8 @@ export default {
                   fechaRequerimiento: this.editedItem.dateRequerimiento,
                   periodoSolicitado: this.editedItem.perSol,
                   userUsuario: this.usuario + "-" + this.nombre,
+                  tipoDoc: this.editedItem.tipoDoc,
+                  numDoc: this.editedItem.numDoc,
                 },
                 {
                   headers: { Authorization: this.auth },
@@ -2060,8 +2202,10 @@ export default {
                 {
                   fechaLogistica: this.editedItem.dateLogistica,
                   numOrdenCompra: this.editedItem.ordenCompra,
+                  fechaEmiOrden: this.editedItem.fechaEmiOrden,
                   monto: this.editedItem.monto,
                   fechaIngresoAlmacen: this.editedItem.dateLogistica,
+                  observaLogistica: this.editedItem.observaLogistica,
                   userLogistica: this.usuario + "-" + this.nombre,
                 },
                 {

@@ -40,6 +40,24 @@
     <v-dialog
       transition="dialog-bottom-transition"
       max-width="600"
+      v-model="dialogAvisoNULL"
+    >
+      <v-card>
+        <v-toolbar color="#1973a5" dark>¡Aviso Importante!</v-toolbar>
+        <v-card-text>
+          <div class="text-h4 pa-5">
+            ¡NO PUEDE ESTAR EL CAMPO DOCUMENTO DE INDENTIDAD VACIO!
+          </div>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn text @click="dialogAvisoNULL = false">cerrar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
+      transition="dialog-bottom-transition"
+      max-width="600"
       v-model="dialogAvisoEliminar"
     >
       <v-card>
@@ -310,6 +328,7 @@
                               label="Talla (Metros)"
                               :maxlength="maxdat"
                               type="number"
+                              @keyup.enter="calculoIMC"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
@@ -391,12 +410,12 @@
                             ></v-select>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
-                            <v-text-field
+                            <v-select
                               v-model="editedItem.interNut"
-                              :rules="[rules.required, rules.counter]"
+                              :items="itemsInterNut"
+                              :rules="[rules.required]"
                               label="Intervención Nutricional"
-                              :maxlength="maxdat"
-                            ></v-text-field>
+                            ></v-select>
                           </v-col>
                         </v-row>
                       </v-container>
@@ -547,6 +566,7 @@
                               label="Talla (Metros)"
                               :maxlength="maxdat"
                               type="number"
+                              @keyup.enter="calculoIMC"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
@@ -569,6 +589,7 @@
                             <v-text-field
                               v-model="editedItem.medCali"
                               label="Pliege Tricipital"
+                              :rules="[rules.required]"
                               :maxlength="maxdat"
                               type="number"
                             ></v-text-field>
@@ -614,11 +635,12 @@
                             ></v-select>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
-                            <v-text-field
+                            <v-select
                               v-model="editedItem.interNut"
+                              :items="itemsInterNut"
+                              :rules="[rules.required]"
                               label="Intervención Nutricional"
-                              :maxlength="maxdat"
-                            ></v-text-field>
+                            ></v-select>
                           </v-col>
                         </v-row>
                       </v-container>
@@ -694,11 +716,13 @@ export default {
     dialogAviso: false,
     dialogAvisoEliminar: false,
     dialogAvisoEditar: false,
+    dialogAvisoNULL: false,
     dialog: false,
     itemsFrecuencia: ["L-M-V", "M-J-S"],
     itemsVgs: ["A", "B", "C"],
     itemsTurno: ["1er Turno", "2do Turno", "3er Turno", "4to Turno"],
     itemsDiagNut: ["Obesidad", "Sobrepeso", "Normal","Desnutrición Leve","Desnutrición Moderada","Desnutrición Severa"],
+    itemsInterNut: ["Evaluación y Orientación Nutricional", "Seguimiento Nutricional", "Monitoreo y Orientación Nutricional"],
     nuevoValid: false,
     datosPresHis: [],
     datosEdit: "",
@@ -814,6 +838,9 @@ export default {
   },
 
   methods: {
+    calculoIMC(){
+      this.editedItem.imc = this.editedItem.peso / (this.editedItem.talla * this.editedItem.talla)
+    },
     generatePDF() {
       console.log("datos deseert elemt", this.desserts);
       for (let i = 0; i < this.desserts.length; i++) {
@@ -898,9 +925,9 @@ export default {
       //this.editedItem=[]
       //console.log(this.setDni);
       //this.adminForm = "";
-      //if (this.setDni == "") {
-      // this.dialogAviso = true;
-      //} else {
+      if (this.setDni == "") {
+        this.dialogAvisoNULL = true;
+      } else {
       axios
         .post(RUTA_SERVIDOR + "/api/token/", {
           username: "cnsr",
@@ -915,11 +942,11 @@ export default {
             .then((res) => {
               this.datosPaciente = res.data;
               console.log("datosPaciente", this.datosPaciente);
-              console.log("valores par",res.data[0].edad[0] + "," + res.data[0].sexo);
+              //console.log("valores par",res.data[0].edad[0] + "," + res.data[0].sexo);
               this.datosPaciente.length != 0
                 ? this.nut()
-                : //(this.dialogDataApi = false),
-                  (this.dialogAviso = true);
+                : this.dialogAviso = true//(this.dialogDataApi = false),
+                  //(this.dialogAviso = true);
               //,
               //this.pres()
               ///////aqui valor par////
@@ -947,6 +974,8 @@ export default {
             .catch((res) => {
               console.warn("Error:", res);
               this.dialog = false;
+              console.log("ingresa a no encontrado pacinte")
+              this.dialogAviso = true
             });
         })
         .catch((response) => {
@@ -954,7 +983,7 @@ export default {
             ? console.warn("lo sientimos no tenemos servicios")
             : console.warn("Error:", response);
         });
-      //}
+      }
     },
 
     cabezeraNut() {
@@ -1097,18 +1126,20 @@ export default {
                   peso: this.editedItem.peso,
                   talla: this.editedItem.talla,
                   imc:
-                    this.editedItem.peso /
-                    (this.editedItem.talla * this.editedItem.talla),
+                    (this.editedItem.peso /
+                    (this.editedItem.talla * this.editedItem.talla)).toFixed(2),
                   circuBra: this.editedItem.circuBra,
-                  porcentajeCMB: (this.editedItem.circuBra*100)/this.parValores[0].cb,
+                  //esto es para allar el cb
+                  //porcentajeCMB: (this.editedItem.circuBra*100)/this.parValores[0].cb,
+                  porcentajeCMB: (((this.editedItem.circuBra-(3.14*(this.editedItem.medCali/10)))/this.parValores[0].cmb)*100).toFixed(2),
                   medCali : this.editedItem.medCali,
-                  porcentajeEPT: (this.editedItem.medCali*100)/this.parValores[0].pt,
+                  porcentajeEPT: ((this.editedItem.medCali*100)/this.parValores[0].pt).toFixed(2),
                   albSerica: this.editedItem.albSerica,
                   ValGlobalSub: this.editedItem.vgs,
                   ingestaCaloricaT: this.editedItem.ingestaCaloricaT,
                   ingestaProteicaT: this.editedItem.ingestaProteicaT,
-                  ingestaCalorica: this.editedItem.ingestaCaloricaT/this.editedItem.peso,
-                  ingestaProteica: this.editedItem.ingestaProteicaT/this.editedItem.peso,
+                  ingestaCalorica: (this.editedItem.ingestaCaloricaT/this.editedItem.peso).toFixed(2),
+                  ingestaProteica: (this.editedItem.ingestaProteicaT/this.editedItem.peso).toFixed(2),
                   diagNutricional: this.editedItem.diagNut,
                   interveNutricional: this.editedItem.interNut,
                   usuario: this.url,
@@ -1204,18 +1235,20 @@ export default {
                   peso: this.editedItem.peso,
                   talla: this.editedItem.talla,
                   imc:
-                    this.editedItem.peso /
-                    (this.editedItem.talla * this.editedItem.talla),
+                    (this.editedItem.peso /
+                    (this.editedItem.talla * this.editedItem.talla)).toFixed(2),
                   circuBra: this.editedItem.circuBra,
-                  porcentajeCMB: (this.editedItem.circuBra*100)/this.parValores[0].cb,
+                  //esto es para allar el cb
+                  //porcentajeCMB: (this.editedItem.circuBra*100)/this.parValores[0].cb,
+                  porcentajeCMB: (((this.editedItem.circuBra-(3.14*(this.editedItem.medCali/10)))/this.parValores[0].cmb)*100).toFixed(2),
                   medCali : this.editedItem.medCali,
-                  porcentajeEPT: (this.editedItem.medCali*100)/this.parValores[0].pt,
+                  porcentajeEPT: ((this.editedItem.medCali*100)/this.parValores[0].pt).toFixed(2),
                   albSerica: this.editedItem.albSerica,
                   ValGlobalSub: this.editedItem.vgs,
                   ingestaCaloricaT: this.editedItem.ingestaCaloricaT,
                   ingestaProteicaT: this.editedItem.ingestaProteicaT,
-                  ingestaCalorica: this.editedItem.ingestaCaloricaT/this.editedItem.peso,
-                  ingestaProteica: this.editedItem.ingestaProteicaT/this.editedItem.peso,
+                  ingestaCalorica: (this.editedItem.ingestaCaloricaT/this.editedItem.peso).toFixed(2),
+                  ingestaProteica: (this.editedItem.ingestaProteicaT/this.editedItem.peso).toFixed(2),
                   diagNutricional: this.editedItem.diagNut,
                   interveNutricional: this.editedItem.interNut,
                   usuario: this.url,
