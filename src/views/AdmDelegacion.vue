@@ -219,7 +219,7 @@
                           <v-col v-if="perfil == 4" cols="12" sm="6" md="5">
                             <v-text-field
                               v-model="editedItem.producto"
-                              :rules="[rules.required, rules.counter]"
+                              disabled
                               label="Producto"
                               :maxlength="maxdat"
                             ></v-text-field>
@@ -227,8 +227,8 @@
                           <v-col v-if="perfil == 4" cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.tipoBienEstra"
-                              :rules="[rules.required, rules.counter]"
                               label="Tipo Bien"
+                              disabled
                               :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
@@ -1753,7 +1753,7 @@ export default {
       interNut: "",
     },
     minimo: new Date(
-      Date.now() - 432000000 - new Date().getTimezoneOffset() * 60000
+      Date.now() - 432000000000 - new Date().getTimezoneOffset() * 60000
     )
       .toISOString()
       .substr(0, 10),
