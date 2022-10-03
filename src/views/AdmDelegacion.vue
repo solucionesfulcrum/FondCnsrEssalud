@@ -1181,6 +1181,42 @@
                               disabled
                             ></v-text-field>
                           </v-col>
+                          <v-col v-if="perfil == 5" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.cantiRequeridaUsu"
+                              :rules="[rules.required, rules.counter]"
+                              label="Cantidad Requerida"
+                              :maxlength="maxdat"
+                              type="number"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 4 || perfil == 6 || perfil == 7" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.cantiRequeridaUsu"
+                              :rules="[rules.required, rules.counter]"
+                              label="Cantidad Requerida"
+                              :maxlength="maxdat"
+                              type="number"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 5" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.obsUsu"
+                              :rules="[rules.required, rules.counter]"
+                              label="Obs. Usuaria"
+                              :maxlength="maxdat"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 4 || perfil == 6 || perfil == 7" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.obsUsu"
+                              :rules="[rules.required, rules.counter]"
+                              label="Obs. Usuaria"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
                           <v-col v-if="perfil == 6" cols="12" sm="6" md="3">
                             <v-menu
                               ref="menu12"
@@ -1704,6 +1740,8 @@ export default {
         .toISOString()
         .substr(0, 10),
       observaLogistica: "",
+      cantiRequeridaUsu: "",
+      obsUsu: "",
       imc: 0.0,
       cmb: Number,
       ept: Number,
@@ -1788,6 +1826,8 @@ export default {
         .toISOString()
         .substr(0, 10),
       observaLogistica: "",
+      cantiRequeridaUsu: "",
+      obsUsu: "",
       imc: 0.0,
       cmb: Number,
       ept: Number,
@@ -2018,6 +2058,8 @@ export default {
       this.editedItem.observaLogistica = item.observaLogistica;
       this.editedItem.tipoDoc = item.tipoDoc;
       this.editedItem.numDoc = item.numDoc;
+      this.editedItem.cantiRequeridaUsu = item.cantiRequeridaUsu;
+      this.editedItem.obsUsu = item.obsUsu;
       /*this.editedItem.name = item.nomNefro;
       this.editedItem.dos = item.dosisPres;
       this.editedItem.dosHierro = item.dosisHiePres;
@@ -2163,6 +2205,8 @@ export default {
                   userUsuario: this.usuario + "-" + this.nombre,
                   tipoDoc: this.editedItem.tipoDoc,
                   numDoc: this.editedItem.numDoc,
+                  cantiRequeridaUsu: this.editedItem.cantiRequeridaUsu,
+                  obsUsu: this.editedItem.obsUsu,
                 },
                 {
                   headers: { Authorization: this.auth },
