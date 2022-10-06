@@ -197,6 +197,11 @@
                               :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
+                           <v-col v-if="validCodigoSap == true" cols="12" sm="12" md="12">
+                            <v-alert type="error">
+                              CODIGO SAP NO ENCONTRADO
+                            </v-alert>
+                          </v-col>
                           <v-col v-if="perfil == 4" cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.codsap"
@@ -231,11 +236,6 @@
                               disabled
                               :maxlength="maxdat"
                             ></v-text-field>
-                          </v-col>
-                          <v-col v-if="validCodigoSap == true" cols="12" sm="12" md="12">
-                            <v-alert type="error">
-                              CODIGO SAP NO ENCONTRADO
-                            </v-alert>
                           </v-col>
                           <v-col v-if="perfil == 4" cols="12" sm="6" md="3">
                             <v-select
