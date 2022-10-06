@@ -232,6 +232,11 @@
                               :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
+                          <v-col v-if="validCodigoSap == true" cols="12" sm="12" md="12">
+                            <v-alert type="error">
+                              CODIGO SAP NO ENCONTRADO
+                            </v-alert>
+                          </v-col>
                           <v-col v-if="perfil == 4" cols="12" sm="6" md="3">
                             <v-select
                               v-model="editedItem.unidadMed"
@@ -1155,7 +1160,12 @@
                               label="Tipo Documento"
                             ></v-select>
                           </v-col>
-                          <v-col v-if="perfil == 4 || perfil == 6 || perfil == 7" cols="12" sm="6" md="3">
+                          <v-col
+                            v-if="perfil == 4 || perfil == 6 || perfil == 7"
+                            cols="12"
+                            sm="6"
+                            md="3"
+                          >
                             <v-select
                               v-model="editedItem.tipoDoc"
                               :items="itemsTipoDoc"
@@ -1172,7 +1182,12 @@
                               :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
-                          <v-col v-if="perfil == 4 || perfil == 6 || perfil == 7" cols="12" sm="6" md="3">
+                          <v-col
+                            v-if="perfil == 4 || perfil == 6 || perfil == 7"
+                            cols="12"
+                            sm="6"
+                            md="3"
+                          >
                             <v-text-field
                               v-model="editedItem.numDoc"
                               :rules="[rules.required, rules.counter]"
@@ -1190,7 +1205,12 @@
                               type="number"
                             ></v-text-field>
                           </v-col>
-                          <v-col v-if="perfil == 4 || perfil == 6 || perfil == 7" cols="12" sm="6" md="3">
+                          <v-col
+                            v-if="perfil == 4 || perfil == 6 || perfil == 7"
+                            cols="12"
+                            sm="6"
+                            md="3"
+                          >
                             <v-text-field
                               v-model="editedItem.cantiRequeridaUsu"
                               :rules="[rules.required, rules.counter]"
@@ -1208,7 +1228,12 @@
                               :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
-                          <v-col v-if="perfil == 4 || perfil == 6 || perfil == 7" cols="12" sm="6" md="3">
+                          <v-col
+                            v-if="perfil == 4 || perfil == 6 || perfil == 7"
+                            cols="12"
+                            sm="6"
+                            md="3"
+                          >
                             <v-text-field
                               v-model="editedItem.obsUsu"
                               :rules="[rules.required, rules.counter]"
@@ -1763,6 +1788,7 @@ export default {
 
     dialogEdit: false,
     formAdmi: false,
+    validCodigoSap: false,
     dialogDelete: false,
     dialogEditAdm: false,
     vista: "",
@@ -2022,9 +2048,9 @@ export default {
           sortable: false,
           value: "producto",
         },
+        { text: "unidadMedida", value: "unidadMedida" },
         { text: "fechaDelegacion", value: "fechaDelegacion" },
         { text: "fechaDerivacion", value: "fechaDerivacion" },
-        { text: "unidadMedida", value: "unidadMedida" },
         { text: "Actions", value: "actions", sortable: false },
       ];
     },
@@ -2364,10 +2390,11 @@ export default {
               console.log("sap", this.editedItem.codsap);
               this.editedItem.producto = res.data[0].desProducto;
               this.editedItem.tipoBienEstra = res.data[0].tipoBienes;
+              this.validCodigoSap = false 
             })
             .catch((res) => {
               console.warn("Error:", res);
-              this.dialog = false;
+              this.validCodigoSap = true 
             });
         })
         .catch((response) => {
