@@ -1649,7 +1649,7 @@
             <v-icon small class="mr-2" @click="editItem(item)">
               mdi-pencil
             </v-icon>
-            <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+            <v-icon v-if="perfil == 4" small @click="deleteItem(item)"> mdi-delete </v-icon>
           </template>
         </v-data-table>
       </v-card>
@@ -2107,8 +2107,10 @@ export default {
 
     deleteItemConfirm() {
       console.log("data pa eliminar", this.editedItem);
-      if (this.editedItem.usuario == this.url) {
-        console.log("hola");
+      console.log("USUARIO", this.editedItem.userOpc.split("-")[0]);
+      console.log("usuario en sesion", this.usuario);
+      if ((this.editedItem.userOpc.split("-")[0]) == this.usuario) {
+        console.log("ingresoooo")
         axios
           .post(RUTA_SERVIDOR + "/api/token/", {
             username: "cnsr",
@@ -2119,7 +2121,7 @@ export default {
             axios
               .delete(
                 RUTA_SERVIDOR +
-                  "/nutricion/" +
+                  "/delegaciones/" +
                   this.editedItem.url.split("/")[4],
                 {
                   headers: { Authorization: this.auth },
@@ -2128,7 +2130,7 @@ export default {
               .then((res) => {
                 console.log("se elimino");
                 this.dialogDelete = false;
-                this.nut();
+                this.delegaciones();
               })
               .catch((res) => {
                 console.warn("Error:", res);

@@ -349,7 +349,6 @@
                             ></v-text-field>
                           </v-col>
                           <v-col
-                            v-if="nuevoValid === false"
                             cols="12"
                             sm="6"
                             md="3"
