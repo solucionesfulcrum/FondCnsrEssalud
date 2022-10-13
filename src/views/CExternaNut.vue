@@ -348,11 +348,7 @@
                               type="number"
                             ></v-text-field>
                           </v-col>
-                          <v-col
-                            cols="12"
-                            sm="6"
-                            md="3"
-                          >
+                          <v-col cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.medCali"
                               label="Pliege Tricipital"
@@ -416,6 +412,47 @@
                               label="Intervención Nutricional"
                             ></v-select>
                           </v-col>
+                          <v-col cols="12" sm="12" md="12"
+                            ><v-divider inset></v-divider
+                          ></v-col>
+                          <v-col cols="12" sm="4" md="3"
+                            >Edad: {{ parValores[0].edad }}</v-col
+                          >
+                          <v-col cols="12" sm="4" md="3"
+                            >Sexo: {{ parValores[0].sexo }}</v-col
+                          >
+                          <v-col cols="12" sm="4" md="3"
+                            >CB: {{ parValores[0].cb }}</v-col
+                          >
+                          <v-col cols="12" sm="4" md="3"
+                            >CMB: {{ parValores[0].cmb }}</v-col
+                          >
+                          <v-col cols="12" sm="4" md="3"
+                            >PT: {{ parValores[0].pt }}</v-col
+                          >
+                          <v-col cols="12" sm="4" md="3"
+                            >%IMC:
+                            {{(
+                    editedItem.peso /
+                    (editedItem.talla * editedItem.talla)
+                  ).toFixed(2),}}</v-col
+                          >
+                          <v-col cols="12" sm="4" md="3"
+                            >%CMB:
+                            {{(
+                    ((editedItem.circuBra -
+                      3.14 * (editedItem.medCali / 10)) /
+                      parValores[0].cmb) *
+                    100
+                  ).toFixed(2),}}</v-col
+                          >
+                          <v-col cols="12" sm="4" md="3"
+                            >%EPT:
+                            {{(
+                    (editedItem.medCali * 100) /
+                    parValores[0].pt
+                  ).toFixed(2),}}</v-col
+                          >
                         </v-row>
                       </v-container>
                     </v-card-text>
@@ -720,8 +757,19 @@ export default {
     itemsFrecuencia: ["L-M-V", "M-J-S"],
     itemsVgs: ["A", "B", "C"],
     itemsTurno: ["1er Turno", "2do Turno", "3er Turno", "4to Turno"],
-    itemsDiagNut: ["Obesidad", "Sobrepeso", "Normal","Desnutrición Leve","Desnutrición Moderada","Desnutrición Severa"],
-    itemsInterNut: ["Evaluación y Orientación Nutricional", "Seguimiento Nutricional", "Monitoreo y Orientación Nutricional"],
+    itemsDiagNut: [
+      "Obesidad",
+      "Sobrepeso",
+      "Normal",
+      "Desnutrición Leve",
+      "Desnutrición Moderada",
+      "Desnutrición Severa",
+    ],
+    itemsInterNut: [
+      "Evaluación y Orientación Nutricional",
+      "Seguimiento Nutricional",
+      "Monitoreo y Orientación Nutricional",
+    ],
     nuevoValid: false,
     datosPresHis: [],
     datosEdit: "",
@@ -752,7 +800,7 @@ export default {
       peso: Number,
       talla: Number,
       imc: 0.0,
-      circuBra : Number,
+      circuBra: Number,
       cmb: Number,
       medCali: Number,
       ept: Number,
@@ -796,7 +844,7 @@ export default {
       peso: Number,
       talla: Number,
       imc: 0.0,
-      circuBra : Number,
+      circuBra: Number,
       cmb: Number,
       medCali: Number,
       ept: Number,
@@ -837,8 +885,9 @@ export default {
   },
 
   methods: {
-    calculoIMC(){
-      this.editedItem.imc = this.editedItem.peso / (this.editedItem.talla * this.editedItem.talla)
+    calculoIMC() {
+      this.editedItem.imc =
+        this.editedItem.peso / (this.editedItem.talla * this.editedItem.talla);
     },
     generatePDF() {
       console.log("datos deseert elemt", this.desserts);
@@ -927,61 +976,61 @@ export default {
       if (this.setDni == "") {
         this.dialogAvisoNULL = true;
       } else {
-      axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
-          username: "cnsr",
-          password: "123456",
-        })
-        .then((response) => {
-          this.auth = "Bearer " + response.data.access;
-          axios
-            .get(RUTA_SERVIDOR + "/paciente/?search=" + this.setDni, {
-              headers: { Authorization: this.auth },
-            })
-            .then((res) => {
-              this.datosPaciente = res.data;
-              console.log("datosPaciente", this.datosPaciente);
-              //console.log("valores par",res.data[0].edad[0] + "," + res.data[0].sexo);
-              this.datosPaciente.length != 0
-                ? this.nut()
-                : this.dialogAviso = true//(this.dialogDataApi = false),
-                  //(this.dialogAviso = true);
-              //,
-              //this.pres()
-              ///////aqui valor par////
-              axios
-                .get(
-                  RUTA_SERVIDOR +
-                    "/parNutricion/?search=" +
-                    res.data[0].edad[0] +
-                    "," +
-                    res.data[0].sexo,
-                  {
-                    headers: { Authorization: this.auth },
-                  }
-                )
-                .then((res1) => {                 
-                  this.parValores = res1.data
-                   console.log("valores par", this.parValores);
-                })
-                .catch((res1) => {
-                  console.warn("Error:", res1);
-                  this.dialog = false;
-                });
-              ////fin de par///
-            })
-            .catch((res) => {
-              console.warn("Error:", res);
-              this.dialog = false;
-              console.log("ingresa a no encontrado pacinte")
-              this.dialogAviso = true
-            });
-        })
-        .catch((response) => {
-          response === 404
-            ? console.warn("lo sientimos no tenemos servicios")
-            : console.warn("Error:", response);
-        });
+        axios
+          .post(RUTA_SERVIDOR + "/api/token/", {
+            username: "cnsr",
+            password: "123456",
+          })
+          .then((response) => {
+            this.auth = "Bearer " + response.data.access;
+            axios
+              .get(RUTA_SERVIDOR + "/paciente/?search=" + this.setDni, {
+                headers: { Authorization: this.auth },
+              })
+              .then((res) => {
+                this.datosPaciente = res.data;
+                console.log("datosPaciente", this.datosPaciente);
+                //console.log("valores par",res.data[0].edad[0] + "," + res.data[0].sexo);
+                this.datosPaciente.length != 0
+                  ? this.nut()
+                  : (this.dialogAviso = true); //(this.dialogDataApi = false),
+                //(this.dialogAviso = true);
+                //,
+                //this.pres()
+                ///////aqui valor par////
+                axios
+                  .get(
+                    RUTA_SERVIDOR +
+                      "/parNutricion/?search=" +
+                      res.data[0].edad[0] +
+                      "," +
+                      res.data[0].sexo,
+                    {
+                      headers: { Authorization: this.auth },
+                    }
+                  )
+                  .then((res1) => {
+                    this.parValores = res1.data;
+                    console.log("valores par", this.parValores);
+                  })
+                  .catch((res1) => {
+                    console.warn("Error:", res1);
+                    this.dialog = false;
+                  });
+                ////fin de par///
+              })
+              .catch((res) => {
+                console.warn("Error:", res);
+                this.dialog = false;
+                console.log("ingresa a no encontrado pacinte");
+                this.dialogAviso = true;
+              });
+          })
+          .catch((response) => {
+            response === 404
+              ? console.warn("lo sientimos no tenemos servicios")
+              : console.warn("Error:", response);
+          });
       }
     },
 
@@ -1015,8 +1064,8 @@ export default {
       this.editedItem.peso = item.peso;
       this.editedItem.talla = item.talla;
       this.editedItem.imc = item.imc;
-      this.editedItem.circuBra = item.circuBra,
-      this.editedItem.cmb = item.porcentajeCMB;
+      (this.editedItem.circuBra = item.circuBra),
+        (this.editedItem.cmb = item.porcentajeCMB);
       this.editedItem.medCali = item.medCali;
       this.editedItem.ept = item.porcentajeEPT;
       this.editedItem.albSerica = item.albSerica;
@@ -1124,21 +1173,34 @@ export default {
                   fechaEvaluacion: this.editedItem.dateEvalu,
                   peso: this.editedItem.peso,
                   talla: this.editedItem.talla,
-                  imc:
-                    (this.editedItem.peso /
-                    (this.editedItem.talla * this.editedItem.talla)).toFixed(2),
+                  imc: (
+                    this.editedItem.peso /
+                    (this.editedItem.talla * this.editedItem.talla)
+                  ).toFixed(2),
                   circuBra: this.editedItem.circuBra,
                   //esto es para allar el cb
                   //porcentajeCMB: (this.editedItem.circuBra*100)/this.parValores[0].cb,
-                  porcentajeCMB: (((this.editedItem.circuBra-(3.14*(this.editedItem.medCali/10)))/this.parValores[0].cmb)*100).toFixed(2),
-                  medCali : this.editedItem.medCali,
-                  porcentajeEPT: ((this.editedItem.medCali*100)/this.parValores[0].pt).toFixed(2),
+                  porcentajeCMB: (
+                    ((this.editedItem.circuBra -
+                      3.14 * (this.editedItem.medCali / 10)) /
+                      this.parValores[0].cmb) *
+                    100
+                  ).toFixed(2),
+                  medCali: this.editedItem.medCali,
+                  porcentajeEPT: (
+                    (this.editedItem.medCali * 100) /
+                    this.parValores[0].pt
+                  ).toFixed(2),
                   albSerica: this.editedItem.albSerica,
                   ValGlobalSub: this.editedItem.vgs,
                   ingestaCaloricaT: this.editedItem.ingestaCaloricaT,
                   ingestaProteicaT: this.editedItem.ingestaProteicaT,
-                  ingestaCalorica: (this.editedItem.ingestaCaloricaT/this.editedItem.peso).toFixed(2),
-                  ingestaProteica: (this.editedItem.ingestaProteicaT/this.editedItem.peso).toFixed(2),
+                  ingestaCalorica: (
+                    this.editedItem.ingestaCaloricaT / this.editedItem.peso
+                  ).toFixed(2),
+                  ingestaProteica: (
+                    this.editedItem.ingestaProteicaT / this.editedItem.peso
+                  ).toFixed(2),
                   diagNutricional: this.editedItem.diagNut,
                   interveNutricional: this.editedItem.interNut,
                   usuario: this.url,
@@ -1233,21 +1295,34 @@ export default {
                   fechaEvaluacion: this.editedItem.dateEvalu,
                   peso: this.editedItem.peso,
                   talla: this.editedItem.talla,
-                  imc:
-                    (this.editedItem.peso /
-                    (this.editedItem.talla * this.editedItem.talla)).toFixed(2),
+                  imc: (
+                    this.editedItem.peso /
+                    (this.editedItem.talla * this.editedItem.talla)
+                  ).toFixed(2),
                   circuBra: this.editedItem.circuBra,
                   //esto es para allar el cb
                   //porcentajeCMB: (this.editedItem.circuBra*100)/this.parValores[0].cb,
-                  porcentajeCMB: (((this.editedItem.circuBra-(3.14*(this.editedItem.medCali/10)))/this.parValores[0].cmb)*100).toFixed(2),
-                  medCali : this.editedItem.medCali,
-                  porcentajeEPT: ((this.editedItem.medCali*100)/this.parValores[0].pt).toFixed(2),
+                  porcentajeCMB: (
+                    ((this.editedItem.circuBra -
+                      3.14 * (this.editedItem.medCali / 10)) /
+                      this.parValores[0].cmb) *
+                    100
+                  ).toFixed(2),
+                  medCali: this.editedItem.medCali,
+                  porcentajeEPT: (
+                    (this.editedItem.medCali * 100) /
+                    this.parValores[0].pt
+                  ).toFixed(2),
                   albSerica: this.editedItem.albSerica,
                   ValGlobalSub: this.editedItem.vgs,
                   ingestaCaloricaT: this.editedItem.ingestaCaloricaT,
                   ingestaProteicaT: this.editedItem.ingestaProteicaT,
-                  ingestaCalorica: (this.editedItem.ingestaCaloricaT/this.editedItem.peso).toFixed(2),
-                  ingestaProteica: (this.editedItem.ingestaProteicaT/this.editedItem.peso).toFixed(2),
+                  ingestaCalorica: (
+                    this.editedItem.ingestaCaloricaT / this.editedItem.peso
+                  ).toFixed(2),
+                  ingestaProteica: (
+                    this.editedItem.ingestaProteicaT / this.editedItem.peso
+                  ).toFixed(2),
                   diagNutricional: this.editedItem.diagNut,
                   interveNutricional: this.editedItem.interNut,
                   usuario: this.url,
