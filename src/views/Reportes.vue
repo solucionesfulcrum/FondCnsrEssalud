@@ -593,9 +593,9 @@ export default {
                     0.5,
                     finalY + 1.12
                   );
-                doc
+                /*doc
                   .setFontSize(8)
-                  .text("N Pacientes con DPE en el mes: ", 5.0, finalY + 1.12);
+                  .text("N Pacientes con DPE en el mes: ", 5.0, finalY + 1.12);*/
                 // Using autoTable plugin
                 doc.autoTable({
                   startY: finalY + 1.3,
