@@ -81,7 +81,7 @@ export default {
       value: false,
       nameRules: [
         (v) => !!v || "*Campo obligatorio",
-        (v) => v.length <= 10 || "*Maximo 10 caracteres",
+        (v) => v.length <= 15 || "*Maximo 15 caracteres",
       ],
     };
   },
@@ -110,6 +110,7 @@ export default {
                 sessionStorage.setItem("nombre", res.data[0].nombre);
                 sessionStorage.setItem("perfil", res.data[0].perfil);
                 sessionStorage.setItem("url", res.data[0].url);
+                sessionStorage.setItem("descripCas", res.data[0].datosCas.descripCas);
                 this.$router.push("/go");
               } else {
                 console.log("Clave incorrecta");

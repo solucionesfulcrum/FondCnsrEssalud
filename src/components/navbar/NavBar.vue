@@ -4,7 +4,7 @@
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
       <v-toolbar-title
-        >Centro Nacional de Salud Renal - EsSalud - {{nombre}}
+        >{{descripCas}} - {{nombre}}
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
@@ -49,12 +49,14 @@ export default {
       dialog: false,
       perfil: "",
       nombre: "",
+      descripCas: "",
     };
   },
   created() {
     this.perfil = sessionStorage.getItem("perfil");
     this.nombre = sessionStorage.getItem("nombre");
-    console.log("Perfil", this.perfil);
+    this.descripCas = sessionStorage.getItem("descripCas");
+    console.log("Perfil", this.descripCas);
   },
   methods: {
     actionOut() {
