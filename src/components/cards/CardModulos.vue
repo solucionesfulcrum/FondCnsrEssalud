@@ -30,6 +30,9 @@
     <div v-if="this.img === '8'">
       <v-img :src="require('../../assets/bienes.png')" height="120px"></v-img>
     </div>
+    <div v-if="this.img === '9'">
+      <v-img :src="require('../../assets/cupos.png')" height="120px"></v-img>
+    </div>
     <v-card-title> {{ img }}-{{ title }} </v-card-title>
 
     <v-card-subtitle>
@@ -69,6 +72,9 @@ export default {
       }
       if (this.img === "8") {
         this.$router.push("/Bienes");
+      }
+      if (this.img === "9") {
+        this.$router.push("/Cupos");
       }
     },
   },

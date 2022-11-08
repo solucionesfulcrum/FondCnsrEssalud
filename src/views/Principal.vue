@@ -67,7 +67,16 @@
               />
             </div>
           </v-flex>
-          <v-flex xs12 sm3 v-if="perfil == 1 || perfil == 2 || perfil == 3 || perfil == 4 || perfil == 5 || perfil == 6 || perfil == 7">
+          <v-flex xs12 sm3 v-if="perfil == 8 || perfil == 9">
+            <div>
+              <CardModulos
+                title="Gestion de Cupos"
+                detalle_titulo="Gestiona la asignacion de cupos IPRESS Privadas"
+                img="9"
+              />
+            </div>
+          </v-flex>
+          <v-flex xs12 sm3 v-if="perfil == 1 || perfil == 2 || perfil == 3 || perfil == 4 || perfil == 5 || perfil == 6 || perfil == 7 || perfil == 8 || perfil == 9">
             <div>
               <CardModulos
                 title="Seguridad"
