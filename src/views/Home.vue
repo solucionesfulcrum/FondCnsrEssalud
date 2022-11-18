@@ -111,6 +111,7 @@ export default {
                 sessionStorage.setItem("perfil", res.data[0].perfil);
                 sessionStorage.setItem("url", res.data[0].url);
                 sessionStorage.setItem("descripCas", res.data[0].datosCas.descripCas);
+                sessionStorage.setItem("urlCas", res.data[0].datosCas.url);
                 this.$router.push("/go");
               } else {
                 console.log("Clave incorrecta");

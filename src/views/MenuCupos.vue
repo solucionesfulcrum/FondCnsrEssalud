@@ -74,14 +74,14 @@
           </v-navigation-drawer>
         </v-card>
       </div>
-      <div v-if="selectedItem == 0" class="col-sm-10"><AdmDelegacion /></div>
+      <div v-if="selectedItem == 0" class="col-sm-10"><ListaEspera /></div>
     </div>
   </div>
 </template>
 
 <script>
 import NavBar from "../components/navbar/NavBar.vue";
-import AdmDelegacion from "./AdmDelegacion.vue";
+import ListaEspera from "./ListaEspera.vue";
 
 export default {
   data() {
@@ -108,7 +108,7 @@ export default {
   },
   components: {
     NavBar,
-    AdmDelegacion,
+    ListaEspera,
   },
 };
 </script>

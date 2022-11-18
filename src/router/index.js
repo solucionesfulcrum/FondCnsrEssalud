@@ -55,9 +55,19 @@ const routes = [
     component: () => import('../views/MenuCupos.vue')
   },
   {
+    path: '/listaEspera',
+    name: 'ListaEspera',
+    component: () => import('../views/ListaEspera.vue')
+  },
+  {
     path: '/prueba',
     name: 'Prueba',
     component: () => import('../views/prueba.vue')
+  },
+  {
+    path: '/docuContratados',
+    name: 'DocuContratados',
+    component: () => import('../views/DocuContratados.vue')
   },
 ]
 

@@ -85,6 +85,15 @@
               />
             </div>
           </v-flex>
+          <v-flex xs12 sm3 v-if="perfil == 1 || perfil == 2 || perfil == 3 || perfil == 4 || perfil == 5 || perfil == 6 || perfil == 7 || perfil == 8 || perfil == 9">
+            <div>
+              <CardModulos
+                title="Documentos"
+                detalle_titulo="Envio de Archivos al CNSR - Oficina Servicios Contratados"
+                img="10"
+              />
+            </div>
+          </v-flex>
         </v-layout>
       </v-container>
     </div>
