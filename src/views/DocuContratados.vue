@@ -47,7 +47,8 @@
 
           <v-card class="mx-auto my-5" max-width="1400">
             <v-tabs background-color="#1973a5" center-active dark>
-              <v-tab @click="nutricion">Pendientes</v-tab>
+              <v-tab @click="listarDocumentos">Pendientes</v-tab>
+              <v-tab @click="listarRecibidos">Recibido</v-tab>
             </v-tabs>
           </v-card>
 
@@ -854,7 +855,7 @@ export default {
     },
 
     save() {
-      console.log("click");
+      /*console.log("click");
       if (
         !this.editedItem.turno ||
         !this.editedItem.frecuencia ||
@@ -873,7 +874,17 @@ export default {
       ) {
         this.$refs.form.validate();
         console.log("validate");
-      } else {
+      } else {*/
+
+        let InstFormData = new FormData();
+
+        InstFormData.append('cas' , this.urlCas);
+        InstFormData.append('formato' , this.editedItem.formato);
+        InstFormData.append('archivo' , this.editedItem.archivo);
+        InstFormData.append('estado' , 'N');
+        InstFormData.append('usuario_reg' , 'CNSR');
+
+        console.log("data",InstFormData)
         axios
           .post(RUTA_SERVIDOR + "/api/token/", {
             username: "cnsr",
@@ -883,57 +894,15 @@ export default {
             this.auth = "Bearer " + response.data.access;
             axios
               .post(
-                RUTA_SERVIDOR + "/nutricion/",
+                RUTA_SERVIDOR + "/docuContratados/",InstFormData,
                 {
-                  paciente: this.datosPaciente[0].url,
-                  turno: this.editedItem.turno,
-                  frecuencia: this.editedItem.frecuencia,
-                  fechaIngreso: this.editedItem.dateIngreso,
-                  fechaEvaluacion: this.editedItem.dateEvalu,
-                  peso: this.editedItem.peso,
-                  talla: this.editedItem.talla,
-                  imc: (
-                    this.editedItem.peso /
-                    (this.editedItem.talla * this.editedItem.talla)
-                  ).toFixed(2),
-                  circuBra: this.editedItem.circuBra,
-                  //esto es para allar el cb
-                  //porcentajeCMB: (this.editedItem.circuBra*100)/this.parValores[0].cb,
-                  porcentajeCMB: (
-                    ((this.editedItem.circuBra -
-                      3.14 * (this.editedItem.medCali / 10)) /
-                      this.parValores[0].cmb) *
-                    100
-                  ).toFixed(2),
-                  medCali: this.editedItem.medCali,
-                  porcentajeEPT: (
-                    (this.editedItem.medCali * 100) /
-                    this.parValores[0].pt
-                  ).toFixed(2),
-                  albSerica: this.editedItem.albSerica,
-                  ValGlobalSub: this.editedItem.vgs,
-                  ingestaCaloricaT: this.editedItem.ingestaCaloricaT,
-                  ingestaProteicaT: this.editedItem.ingestaProteicaT,
-                  ingestaCalorica: (
-                    this.editedItem.ingestaCaloricaT / this.editedItem.peso
-                  ).toFixed(2),
-                  ingestaProteica: (
-                    this.editedItem.ingestaProteicaT / this.editedItem.peso
-                  ).toFixed(2),
-                  diagNutricional: this.editedItem.diagNut,
-                  interveNutricional: this.editedItem.interNut,
-                  usuario: this.url,
-                  pacNuevo: this.nuevoValid,
-                },
-                {
-                  headers: { Authorization: this.auth },
+                  headers: { Authorization: this.auth , 'Content-Type': 'multipart/form-data'},
                 }
               )
               .then((res) => {
                 console.log("exito", res.status);
                 this.close();
-                console.log(this.editedItem);
-                this.nut();
+                this.listarDocumentos();
               })
               .catch((res) => {
                 console.log("Error:", res);
@@ -945,7 +914,7 @@ export default {
               ? console.warn("lo sientimos no tenemos servicios")
               : console.warn("Error:", response);
           });
-      }
+      //}
       //console.log('holaaaaaaaa',this.editedItem)
     },
 
@@ -994,7 +963,7 @@ export default {
       console.log("nutricion");
     },
 
-    cabezeraListaEspera() {
+    cabezeraDocu() {
       this.headers = [
         { text: "Fecha Registro", value: "fecha_reg" },
         {
@@ -1009,7 +978,7 @@ export default {
     },
 
     listarDocumentos() {
-      this.cabezeraListaEspera();
+      this.cabezeraDocu();
       this.dialogDataApi = true;
       axios
         .post(RUTA_SERVIDOR + "/api/token/", {
@@ -1020,6 +989,39 @@ export default {
           this.auth = "Bearer " + response.data.access;
           axios
             .get(RUTA_SERVIDOR + "/docuContratados/?search="+this.urlCas.split("/")[4]+",N", {
+              headers: { Authorization: this.auth },
+            })
+            .then((res) => {
+              this.desserts = res.data;
+              this.dialogDataApi = false;
+              //this.dataAdmi = res.data[0].url.split("/")[4];
+              //this.datosPresHis = res.data[0];
+              console.log("desert", res.data);
+            })
+            .catch((res) => {
+              console.warn("Error:", res);
+              this.dialog = false;
+            });
+        })
+        .catch((response) => {
+          response === 404
+            ? console.warn("lo sientimos no tenemos servicios")
+            : console.warn("Error:", response);
+        });
+    },
+
+    listarRecibidos(){
+      this.cabezeraDocu();
+      this.dialogDataApi = true;
+      axios
+        .post(RUTA_SERVIDOR + "/api/token/", {
+          username: "cnsr",
+          password: "123456",
+        })
+        .then((response) => {
+          this.auth = "Bearer " + response.data.access;
+          axios
+            .get(RUTA_SERVIDOR + "/docuContratados/?search="+this.urlCas.split("/")[4]+",R", {
               headers: { Authorization: this.auth },
             })
             .then((res) => {
@@ -1058,10 +1060,8 @@ export default {
     console.log("Nombre", this.nombre);
     console.log("UrlCas", this.urlCas);
     //INICIO DE CONSULTA
-
     this.listarDocumentos();
   },
-
   components: {
     CalendarioAnemia,
     NavBar,

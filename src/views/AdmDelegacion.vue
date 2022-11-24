@@ -197,7 +197,12 @@
                               :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
-                           <v-col v-if="validCodigoSap == true" cols="12" sm="12" md="12">
+                          <v-col
+                            v-if="validCodigoSap == true"
+                            cols="12"
+                            sm="12"
+                            md="12"
+                          >
                             <v-alert type="error">
                               CODIGO SAP NO ENCONTRADO
                             </v-alert>
@@ -1576,7 +1581,7 @@
                                   text
                                   color="primary"
                                   @click="
-                                    $refs.menu14.save(editedItem.dateIngreso)
+                                    $refs.menu14.save(editedItem.datePago)
                                   "
                                 >
                                   OK
@@ -1649,7 +1654,9 @@
             <v-icon small class="mr-2" @click="editItem(item)">
               mdi-pencil
             </v-icon>
-            <v-icon v-if="perfil == 4" small @click="deleteItem(item)"> mdi-delete </v-icon>
+            <v-icon v-if="perfil == 4" small @click="deleteItem(item)">
+              mdi-delete
+            </v-icon>
           </template>
         </v-data-table>
       </v-card>
@@ -1752,7 +1759,9 @@ export default {
         .substr(0, 10),
       ordenCompra: Number,
       monto: Number,
-      datePago: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      datePago: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
         .toISOString()
         .substr(0, 10),
       anulacion: "",
@@ -1839,7 +1848,9 @@ export default {
         .substr(0, 10),
       ordenCompra: Number,
       monto: Number,
-      datePago: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      datePago: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
         .toISOString()
         .substr(0, 10),
       anulacion: "",
@@ -2109,8 +2120,8 @@ export default {
       console.log("data pa eliminar", this.editedItem);
       console.log("USUARIO", this.editedItem.userOpc.split("-")[0]);
       console.log("usuario en sesion", this.usuario);
-      if ((this.editedItem.userOpc.split("-")[0]) == this.usuario) {
-        console.log("ingresoooo")
+      if (this.editedItem.userOpc.split("-")[0] == this.usuario) {
+        console.log("ingresoooo");
         axios
           .post(RUTA_SERVIDOR + "/api/token/", {
             username: "cnsr",
@@ -2392,11 +2403,11 @@ export default {
               console.log("sap", this.editedItem.codsap);
               this.editedItem.producto = res.data[0].desProducto;
               this.editedItem.tipoBienEstra = res.data[0].tipoBienes;
-              this.validCodigoSap = false 
+              this.validCodigoSap = false;
             })
             .catch((res) => {
               console.warn("Error:", res);
-              this.validCodigoSap = true 
+              this.validCodigoSap = true;
             });
         })
         .catch((response) => {

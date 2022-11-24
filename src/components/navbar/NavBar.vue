@@ -61,10 +61,12 @@ export default {
   methods: {
     actionOut() {
       sessionStorage.removeItem("url");
+      sessionStorage.removeItem("urlCas");
       sessionStorage.removeItem("usuario");
       sessionStorage.removeItem("perfil");
       sessionStorage.removeItem("nombre");
       sessionStorage.removeItem("keyValue");
+      sessionStorage.removeItem("descripCas");
       this.dialog = false;
       this.$router.push("/");
     },
