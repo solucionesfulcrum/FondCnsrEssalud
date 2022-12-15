@@ -225,7 +225,9 @@ export default {
     dateHoy: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
       .substr(0, 10),
-    date: new Date(Date.now() - 2592000000 - new Date().getTimezoneOffset() * 60000)
+    date: new Date(
+      Date.now() - 2592000000 - new Date().getTimezoneOffset() * 60000
+    )
       .toISOString()
       .substr(0, 10),
     dateHasta: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
@@ -589,9 +591,31 @@ export default {
                   .setFontSize(8)
                   .text(
                     "N Pacientes casos problema (con diagnóstico de desnutrición) en el mes: " +
-                      resultNoNUevo.length,
+                      resultPacN.filter(
+                        (e) => e.tipoPaciente === "CASO PROBLEMA"
+                      ).length,
                     0.5,
-                    finalY + 1.12
+                    finalY + 1.17
+                  );
+                doc
+                  .setFontSize(8)
+                  .text(
+                    "N Pacientes Nuevos: " +
+                      resultPacN.filter(
+                        (e) => e.tipoPaciente === "PACIENTE NUEVO"
+                      ).length,
+                    5.5,
+                    finalY + 1.17
+                  );
+                doc
+                  .setFontSize(8)
+                  .text(
+                    "N Pacientes Continuadores: " +
+                      resultPacN.filter(
+                        (e) => e.tipoPaciente === "PACIENTE CONTINUADOR"
+                      ).length,
+                    8,
+                    finalY + 1.17
                   );
                 /*doc
                   .setFontSize(8)
@@ -606,27 +630,31 @@ export default {
                     { title: "Frecuencia", dataKey: "frecuencia" },
                     { title: "Turno", dataKey: "turno" },
                     { title: "Edad", dataKey: "edad" },
+                    { title: "Tipo Paciente", dataKey: "tipoPaciente" },
+                    { title: "Fecha Ingreso", dataKey: "fechaIngreso" },
+                    { title: "Fecha Evaluacion", dataKey: "fechaEvaluacion" },
                     { title: "Peso", dataKey: "peso" },
                     { title: "Talla", dataKey: "talla" },
                     { title: "Imc", dataKey: "imc" },
                     { title: "%CMB", dataKey: "porcentajeCMB" },
-                    { title: "Alb.Serica", dataKey: "albSerica" },
+                    { title: "%EPT", dataKey: "porcentajeEPT" },
+                    { title: "Alb. Serica", dataKey: "albSerica" },
+                    { title: "Val. Global. Sub", dataKey: "ValGlobalSub" },
                     { title: "Ingesta Calorica", dataKey: "ingestaCalorica" },
-                    { title: "Ingesta Proteica", dataKey: "ingestaProteica" },
+                    { title: "IngestaProteica", dataKey: "ingestaProteica" },
                     { title: "Diag. Nutricional", dataKey: "diagNutricional" },
                     {
                       title: "interveNutricional",
                       dataKey: "interveNutricional",
                     },
                   ],
-                  //startY: 10,
-                  body: this.dataPdfExport,
+                  body: this.dataPdfExportPacNuevo,
                   margin: { left: 0.5, top: 1.87 },
-                  styles: { fontSize: 6 },
+                  styles: { fontSize: 5 },
                 });
                 this.dataPdfExport = [];
                 finalY = doc.lastAutoTable.finalY;
-                doc
+                /*doc
                   .setFontSize(8)
                   .text("Reporte pacientes Nuevos", 0.5, finalY + 0.2);
                 doc
@@ -676,6 +704,363 @@ export default {
                   .text(this.desserts, 0.5, 3.5, { align: "left", maxWidth: "7.5" });
                 */
                 // Creating footer and saving file
+                doc
+                  .setFont("times")
+                  .setFontSize(10)
+                  //.setFontStyle("italic")
+                  .text("Obesidad", 0.5, doc.internal.pageSize.height - 2.2);
+                doc
+                  .setFont("times")
+                  .setFontSize(10)
+                  //.setFontStyle("italic")
+                  .text(
+                    "" +
+                      resultPacN.filter((e) => e.diagNutricional === "Obesidad")
+                        .length,
+                    2.5,
+                    doc.internal.pageSize.height - 2.2
+                  );
+                doc
+                  .setFont("times")
+                  .setFontSize(10)
+                  //.setFontStyle("italic")
+                  .text(
+                    "" +
+                      (resultPacN.filter(
+                        (e) => e.diagNutricional === "Obesidad"
+                      ).length/(resultPacN.filter(
+                        (e) => e.diagNutricional === "Obesidad"
+                      ).length +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Sobrepeso"
+                        ).length 
+                        +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Normal"
+                        ).length
+                        +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Desnutrición Leve"
+                        ).length
+                        +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Desnutrición Moderada"
+                        ).length
+                         +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Desnutrición Severa"
+                        ).length) )*100+
+                      "%",
+                    3,
+                    doc.internal.pageSize.height - 2.2
+                  );
+                doc
+                  .setFont("times")
+                  .setFontSize(10)
+                  //.setFontStyle("italic")
+                  .text("Sobrepeso", 0.5, doc.internal.pageSize.height - 2);
+                doc
+                  .setFont("times")
+                  .setFontSize(10)
+                  //.setFontStyle("italic")
+                  .text(
+                    "" +
+                      resultPacN.filter(
+                        (e) => e.diagNutricional === "Sobrepeso"
+                      ).length,
+                    2.5,
+                    doc.internal.pageSize.height - 2
+                  );
+                doc
+                  .setFont("times")
+                  .setFontSize(10)
+                  //.setFontStyle("italic")
+                  .text(
+                    "" +
+                      (resultPacN.filter(
+                        (e) => e.diagNutricional === "Sobrepeso"
+                      ).length/(resultPacN.filter(
+                        (e) => e.diagNutricional === "Obesidad"
+                      ).length +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Sobrepeso"
+                        ).length 
+                        +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Normal"
+                        ).length
+                        +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Desnutrición Leve"
+                        ).length
+                        +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Desnutrición Moderada"
+                        ).length
+                         +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Desnutrición Severa"
+                        ).length) )*100 +
+                      "%",
+                    3,
+                    doc.internal.pageSize.height - 2
+                  );
+                doc
+                  .setFont("times")
+                  .setFontSize(10)
+                  //.setFontStyle("italic")
+                  .text("Normal", 0.5, doc.internal.pageSize.height - 1.8);
+                doc
+                  .setFont("times")
+                  .setFontSize(10)
+                  //.setFontStyle("italic")
+                  .text(
+                    "" +
+                      resultPacN.filter((e) => e.diagNutricional === "Normal")
+                        .length,
+                    2.5,
+                    doc.internal.pageSize.height - 1.8
+                  );
+                doc
+                  .setFont("times")
+                  .setFontSize(10)
+                  //.setFontStyle("italic")
+                  .text(
+                    "" +
+                      (resultPacN.filter(
+                        (e) => e.diagNutricional === "Normal"
+                      ).length/(resultPacN.filter(
+                        (e) => e.diagNutricional === "Obesidad"
+                      ).length +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Sobrepeso"
+                        ).length 
+                        +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Normal"
+                        ).length
+                        +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Desnutrición Leve"
+                        ).length
+                        +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Desnutrición Moderada"
+                        ).length
+                         +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Desnutrición Severa"
+                        ).length) )*100 +
+                      "%",
+                    3,
+                    doc.internal.pageSize.height - 1.8
+                  );
+                doc
+                  .setFont("times")
+                  .setFontSize(10)
+                  //.setFontStyle("italic")
+                  .text(
+                    "Desnutricion Leve",
+                    0.5,
+                    doc.internal.pageSize.height - 1.6
+                  );
+                doc
+                  .setFont("times")
+                  .setFontSize(10)
+                  //.setFontStyle("italic")
+                  .text(
+                    "" +
+                      resultPacN.filter(
+                        (e) => e.diagNutricional === "Desnutrición Leve"
+                      ).length,
+                    2.5,
+                    doc.internal.pageSize.height - 1.6
+                  );
+                doc
+                  .setFont("times")
+                  .setFontSize(10)
+                  //.setFontStyle("italic")
+                  .text(
+                    "" +
+                      (resultPacN.filter(
+                        (e) => e.diagNutricional === "Desnutrición Leve"
+                      ).length/(resultPacN.filter(
+                        (e) => e.diagNutricional === "Obesidad"
+                      ).length +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Sobrepeso"
+                        ).length 
+                        +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Normal"
+                        ).length
+                        +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Desnutrición Leve"
+                        ).length
+                        +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Desnutrición Moderada"
+                        ).length
+                         +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Desnutrición Severa"
+                        ).length) )*100 +
+                      "%",
+                    3,
+                    doc.internal.pageSize.height - 1.6
+                  );
+                doc
+                  .setFont("times")
+                  .setFontSize(10)
+                  //.setFontStyle("italic")
+                  .text(
+                    "Desnutricion Moderada",
+                    0.5,
+                    doc.internal.pageSize.height - 1.4
+                  );
+                doc
+                  .setFont("times")
+                  .setFontSize(10)
+                  //.setFontStyle("italic")
+                  .text(
+                    "" +
+                      resultPacN.filter(
+                        (e) => e.diagNutricional === "Desnutrición Moderada"
+                      ).length,
+                    2.5,
+                    doc.internal.pageSize.height - 1.4
+                  );
+                doc
+                  .setFont("times")
+                  .setFontSize(10)
+                  //.setFontStyle("italic")
+                  .text(
+                    "" +
+                      (resultPacN.filter(
+                        (e) => e.diagNutricional === "Desnutrición Moderada"
+                      ).length/(resultPacN.filter(
+                        (e) => e.diagNutricional === "Obesidad"
+                      ).length +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Sobrepeso"
+                        ).length 
+                        +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Normal"
+                        ).length
+                        +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Desnutrición Leve"
+                        ).length
+                        +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Desnutrición Moderada"
+                        ).length
+                         +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Desnutrición Severa"
+                        ).length) )*100 +
+                      "%",
+                    3,
+                    doc.internal.pageSize.height - 1.4
+                  );
+                doc
+                  .setFont("times")
+                  .setFontSize(10)
+                  //.setFontStyle("italic")
+                  .text(
+                    "Desnutricion Severa",
+                    0.5,
+                    doc.internal.pageSize.height - 1.2
+                  );
+                doc
+                  .setFont("times")
+                  .setFontSize(10)
+                  //.setFontStyle("italic")
+                  .text(
+                    "" +
+                      resultPacN.filter(
+                        (e) => e.diagNutricional === "Desnutrición Severa"
+                      ).length,
+                    2.5,
+                    doc.internal.pageSize.height - 1.2
+                  );
+                doc
+                  .setFont("times")
+                  .setFontSize(10)
+                  //.setFontStyle("italic")
+                  .text(
+                    "" +
+                     (resultPacN.filter(
+                        (e) => e.diagNutricional === "Desnutrición Severa"
+                      ).length/(resultPacN.filter(
+                        (e) => e.diagNutricional === "Obesidad"
+                      ).length +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Sobrepeso"
+                        ).length 
+                        +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Normal"
+                        ).length
+                        +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Desnutrición Leve"
+                        ).length
+                        +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Desnutrición Moderada"
+                        ).length
+                         +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Desnutrición Severa"
+                        ).length) )*100 +
+                      "%",
+                    3,
+                    doc.internal.pageSize.height - 1.2
+                  );
+                doc
+                  .setFont("times")
+                  .setFontSize(10)
+                  //.setFontStyle("italic")
+                  .text("Total", 0.5, doc.internal.pageSize.height - 1);
+                doc
+                  .setFont("times")
+                  .setFontSize(10)
+                  //.setFontStyle("italic")
+                  .text(
+                    "" +
+                      (resultPacN.filter(
+                        (e) => e.diagNutricional === "Obesidad"
+                      ).length +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Sobrepeso"
+                        ).length 
+                        +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Normal"
+                        ).length
+                        +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Desnutrición Leve"
+                        ).length
+                        +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Desnutrición Moderada"
+                        ).length
+                         +
+                        resultPacN.filter(
+                          (e) => e.diagNutricional === "Desnutrición Severa"
+                        ).length),
+                    2.5,
+                    doc.internal.pageSize.height - 1
+                  );
+                doc
+                  .setFont("times")
+                  .setFontSize(10)
+                  //.setFontStyle("italic")
+                  .text("100%", 3, doc.internal.pageSize.height - 1);
                 doc
                   .setFont("times")
                   .setFontSize(10)
@@ -1279,8 +1664,7 @@ export default {
                             Object.assign(
                               { contador: i + 1 },
                               {
-                                dni: resultExclu[i].datosPaciente
-                                  .num_doc,
+                                dni: resultExclu[i].datosPaciente.num_doc,
                               },
                               {
                                 nombrePaciente:
@@ -1299,12 +1683,13 @@ export default {
                               },
                               {
                                 Clinica:
-                                  resultExclu[i].datosUsuario.datosCas.descripCas,
+                                  resultExclu[i].datosUsuario.datosCas
+                                    .descripCas,
                               },
                               {
                                 CasOrigen:
-                                  resultExclu[i].datosPaciente
-                                    .datosCasOri.descripCas,
+                                  resultExclu[i].datosPaciente.datosCasOri
+                                    .descripCas,
                               },
                               resultExclu[i]
                             )

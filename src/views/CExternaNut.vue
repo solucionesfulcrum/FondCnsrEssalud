@@ -184,20 +184,15 @@
                 <v-card>
                   <v-form ref="form" v-model="valid" lazy-validation>
                     <v-card-title>
-                      <div cols="12" sm="6" md="6" class="">
+                      <!--<div cols="12" sm="6" md="6" class="">
                         <v-checkbox v-model="nuevoValid"></v-checkbox>
                       </div>
-                      <span>Click si el paciente es nuevo</span>
+                      <span>Click si el paciente es nuevo</span>-->
                     </v-card-title>
                     <v-card-text>
                       <v-container>
                         <v-row>
-                          <v-col
-                            v-if="nuevoValid === true"
-                            cols="12"
-                            sm="6"
-                            md="3"
-                          >
+                          <v-col cols="12" sm="6" md="3">
                             <v-menu
                               ref="menu3"
                               v-model="menu3"
@@ -244,12 +239,7 @@
                               </v-date-picker>
                             </v-menu>
                           </v-col>
-                          <v-col
-                            v-if="nuevoValid === true"
-                            cols="12"
-                            sm="6"
-                            md="3"
-                          >
+                          <v-col cols="12" sm="6" md="3">
                             <v-menu
                               ref="menu4"
                               v-model="menu4"
@@ -313,6 +303,14 @@
                             ></v-select>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
+                            <v-select
+                              v-model="editedItem.tipoPaciente"
+                              :items="itemsTipoPaciente"
+                              :rules="[rules.required]"
+                              label="Tipo Paciente"
+                            ></v-select>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.peso"
                               :rules="[rules.required, rules.counter]"
@@ -365,18 +363,13 @@
                               type="number"
                             ></v-text-field>
                           </v-col>
-                          <v-col
-                            v-if="nuevoValid === true"
-                            cols="12"
-                            sm="6"
-                            md="3"
-                          >
-                            <v-select
+                          <v-col cols="12" sm="6" md="3">
+                            <v-text-field
                               v-model="editedItem.vgs"
-                              label="VGS"
-                              :items="itemsVgs"
+                              label="MIS"
                               :maxlength="maxdat"
-                            ></v-select>
+                              type="number"
+                            ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
@@ -589,6 +582,14 @@
                             ></v-select>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
+                            <v-select
+                              v-model="editedItem.tipoPaciente"
+                              :items="itemsTipoPaciente"
+                              :rules="[rules.required]"
+                              label="Tipo Paciente"
+                            ></v-select>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.peso"
                               label="Peso (Kilogramos)"
@@ -639,12 +640,12 @@
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
-                            <v-select
+                            <v-text-field
                               v-model="editedItem.vgs"
-                              label="VGS"
-                              :items="itemsVgs"
+                              label="MIS"
                               :maxlength="maxdat"
-                            ></v-select>
+                              type="number"
+                            ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
@@ -678,6 +679,47 @@
                               label="Intervención Nutricional"
                             ></v-select>
                           </v-col>
+                          <v-col cols="12" sm="12" md="12"
+                            ><v-divider inset></v-divider
+                          ></v-col>
+                          <v-col cols="12" sm="4" md="3"
+                            >Edad: {{ parValores[0].edad }}</v-col
+                          >
+                          <v-col cols="12" sm="4" md="3"
+                            >Sexo: {{ parValores[0].sexo }}</v-col
+                          >
+                          <v-col cols="12" sm="4" md="3"
+                            >CB: {{ parValores[0].cb }}</v-col
+                          >
+                          <v-col cols="12" sm="4" md="3"
+                            >CMB: {{ parValores[0].cmb }}</v-col
+                          >
+                          <v-col cols="12" sm="4" md="3"
+                            >PT: {{ parValores[0].pt }}</v-col
+                          >
+                          <v-col cols="12" sm="4" md="3"
+                            >%IMC:
+                            {{(
+                    editedItem.peso /
+                    (editedItem.talla * editedItem.talla)
+                  ).toFixed(2),}}</v-col
+                          >
+                          <v-col cols="12" sm="4" md="3"
+                            >%CMB:
+                            {{(
+                    ((editedItem.circuBra -
+                      3.14 * (editedItem.medCali / 10)) /
+                      parValores[0].cmb) *
+                    100
+                  ).toFixed(2),}}</v-col
+                          >
+                          <v-col cols="12" sm="4" md="3"
+                            >%EPT:
+                            {{(
+                    (editedItem.medCali * 100) /
+                    parValores[0].pt
+                  ).toFixed(2),}}</v-col
+                          >
                         </v-row>
                       </v-container>
                     </v-card-text>
@@ -755,8 +797,12 @@ export default {
     dialogAvisoNULL: false,
     dialog: false,
     itemsFrecuencia: ["L-M-V", "M-J-S"],
-    itemsVgs: ["A", "B", "C"],
     itemsTurno: ["1er Turno", "2do Turno", "3er Turno", "4to Turno"],
+    itemsTipoPaciente: [
+      "CASO PROBLEMA",
+      "PACIENTE NUEVO",
+      "PACIENTE CONTINUADOR",
+    ],
     itemsDiagNut: [
       "Obesidad",
       "Sobrepeso",
@@ -765,7 +811,12 @@ export default {
       "Desnutrición Moderada",
       "Desnutrición Severa",
     ],
-    itemsInterNut: [
+    /*itemsInterNut: [
+      "Evaluación y Orientación Nutricional - NUEVO",
+      "Seguimiento Nutricional - NORMAL/SOBRESO/OBESIDAD",
+      "Monitoreo y Orientación Nutricional- DESNUTRICION LEVE/MODERADO/SEVERO",
+    ],*/
+     itemsInterNut: [
       "Evaluación y Orientación Nutricional",
       "Seguimiento Nutricional",
       "Monitoreo y Orientación Nutricional",
@@ -797,6 +848,7 @@ export default {
         .substr(0, 10),
       frecuencia: "",
       turno: "",
+      tipoPaciente: "",
       peso: Number,
       talla: Number,
       imc: 0.0,
@@ -805,7 +857,7 @@ export default {
       medCali: Number,
       ept: Number,
       albSerica: Number,
-      vgs: "",
+      vgs: "NA",
       ingestaCalorica: Number,
       ingestaProteica: Number,
       ingestaCaloricaT: Number,
@@ -841,6 +893,7 @@ export default {
         .substr(0, 10),
       frecuencia: "",
       turno: "",
+      tipoPaciente: "",
       peso: Number,
       talla: Number,
       imc: 0.0,
@@ -849,7 +902,7 @@ export default {
       medCali: Number,
       ept: Number,
       albSerica: Number,
-      vgs: "",
+      vgs: "NA",
       ingestaCalorica: Number,
       ingestaProteica: Number,
       ingestaCaloricaT: Number,
@@ -1061,6 +1114,7 @@ export default {
       this.editedItem.dateEvalu = item.fechaEvaluacion;
       this.editedItem.frecuencia = item.frecuencia;
       this.editedItem.turno = item.turno;
+      this.editedItem.tipoPaciente = item.tipoPaciente;
       this.editedItem.peso = item.peso;
       this.editedItem.talla = item.talla;
       this.editedItem.imc = item.imc;
@@ -1171,6 +1225,7 @@ export default {
                   frecuencia: this.editedItem.frecuencia,
                   fechaIngreso: this.editedItem.dateIngreso,
                   fechaEvaluacion: this.editedItem.dateEvalu,
+                  tipoPaciente: this.editedItem.tipoPaciente,
                   peso: this.editedItem.peso,
                   talla: this.editedItem.talla,
                   imc: (
@@ -1293,6 +1348,7 @@ export default {
                   frecuencia: this.editedItem.frecuencia,
                   fechaIngreso: this.editedItem.dateIngreso,
                   fechaEvaluacion: this.editedItem.dateEvalu,
+                  tipoPaciente: this.editedItem.tipoPaciente,
                   peso: this.editedItem.peso,
                   talla: this.editedItem.talla,
                   imc: (
