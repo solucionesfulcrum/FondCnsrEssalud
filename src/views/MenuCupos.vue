@@ -3,7 +3,7 @@
     <NavBar />
     <div class="row">
       <div class="col-sm-2">
-        <v-card class="mx-auto" width="100%" height="100vh" tile>
+        <!--<v-card class="mx-auto" width="100%" height="100vh" tile>
           <v-navigation-drawer permanent>
             <v-list>
               <v-list-item>
@@ -72,9 +72,9 @@
               </v-list-item-group>
             </v-list>
           </v-navigation-drawer>
-        </v-card>
+        </v-card>-->
       </div>
-      <div v-if="selectedItem == 0" class="col-sm-10"><ListaEspera /></div>
+      <div class="col-sm-12"><ListaEspera /></div>
     </div>
   </div>
 </template>

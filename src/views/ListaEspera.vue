@@ -14,7 +14,7 @@
     </v-dialog>
 
     <v-container>
-      <v-card class="mx-auto my-5" max-width="900">
+      <v-card class="mx-auto my-5" max-width="1600">
         <v-system-bar color="#1973a5" dark>
           GESION DE CUPOS - LISTA DE ESPERA
         </v-system-bar>
@@ -25,7 +25,7 @@
               v-model="setDni"
               label="DNI"
               required
-              :maxlength="8"
+              :maxlength="maxdat"
               @keyup.enter="buscarPacicente"
             ></v-text-field>
           </v-col>
@@ -35,27 +35,27 @@
             </v-btn>
           </v-col>
           <v-col cols="12" md="4">
-            <v-btn class="mt-10" icon color="#1973a5" @click="generatePDF">
+            <!--<v-btn class="mt-10" icon color="#1973a5" @click="generatePDF">
               Generar PDF<v-icon>mdi-arrow-down-bold-box</v-icon>
-            </v-btn>
+            </v-btn>-->
           </v-col>
         </v-row>
       </v-card>
 
-      <v-card class="mx-auto my-5" max-width="900">
+      <v-card class="mx-auto my-5" max-width="1600">
         <v-tabs background-color="#1973a5" center-active dark>
-          <v-tab @click="nutricion">Pendientes</v-tab>
+          <v-tab @click="listaEsperaInit">Pendientes</v-tab>
         </v-tabs>
       </v-card>
 
-      <v-card class="mx-auto my-5" max-width="900">
+      <v-card class="mx-auto my-5" max-width="1600">
         <v-data-table :headers="headers" :items="desserts" class="elevation-1">
           <template v-slot:top>
             <v-toolbar flat>
               <v-divider class="mx-4" inset vertical></v-divider>
               <v-spacer></v-spacer>
               <!--Registrar-->
-              <v-dialog v-model="dialog" max-width="700px">
+              <v-dialog v-model="dialog" max-width="1000px">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     color="#1973a5"
@@ -69,126 +69,100 @@
                 </template>
                 <v-card>
                   <v-form ref="form" v-model="valid" lazy-validation>
-                    <v-card-title>
-                      <div cols="12" sm="6" md="6" class="">
-                        <v-checkbox v-model="nuevoValid"></v-checkbox>
-                      </div>
-                      <span>Click si el paciente es nuevo</span>
-                    </v-card-title>
                     <v-card-text>
                       <v-container>
                         <v-row>
-                          <v-col
-                            v-if="nuevoValid === true"
-                            cols="12"
-                            sm="6"
-                            md="3"
-                          >
+                          <v-col cols="12" sm="6" md="6">
                             <v-menu
                               ref="menu3"
                               v-model="menu3"
+                              :rules="[rules.required, rules.counter]"
                               :close-on-content-click="false"
-                              :return-value.sync="editedItem.dateIngreso"
                               transition="scale-transition"
                               offset-y
+                              max-width="290px"
                               min-width="auto"
                             >
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                  v-model="editedItem.dateIngreso"
-                                  label="Fecha de Ingreso"
+                                  v-model="editedItem.fechaSolicitud"
+                                  label="Fecha de Solicitud"
+                                  hint="YYYY/MM/DD formato"
+                                  persistent-hint
                                   prepend-icon="mdi-calendar"
-                                  readonly
                                   v-bind="attrs"
                                   v-on="on"
                                 ></v-text-field>
                               </template>
                               <v-date-picker
-                                v-model="editedItem.dateIngreso"
+                                v-model="editedItem.fechaSolicitud"
                                 no-title
-                                scrollable
-                                :min="minimo"
-                                :max="maximo"
-                              >
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                  text
-                                  color="primary"
-                                  @click="menu3 = false"
-                                >
-                                  Cancel
-                                </v-btn>
-                                <v-btn
-                                  text
-                                  color="primary"
-                                  @click="
-                                    $refs.menu3.save(editedItem.dateIngreso)
-                                  "
-                                >
-                                  OK
-                                </v-btn>
-                              </v-date-picker>
+                                @input="menu3 = false"
+                              ></v-date-picker>
                             </v-menu>
                           </v-col>
-                          <v-col
-                            v-if="nuevoValid === true"
-                            cols="12"
-                            sm="6"
-                            md="3"
-                          >
-                            <v-menu
-                              ref="menu4"
-                              v-model="menu4"
-                              :close-on-content-click="false"
-                              :return-value.sync="editedItem.dateEvalu"
-                              transition="scale-transition"
-                              offset-y
-                              min-width="auto"
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field
+                              v-model="editedItem.dni"
+                              :rules="[rules.required, rules.counter]"
+                              label="DNI"
+                              :maxlength="maxdat"
+                              @keyup.enter="buscarNombrePac"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="2">
+                            <v-btn
+                              class="mt-5"
+                              icon
+                              color="#1973a5"
+                              @click="buscarNombrePac"
                             >
-                              <template v-slot:activator="{ on, attrs }">
-                                <v-text-field
-                                  v-model="editedItem.dateEvalu"
-                                  label="Fecha de Evaluacion Nutricional"
-                                  prepend-icon="mdi-calendar"
-                                  readonly
-                                  v-bind="attrs"
-                                  v-on="on"
-                                ></v-text-field>
-                              </template>
-                              <v-date-picker
-                                v-model="editedItem.dateEvalu"
-                                no-title
-                                scrollable
-                                :min="minimo"
-                                :max="maximo"
-                              >
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                  text
-                                  color="primary"
-                                  @click="menu4 = false"
-                                >
-                                  Cancel
-                                </v-btn>
-                                <v-btn
-                                  text
-                                  color="primary"
-                                  @click="
-                                    $refs.menu4.save(editedItem.dateEvalu)
-                                  "
-                                >
-                                  OK
-                                </v-btn>
-                              </v-date-picker>
-                            </v-menu>
+                              <v-icon>mdi-magnify</v-icon>
+                            </v-btn>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-select
-                              v-model="editedItem.frecuencia"
-                              :items="itemsFrecuencia"
-                              :rules="[rules.required]"
-                              label="Frecuencia"
-                            ></v-select>
+                          <v-col cols="12" sm="6" md="6">
+                            <v-text-field
+                              v-model="editedItem.nombrePaciente"
+                              :rules="[rules.required, rules.counter]"
+                              label="nombre Paciente"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="6">
+                            <v-text-field
+                              v-model="editedItem.telefono"
+                              :rules="[rules.required, rules.counter]"
+                              label="Telefono"
+                              :maxlength="maxdat"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="12" md="12">
+                            <v-autocomplete
+                              v-model="editedItem.casOrigen"
+                              :rules="[rules.required, rules.counter]"
+                              :items="itemsClinicas"
+                              dense
+                              label="LUGAR DE ORIGEN"
+                            ></v-autocomplete>
+                          </v-col>
+                          <v-col cols="12" sm="12" md="12">
+                            <v-autocomplete
+                              v-model="editedItem.casDestino"
+                              :rules="[rules.required, rules.counter]"
+                              :items="itemsClinicas"
+                              dense
+                              label="LUGAR DE ORIGEN"
+                            ></v-autocomplete>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="6">
+                            <v-autocomplete
+                              v-model="editedItem.distrito"
+                              :rules="[rules.required, rules.counter]"
+                              :items="itemsDistrito"
+                              dense
+                              label="Distrito"
+                            ></v-autocomplete>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-select
@@ -200,107 +174,19 @@
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
-                              v-model="editedItem.peso"
+                              v-model="editedItem.referencia"
                               :rules="[rules.required, rules.counter]"
-                              label="Peso (Kilogramos)"
+                              label="Referencia"
                               :maxlength="maxdat"
-                              type="number"
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col cols="12" sm="12" md="12">
                             <v-text-field
-                              v-model="editedItem.talla"
-                              :rules="[rules.required, rules.counter]"
-                              label="Talla (Metros)"
+                              v-model="editedItem.observaciones"
+                              label="Observaciones"
                               :maxlength="maxdat"
-                              type="number"
-                              @keyup.enter="calculoIMC"
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.imc"
-                              label="IMC"
-                              :maxlength="maxdat"
-                              disabled
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.circuBra"
-                              :rules="[rules.required, rules.counter]"
-                              label="Circunferencia Braquial"
-                              :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.medCali"
-                              label="Pliege Tricipital"
-                              :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.albSerica"
-                              :rules="[rules.required, rules.counter]"
-                              label="ALB Sérica"
-                              :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col
-                            v-if="nuevoValid === true"
-                            cols="12"
-                            sm="6"
-                            md="3"
-                          >
-                            <v-select
-                              v-model="editedItem.vgs"
-                              label="VGS"
-                              :items="itemsVgs"
-                              :maxlength="maxdat"
-                            ></v-select>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.ingestaCaloricaT"
-                              :rules="[rules.required, rules.counter]"
-                              label="Ingesta Calorica Total"
-                              :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.ingestaProteicaT"
-                              :rules="[rules.required, rules.counter]"
-                              label="Ingesta Proteica Total"
-                              :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-select
-                              v-model="editedItem.diagNut"
-                              :rules="[rules.required, rules.counter]"
-                              label="Diagnostico Nutricional"
-                              :items="itemsDiagNut"
-                            ></v-select>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-select
-                              v-model="editedItem.interNut"
-                              :items="itemsInterNut"
-                              :rules="[rules.required]"
-                              label="Intervención Nutricional"
-                            ></v-select>
-                          </v-col>
-                          <v-col cols="12" sm="12" md="12"
-                            ><v-divider inset></v-divider
-                          ></v-col>
                         </v-row>
                       </v-container>
                     </v-card-text>
@@ -317,116 +203,106 @@
                 </v-card>
               </v-dialog>
               <!--editar-->
-              <v-dialog v-model="dialogEdit" max-width="700px">
+              <v-dialog v-model="dialogEdit" max-width="1000px">
                 <v-card>
                   <v-form ref="form" v-model="valid" lazy-validation>
                     <v-card-title>
-                      <span class="text-h5">Editar Nutrición</span>
+                      <span class="text-h5">Editar Cupos</span>
                     </v-card-title>
                     <v-card-text>
                       <v-container>
                         <v-row>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col cols="12" sm="6" md="6">
                             <v-menu
-                              ref="menu5"
-                              v-model="menu5"
+                              ref="menu3"
+                              v-model="menu3"
+                              :rules="[rules.required, rules.counter]"
                               :close-on-content-click="false"
-                              :return-value.sync="editedItem.dateIngreso"
                               transition="scale-transition"
                               offset-y
+                              max-width="290px"
                               min-width="auto"
                             >
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                  v-model="editedItem.dateIngreso"
-                                  label="Fecha"
+                                  v-model="editedItem.fechaSolicitud"
+                                  label="Fecha de Solicitud"
+                                  hint="YYYY/MM/DD formato"
+                                  persistent-hint
                                   prepend-icon="mdi-calendar"
-                                  readonly
                                   v-bind="attrs"
                                   v-on="on"
                                 ></v-text-field>
                               </template>
                               <v-date-picker
-                                v-model="editedItem.dateIngreso"
+                                v-model="editedItem.fechaSolicitud"
                                 no-title
-                                scrollable
-                                :min="minimo"
-                                :max="maximo"
-                              >
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                  text
-                                  color="primary"
-                                  @click="menu4 = false"
-                                >
-                                  Cancel
-                                </v-btn>
-                                <v-btn
-                                  text
-                                  color="primary"
-                                  @click="
-                                    $refs.menu4.save(editedItem.dateIngreso)
-                                  "
-                                >
-                                  OK
-                                </v-btn>
-                              </v-date-picker>
+                                @input="menu3 = false"
+                              ></v-date-picker>
                             </v-menu>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-menu
-                              ref="menu5"
-                              v-model="menu5"
-                              :close-on-content-click="false"
-                              :return-value.sync="editedItem.dateEvalu"
-                              transition="scale-transition"
-                              offset-y
-                              min-width="auto"
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field
+                              v-model="editedItem.dni"
+                              :rules="[rules.required, rules.counter]"
+                              label="DNI"
+                              :maxlength="maxdat"
+                              @keyup.enter="buscarNombrePac"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="2">
+                            <v-btn
+                              class="mt-5"
+                              icon
+                              color="#1973a5"
+                              @click="buscarNombrePac"
                             >
-                              <template v-slot:activator="{ on, attrs }">
-                                <v-text-field
-                                  v-model="editedItem.dateEvalu"
-                                  label="Fecha"
-                                  prepend-icon="mdi-calendar"
-                                  readonly
-                                  v-bind="attrs"
-                                  v-on="on"
-                                ></v-text-field>
-                              </template>
-                              <v-date-picker
-                                v-model="editedItem.dateEvalu"
-                                no-title
-                                scrollable
-                                :min="minimo"
-                                :max="maximo"
-                              >
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                  text
-                                  color="primary"
-                                  @click="menu4 = false"
-                                >
-                                  Cancel
-                                </v-btn>
-                                <v-btn
-                                  text
-                                  color="primary"
-                                  @click="
-                                    $refs.menu4.save(editedItem.dateEvalu)
-                                  "
-                                >
-                                  OK
-                                </v-btn>
-                              </v-date-picker>
-                            </v-menu>
+                              <v-icon>mdi-magnify</v-icon>
+                            </v-btn>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-select
-                              v-model="editedItem.frecuencia"
-                              :items="itemsFrecuencia"
-                              :rules="[rules.required]"
-                              label="Frecuencia"
-                            ></v-select>
+                          <v-col cols="12" sm="6" md="6">
+                            <v-text-field
+                              v-model="editedItem.nombrePaciente"
+                              :rules="[rules.required, rules.counter]"
+                              label="nombre Paciente"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="6">
+                            <v-text-field
+                              v-model="editedItem.telefono"
+                              :rules="[rules.required, rules.counter]"
+                              label="Telefono"
+                              :maxlength="maxdat"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="12" md="12">
+                            <v-autocomplete
+                              v-model="editedItem.casOrigen"
+                              :rules="[rules.required, rules.counter]"
+                              :items="itemsClinicas"
+                              dense
+                              label="LUGAR DE ORIGEN"
+                            ></v-autocomplete>
+                          </v-col>
+                          <v-col cols="12" sm="12" md="12">
+                            <v-autocomplete
+                              v-model="editedItem.casDestino"
+                              :rules="[rules.required, rules.counter]"
+                              :items="itemsClinicas"
+                              dense
+                              label="LUGAR DE ORIGEN"
+                            ></v-autocomplete>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="6">
+                            <v-autocomplete
+                              v-model="editedItem.distrito"
+                              :rules="[rules.required, rules.counter]"
+                              :items="itemsDistrito"
+                              dense
+                              label="Distrito"
+                            ></v-autocomplete>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-select
@@ -438,93 +314,18 @@
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
-                              v-model="editedItem.peso"
-                              label="Peso (Kilogramos)"
-                              :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.talla"
-                              label="Talla (Metros)"
-                              :maxlength="maxdat"
-                              type="number"
-                              @keyup.enter="calculoIMC"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.imc"
-                              label="IMC"
-                              :maxlength="maxdat"
-                              disabled
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.circuBra"
-                              label="Circunferencia Braquial"
-                              :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.medCali"
-                              label="Pliege Tricipital"
-                              :rules="[rules.required]"
-                              :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.albSerica"
-                              label="ALB Sérica"
-                              :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-select
-                              v-model="editedItem.vgs"
-                              label="VGS"
-                              :items="itemsVgs"
-                              :maxlength="maxdat"
-                            ></v-select>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.ingestaCaloricaT"
-                              label="Ingesta Calorica Total"
-                              :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
-                              v-model="editedItem.ingestaProteicaT"
-                              label="Ingesta Proteica Total"
-                              :maxlength="maxdat"
-                              type="number"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-select
-                              v-model="editedItem.diagNut"
+                              v-model="editedItem.referencia"
                               :rules="[rules.required, rules.counter]"
-                              label="Diagnostico Nutricional"
-                              :items="itemsDiagNut"
-                            ></v-select>
+                              label="Referencia"
+                              :maxlength="maxdat"
+                            ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-select
-                              v-model="editedItem.interNut"
-                              :items="itemsInterNut"
-                              :rules="[rules.required]"
-                              label="Intervención Nutricional"
-                            ></v-select>
+                          <v-col cols="12" sm="12" md="12">
+                            <v-text-field
+                              v-model="editedItem.observaciones"
+                              label="Observaciones"
+                              :maxlength="maxdat"
+                            ></v-text-field>
                           </v-col>
                         </v-row>
                       </v-container>
@@ -585,6 +386,7 @@ export default {
     perfil: "",
     nombre: "",
     url: "",
+    usuario: "",
     //EXPORT PDF
     dataPdfExport: [],
     heading: "REPORTE PACIENTES NUTRICIÓN",
@@ -632,7 +434,70 @@ export default {
       required: (value) => !!value || "Campo Obligatorio.",
       counter: (value) => value.length <= 20 || "Max 20 characters",
     },
+    itemsClinicas: [],
+    itemsDistrito: [
+      "Ancón",
+      "Ate Vitarte",
+      "Ancón",
+      "Barranco",
+      "Breña",
+      "Carabayllo",
+      "Chaclacayo",
+      "Chorrillos",
+      "Cieneguilla",
+      "Comas",
+      "El Agustino",
+      "Independencia",
+      "Jesús María",
+      "La Molina",
+      "La Victoria",
+      "Lima",
+      "Lince",
+      "Los Olivos",
+      "Lurigancho",
+      "Lurín",
+      "Magdalena del Mar",
+      "Miraflores",
+      "Pachacamac",
+      "Pucusana",
+      "Pueblo Libre",
+      "Puente Piedra",
+      "Punta Hermosa",
+      "Punta Negra",
+      "Rímac",
+      "San Bartolo",
+      "San Borja",
+      "San Isidro",
+      "San Juan de Lurigancho",
+      "San Juan de Miraflores",
+      "San Luis",
+      "San Martín de Porres",
+      "San Miguel",
+      "Santa Anita",
+      "Santa María del Mar",
+      "Santa Rosa",
+      "Santiago de Surco",
+      "Surquillo",
+      "Villa El Salvador",
+      "Villa María del Triunfo"
+    ],
+    clinicasCarga: null,
     editedItem: {
+      //data para Lista de Espera
+      fechaSolicitud: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      dni: "",
+      nombrePaciente: "",
+      urlPaciente: "",
+      telefono: "",
+      casOrigen: "",
+      casDestino: "",
+      distrito: "",
+      referencia: "",
+      observaciones: "",
       dateIngreso: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
@@ -671,12 +536,26 @@ export default {
     dialogDelete: false,
     dialogEditAdm: false,
     vista: "",
-    actionBoton: "AGREGAR NUTRICIÓN",
+    actionBoton: "AGREGAR LISTA DE ESPERA",
     headers: [],
     desserts: [],
     editedIndex: -1,
     dataex: "",
     defaultItem: {
+      fechaSolicitud: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      dni: "",
+      nombrePaciente: "",
+      urlPaciente: "",
+      telefono: "",
+      casOrigen: "",
+      casDestino: "",
+      distrito: "",
+      referencia: "",
+      observaciones: "",
       dateIngreso: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
@@ -722,8 +601,78 @@ export default {
       val || this.closeDelete();
     },
   },
-
   methods: {
+    buscarNombrePac() {
+      axios
+        .post(RUTA_SERVIDOR + "/api/token/", {
+          username: "cnsr",
+          password: "123456",
+        })
+        .then((response) => {
+          this.auth = "Bearer " + response.data.access;
+          axios
+            .get(RUTA_SERVIDOR + "/paciente/?search=" + this.editedItem.dni, {
+              headers: { Authorization: this.auth },
+            })
+            .then((res) => {
+              this.editedItem.nombrePaciente =
+                res.data[0].nombres +
+                " " +
+                res.data[0].ape_pat +
+                " " +
+                res.data[0].ape_mat;
+              this.editedItem.urlPaciente = res.data[0].url;
+              //this.desserts = res.data;
+              //this.dialogDataApi = false;
+              //this.dataAdmi = res.data[0].url.split("/")[4];
+              //this.datosPresHis = res.data[0];
+              console.log("data paciente", res.data[0].url);
+            })
+            .catch((res) => {
+              console.warn("Error:", res.statusText);
+              //this.dialog = false;
+            });
+        })
+        .catch((response) => {
+          response === 404
+            ? console.warn("lo sientimos no tenemos servicios")
+            : console.warn("Error:", response);
+        });
+    },
+
+    listarClinica() {
+      axios
+        .post(RUTA_SERVIDOR + "/api/token/", {
+          username: "cnsr",
+          password: "123456",
+        })
+        .then((response) => {
+          this.auth = "Bearer " + response.data.access;
+          axios
+            .get(RUTA_SERVIDOR + "/cas/", {
+              headers: { Authorization: this.auth },
+            })
+            .then((res) => {
+              //this.desserts = res.data;
+              //this.dialogDataApi = false;
+              //this.dataAdmi = res.data[0].url.split("/")[4];
+              //this.datosPresHis = res.data[0];
+              console.log("clinicas", res.data);
+              for (let i = 0; i < res.data.length; i++) {
+                this.itemsClinicas.push(res.data[i].descripCas);
+              }
+            })
+            .catch((res) => {
+              console.warn("Error:", res.statusText);
+              //this.dialog = false;
+            });
+        })
+        .catch((response) => {
+          response === 404
+            ? console.warn("lo sientimos no tenemos servicios")
+            : console.warn("Error:", response);
+        });
+    },
     calculoIMC() {
       this.editedItem.imc =
         this.editedItem.peso / (this.editedItem.talla * this.editedItem.talla);
@@ -808,6 +757,11 @@ export default {
     },
 
     buscarPacicente() {
+      //this.listaEsperaInit();
+      console.log("dessetpa filtrar", this.desserts);
+      this.desserts = this.desserts.filter(
+        (e) => e.datosPaciente.num_doc == this.setDni
+      );
       //this.desserts=[]
       //this.editedItem=[]
       //console.log(this.setDni);
@@ -833,41 +787,25 @@ export default {
 
     editItem(item) {
       console.log("item", item);
-      //this.botonEditar = "1";
-      //this.editedIndex;
-      //this.editedIndex = this.desserts.indexOf(item);
-      /*this.editedItem.date = item.fechaPres;*/
-      this.editedItem.dateIngreso = item.fechaIngreso;
-      this.editedItem.dateEvalu = item.fechaEvaluacion;
-      this.editedItem.frecuencia = item.frecuencia;
+      this.editedItem.fechaSolicitud = item.fechaSoli;
+      this.editedItem.dni = item.datosPaciente.num_doc;
+      this.editedItem.urlPaciente = item.datosPaciente.url;
+      this.editedItem.nombrePaciente =
+        item.datosPaciente.nombres +
+        " " +
+        item.datosPaciente.ape_pat +
+        " " +
+        item.datosPaciente.ape_mat;
+      this.editedItem.urlPaciente = item.datosPaciente.url;
+      this.editedItem.telefono = item.telefono;
+      this.editedItem.casOrigen = item.casOrigen;
+      this.editedItem.casDestino = item.casDestino;
+      this.editedItem.distrito = item.distrito;
       this.editedItem.turno = item.turno;
-      this.editedItem.peso = item.peso;
-      this.editedItem.talla = item.talla;
-      this.editedItem.imc = item.imc;
-      (this.editedItem.circuBra = item.circuBra),
-        (this.editedItem.cmb = item.porcentajeCMB);
-      this.editedItem.medCali = item.medCali;
-      this.editedItem.ept = item.porcentajeEPT;
-      this.editedItem.albSerica = item.albSerica;
-      this.editedItem.vgs = item.ValGlobalSub;
-      this.editedItem.ingestaCalorica = item.ingestaCalorica;
-      this.editedItem.ingestaProteica = item.ingestaProteica;
-      this.editedItem.ingestaCaloricaT = item.ingestaCaloricaT;
-      this.editedItem.ingestaProteicaT = item.ingestaProteicaT;
-      this.editedItem.diagNut = item.diagNutricional;
-      this.editedItem.interNut = item.interveNutricional;
-      this.editedItem.usuario = item.usuario;
-      /*this.editedItem.name = item.nomNefro;
-      this.editedItem.dos = item.dosisPres;
-      this.editedItem.dosHierro = item.dosisHiePres;
-      this.editedItem.med = item.medPres;
-      this.editedItem.medHierro = item.medHiePres;
-      this.editedItem.via = item.viaAdmPres;
-      this.editedItem.viaHierro = item.viaAdmHiePres;*/
-      //this.editedItem = Object.assign({}, item);
-      console.log("editedItem", this.editedItem);
-      this.dialogEdit = true;
+      this.editedItem.referencia = item.referencia;
+      this.editedItem.observaciones = item.observaciones;
       this.datosEdit = item.url;
+      this.dialogEdit = true;
     },
 
     deleteItem(item) {
@@ -931,85 +869,57 @@ export default {
 
     edit() {
       console.log("esto es para editar", this.editedItem);
-      if (this.editedItem.usuario == this.url) {
-        axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
-            username: "cnsr",
-            password: "123456",
-          })
-          .then((response) => {
-            this.auth = "Bearer " + response.data.access;
-            axios
-              .patch(
-                RUTA_SERVIDOR +
-                  "/nutricion/" +
-                  this.datosEdit.split("/")[4] +
-                  "/",
-                {
-                  paciente: this.datosPaciente[0].url,
-                  turno: this.editedItem.turno,
-                  frecuencia: this.editedItem.frecuencia,
-                  fechaIngreso: this.editedItem.dateIngreso,
-                  fechaEvaluacion: this.editedItem.dateEvalu,
-                  peso: this.editedItem.peso,
-                  talla: this.editedItem.talla,
-                  imc: (
-                    this.editedItem.peso /
-                    (this.editedItem.talla * this.editedItem.talla)
-                  ).toFixed(2),
-                  circuBra: this.editedItem.circuBra,
-                  //esto es para allar el cb
-                  //porcentajeCMB: (this.editedItem.circuBra*100)/this.parValores[0].cb,
-                  porcentajeCMB: (
-                    ((this.editedItem.circuBra -
-                      3.14 * (this.editedItem.medCali / 10)) /
-                      this.parValores[0].cmb) *
-                    100
-                  ).toFixed(2),
-                  medCali: this.editedItem.medCali,
-                  porcentajeEPT: (
-                    (this.editedItem.medCali * 100) /
-                    this.parValores[0].pt
-                  ).toFixed(2),
-                  albSerica: this.editedItem.albSerica,
-                  ValGlobalSub: this.editedItem.vgs,
-                  ingestaCaloricaT: this.editedItem.ingestaCaloricaT,
-                  ingestaProteicaT: this.editedItem.ingestaProteicaT,
-                  ingestaCalorica: (
-                    this.editedItem.ingestaCaloricaT / this.editedItem.peso
-                  ).toFixed(2),
-                  ingestaProteica: (
-                    this.editedItem.ingestaProteicaT / this.editedItem.peso
-                  ).toFixed(2),
-                  diagNutricional: this.editedItem.diagNut,
-                  interveNutricional: this.editedItem.interNut,
-                  usuario: this.url,
-                },
-                {
-                  headers: { Authorization: this.auth },
-                }
-              )
-              .then((res) => {
-                this.dialogDataApi = true;
-                console.log("exito", res.status);
-                this.close();
-                this.nut();
-                this.dialogEdit = false;
-              })
-              .catch((res) => {
-                console.warn("Error:", res);
-                this.dialog = false;
-              });
-          })
-          .catch((response) => {
-            response === 404
-              ? console.warn("lo sientimos no tenemos servicios")
-              : console.warn("Error:", response);
-          });
-      } else {
+      //if (this.editedItem.usuario == this.url) {
+      axios
+        .post(RUTA_SERVIDOR + "/api/token/", {
+          username: "cnsr",
+          password: "123456",
+        })
+        .then((response) => {
+          this.auth = "Bearer " + response.data.access;
+          axios
+            .patch(
+              RUTA_SERVIDOR +
+                "/listaEspera/" +
+                this.datosEdit.split("/")[4] +
+                "/",
+              {
+                fechaSoli: this.editedItem.fechaSolicitud,
+                paciente: this.editedItem.urlPaciente,
+                telefono: this.editedItem.telefono,
+                casOrigen: this.editedItem.casOrigen,
+                casDestino: this.editedItem.casDestino,
+                distrito: this.editedItem.distrito,
+                turno: this.editedItem.turno,
+                referencia: this.editedItem.referencia,
+                observaciones: this.editedItem.observaciones,
+                estado: false,
+              },
+              {
+                headers: { Authorization: this.auth },
+              }
+            )
+            .then((res) => {
+              this.dialogDataApi = true;
+              console.log("exito", res.status);
+              this.close();
+              this.listaEsperaInit();
+              this.dialogEdit = false;
+            })
+            .catch((res) => {
+              console.warn("Error:", res);
+              this.dialog = false;
+            });
+        })
+        .catch((response) => {
+          response === 404
+            ? console.warn("lo sientimos no tenemos servicios")
+            : console.warn("Error:", response);
+        });
+      /*} else {
         this.dialogEdit = false;
         this.dialogAvisoEditar = true;
-      }
+      }*/
     },
 
     close() {
@@ -1039,20 +949,17 @@ export default {
     save() {
       console.log("click");
       if (
-        !this.editedItem.turno ||
-        !this.editedItem.frecuencia ||
-        !this.editedItem.dateIngreso ||
-        !this.editedItem.dateEvalu ||
-        !this.editedItem.peso ||
-        !this.editedItem.talla ||
-        !this.editedItem.cmb ||
+        !this.editedItem.fechaSolicitud ||
+        !this.editedItem.dni ||
+        !this.editedItem.nombrePaciente ||
+        !this.editedItem.telefono ||
+        !this.editedItem.casOrigen ||
+        !this.editedItem.casDestino ||
+        !this.editedItem.distrito ||
         //!this.editedItem.ept ||
-        !this.editedItem.albSerica ||
+        !this.editedItem.turno ||
         //!this.editedItem.vgs ||
-        !this.editedItem.ingestaCalorica ||
-        !this.editedItem.ingestaProteica ||
-        !this.editedItem.diagNut ||
-        !this.editedItem.interNut
+        !this.editedItem.referencia
       ) {
         this.$refs.form.validate();
         console.log("validate");
@@ -1066,47 +973,19 @@ export default {
             this.auth = "Bearer " + response.data.access;
             axios
               .post(
-                RUTA_SERVIDOR + "/nutricion/",
+                RUTA_SERVIDOR + "/listaEspera/",
                 {
-                  paciente: this.datosPaciente[0].url,
+                  fechaSoli: this.editedItem.fechaSolicitud,
+                  paciente: this.editedItem.urlPaciente,
+                  telefono: this.editedItem.telefono,
+                  casOrigen: this.editedItem.casOrigen,
+                  casDestino: this.editedItem.casDestino,
+                  distrito: this.editedItem.distrito,
                   turno: this.editedItem.turno,
-                  frecuencia: this.editedItem.frecuencia,
-                  fechaIngreso: this.editedItem.dateIngreso,
-                  fechaEvaluacion: this.editedItem.dateEvalu,
-                  peso: this.editedItem.peso,
-                  talla: this.editedItem.talla,
-                  imc: (
-                    this.editedItem.peso /
-                    (this.editedItem.talla * this.editedItem.talla)
-                  ).toFixed(2),
-                  circuBra: this.editedItem.circuBra,
-                  //esto es para allar el cb
-                  //porcentajeCMB: (this.editedItem.circuBra*100)/this.parValores[0].cb,
-                  porcentajeCMB: (
-                    ((this.editedItem.circuBra -
-                      3.14 * (this.editedItem.medCali / 10)) /
-                      this.parValores[0].cmb) *
-                    100
-                  ).toFixed(2),
-                  medCali: this.editedItem.medCali,
-                  porcentajeEPT: (
-                    (this.editedItem.medCali * 100) /
-                    this.parValores[0].pt
-                  ).toFixed(2),
-                  albSerica: this.editedItem.albSerica,
-                  ValGlobalSub: this.editedItem.vgs,
-                  ingestaCaloricaT: this.editedItem.ingestaCaloricaT,
-                  ingestaProteicaT: this.editedItem.ingestaProteicaT,
-                  ingestaCalorica: (
-                    this.editedItem.ingestaCaloricaT / this.editedItem.peso
-                  ).toFixed(2),
-                  ingestaProteica: (
-                    this.editedItem.ingestaProteicaT / this.editedItem.peso
-                  ).toFixed(2),
-                  diagNutricional: this.editedItem.diagNut,
-                  interveNutricional: this.editedItem.interNut,
-                  usuario: this.url,
-                  pacNuevo: this.nuevoValid,
+                  referencia: this.editedItem.referencia,
+                  observaciones: this.editedItem.observaciones,
+                  estado: false,
+                  user_reg: this.usuario+"|"+this.nombre
                 },
                 {
                   headers: { Authorization: this.auth },
@@ -1116,7 +995,7 @@ export default {
                 console.log("exito", res.status);
                 this.close();
                 console.log(this.editedItem);
-                this.nut();
+                this.listaEsperaInit();
               })
               .catch((res) => {
                 console.log("Error:", res);
@@ -1187,9 +1066,11 @@ export default {
           value: "datosPaciente.num_doc",
         },
         { text: "Paciente", value: "datosPaciente.nombres" },
+        { text: "Apellido Pat", value: "datosPaciente.ape_pat" },
+        { text: "Apellido Mat", value: "datosPaciente.ape_mat" },
         { text: "Telefono", value: "telefono" },
-        { text: "Origen", value: "datosCas.descripCas" },
-        { text: "Clinica Solicitada", value: "datosCas.descripCas" },
+        { text: "Origen", value: "casOrigen" },
+        { text: "Clinica Solicitada", value: "casDestino" },
         { text: "Distrito Solicitado", value: "distrito" },
         { text: "Turno", value: "turno" },
         { text: "Referencia", value: "referencia" },
@@ -1242,12 +1123,14 @@ export default {
     this.perfil = sessionStorage.getItem("perfil");
     this.nombre = sessionStorage.getItem("nombre");
     this.url = sessionStorage.getItem("url");
+    this.usuario = sessionStorage.getItem("usuario");
     console.log("Url", this.url);
     console.log("Perfil", this.perfil);
     console.log("Nombre", this.nombre);
     //INICIO DE CONSULTA
 
     this.listaEsperaInit();
+    this.listarClinica();
   },
 
   components: {
