@@ -13,7 +13,7 @@
               />
             </div>
           </v-flex>
-          <v-flex xs12 sm3 v-if="perfil == 1 || perfil == 2">
+          <v-flex xs12 sm3 v-if="perfil == 1 || perfil == 2 || perfil == 0">
             <div>
               <CardModulos
                 title="Consulta Externa"
@@ -49,7 +49,7 @@
               />
             </div>
           </v-flex>
-          <v-flex xs12 sm3 v-if="perfil == 3">
+          <v-flex xs12 sm3 v-if="perfil == 3 || perfil == 0">
             <div>
               <CardModulos
                 title="Archivo"
@@ -58,7 +58,7 @@
               />
             </div>
           </v-flex>
-          <v-flex xs12 sm3 v-if="perfil == 4 || perfil == 5 || perfil == 6 || perfil == 7">
+          <v-flex xs12 sm3 v-if="perfil == 4 || perfil == 5 || perfil == 6 || perfil == 7 || perfil == 0">
             <div>
               <CardModulos
                 title="Bienes Estrategicos"
@@ -67,7 +67,7 @@
               />
             </div>
           </v-flex>
-          <v-flex xs12 sm3 v-if="perfil == 8 || perfil == 9">
+          <v-flex xs12 sm3 v-if="perfil == 8 || perfil == 9 || perfil == 0">
             <div>
               <CardModulos
                 title="Gestion de Cupos"
@@ -76,7 +76,7 @@
               />
             </div>
           </v-flex>
-          <v-flex xs12 sm3 v-if="perfil == 1 || perfil == 2 || perfil == 3 || perfil == 4 || perfil == 5 || perfil == 6 || perfil == 7 || perfil == 8 || perfil == 9 || perfil == 10 || perfil == 11">
+          <v-flex xs12 sm3 v-if="perfil == 1 || perfil == 2 || perfil == 3 || perfil == 4 || perfil == 5 || perfil == 6 || perfil == 7 || perfil == 8 || perfil == 9 || perfil == 10 || perfil == 11 || perfil == 0">
             <div>
               <CardModulos
                 title="Seguridad"
@@ -85,7 +85,7 @@
               />
             </div>
           </v-flex>
-          <v-flex xs12 sm3 v-if="perfil == 10 || perfil == 11">
+          <v-flex xs12 sm3 v-if="perfil == 10 || perfil == 11 || perfil == 0">
             <div>
               <CardModulos
                 title="Documentos"

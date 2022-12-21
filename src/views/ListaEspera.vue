@@ -13,6 +13,24 @@
       </v-card>
     </v-dialog>
 
+    <v-dialog
+      transition="dialog-bottom-transition"
+      max-width="600"
+      v-model="dialogNoEdit"
+    >
+      <v-card>
+        <v-toolbar color="#1973a5" dark>¡Aviso Importante!</v-toolbar>
+        <v-card-text>
+          <div class="text-h4 pa-5">
+            ¡No se puede editar, el paciente ya cuenta con cupo!
+          </div>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn text @click="dialogNoEdit = false">cerrar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-container>
       <v-card class="mx-auto my-5" max-width="1600">
         <v-system-bar color="#1973a5" dark>
@@ -45,6 +63,7 @@
       <v-card class="mx-auto my-5" max-width="1600">
         <v-tabs background-color="#1973a5" center-active dark>
           <v-tab @click="listaEsperaInit">Pendientes</v-tab>
+          <v-tab @click="listaEsperaAsig">Asignados</v-tab>
         </v-tabs>
       </v-card>
 
@@ -58,6 +77,7 @@
               <v-dialog v-model="dialog" max-width="1000px">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
+                    v-if="perfil == 8"
                     color="#1973a5"
                     dark
                     class="mb-2"
@@ -72,7 +92,7 @@
                     <v-card-text>
                       <v-container>
                         <v-row>
-                          <v-col cols="12" sm="6" md="6">
+                          <v-col v-if="perfil == 8" cols="12" sm="6" md="6">
                             <v-menu
                               ref="menu3"
                               v-model="menu3"
@@ -101,7 +121,15 @@
                               ></v-date-picker>
                             </v-menu>
                           </v-col>
-                          <v-col cols="12" sm="6" md="4">
+                          <v-col v-if="perfil == 9" cols="12" sm="6" md="6">
+                            <v-text-field
+                              v-model="editedItem.fechaSolicitud"
+                              label="Fecha de Solicitud"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 8" cols="12" sm="6" md="4">
                             <v-text-field
                               v-model="editedItem.dni"
                               :rules="[rules.required, rules.counter]"
@@ -110,7 +138,15 @@
                               @keyup.enter="buscarNombrePac"
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="6" md="2">
+                          <v-col v-if="perfil == 9" cols="12" sm="6" md="6">
+                            <v-text-field
+                              v-model="editedItem.dni"
+                              label="DNI"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 8" cols="12" sm="6" md="2">
                             <v-btn
                               class="mt-5"
                               icon
@@ -120,7 +156,22 @@
                               <v-icon>mdi-magnify</v-icon>
                             </v-btn>
                           </v-col>
-                          <v-col cols="12" sm="6" md="6">
+                          <v-col
+                            v-if="validDni == true"
+                            cols="12"
+                            sm="12"
+                            md="12"
+                          >
+                            <v-alert type="error">
+                              DNI NO ENCONTRADO, REVISAR
+                            </v-alert>
+                          </v-col>
+                          <v-col
+                            v-if="perfil == 8 || perfil == 9"
+                            cols="12"
+                            sm="6"
+                            md="6"
+                          >
                             <v-text-field
                               v-model="editedItem.nombrePaciente"
                               :rules="[rules.required, rules.counter]"
@@ -129,7 +180,7 @@
                               disabled
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="6" md="6">
+                          <v-col v-if="perfil == 8" cols="12" sm="6" md="6">
                             <v-text-field
                               v-model="editedItem.telefono"
                               :rules="[rules.required, rules.counter]"
@@ -137,25 +188,49 @@
                               :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="12" md="12">
+                          <v-col v-if="perfil == 9" cols="12" sm="6" md="6">
+                            <v-text-field
+                              v-model="editedItem.telefono"
+                              label="Telefono"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 8" cols="12" sm="12" md="12">
                             <v-autocomplete
                               v-model="editedItem.casOrigen"
                               :rules="[rules.required, rules.counter]"
                               :items="itemsClinicas"
                               dense
-                              label="LUGAR DE ORIGEN"
+                              label="Lugar de Origen"
                             ></v-autocomplete>
                           </v-col>
-                          <v-col cols="12" sm="12" md="12">
+                          <v-col v-if="perfil == 9" cols="12" sm="12" md="12">
+                            <v-text-field
+                              v-model="editedItem.casOrigen"
+                              label="Lugar de Origen"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 8" cols="12" sm="12" md="12">
                             <v-autocomplete
                               v-model="editedItem.casDestino"
                               :rules="[rules.required, rules.counter]"
                               :items="itemsClinicas"
                               dense
-                              label="LUGAR DE ORIGEN"
+                              label="Lugar de Destino"
                             ></v-autocomplete>
                           </v-col>
-                          <v-col cols="12" sm="6" md="6">
+                          <v-col v-if="perfil == 9" cols="12" sm="12" md="12">
+                            <v-text-field
+                              v-model="editedItem.casDestino"
+                              label="Lugar de Destino"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 8" cols="12" sm="6" md="6">
                             <v-autocomplete
                               v-model="editedItem.distrito"
                               :rules="[rules.required, rules.counter]"
@@ -164,7 +239,15 @@
                               label="Distrito"
                             ></v-autocomplete>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil == 9" cols="12" sm="6" md="6">
+                            <v-text-field
+                              v-model="editedItem.distrito"
+                              label="Distrito"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 8" cols="12" sm="6" md="3">
                             <v-select
                               v-model="editedItem.turno"
                               :items="itemsTurno"
@@ -172,7 +255,15 @@
                               label="Turno"
                             ></v-select>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil == 9" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.turno"
+                              label="Turno"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 8" cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.referencia"
                               :rules="[rules.required, rules.counter]"
@@ -180,7 +271,23 @@
                               :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="12" md="12">
+                          <v-col v-if="perfil == 9" cols="12" sm="12" md="12">
+                            <v-text-field
+                              v-model="editedItem.referencia"
+                              label="Referencia"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 8" cols="12" sm="12" md="12">
+                            <v-text-field
+                              v-model="editedItem.observaciones"
+                              label="Observaciones"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 9" cols="12" sm="12" md="12">
                             <v-text-field
                               v-model="editedItem.observaciones"
                               label="Observaciones"
@@ -207,12 +314,12 @@
                 <v-card>
                   <v-form ref="form" v-model="valid" lazy-validation>
                     <v-card-title>
-                      <span class="text-h5">Editar Cupos</span>
+                      <span class="text-h5">Editar Lista de Espera</span>
                     </v-card-title>
                     <v-card-text>
                       <v-container>
                         <v-row>
-                          <v-col cols="12" sm="6" md="6">
+                          <v-col v-if="perfil == 8" cols="12" sm="6" md="6">
                             <v-menu
                               ref="menu3"
                               v-model="menu3"
@@ -241,7 +348,15 @@
                               ></v-date-picker>
                             </v-menu>
                           </v-col>
-                          <v-col cols="12" sm="6" md="4">
+                          <v-col v-if="perfil == 9" cols="12" sm="6" md="6">
+                            <v-text-field
+                              v-model="editedItem.fechaSolicitud"
+                              label="Fecha de Solicitud"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 8" cols="12" sm="6" md="4">
                             <v-text-field
                               v-model="editedItem.dni"
                               :rules="[rules.required, rules.counter]"
@@ -250,7 +365,15 @@
                               @keyup.enter="buscarNombrePac"
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="6" md="2">
+                          <v-col v-if="perfil == 9" cols="12" sm="6" md="6">
+                            <v-text-field
+                              v-model="editedItem.dni"
+                              label="DNI"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 8" cols="12" sm="6" md="2">
                             <v-btn
                               class="mt-5"
                               icon
@@ -260,7 +383,12 @@
                               <v-icon>mdi-magnify</v-icon>
                             </v-btn>
                           </v-col>
-                          <v-col cols="12" sm="6" md="6">
+                          <v-col
+                            v-if="perfil == 8 || perfil == 9"
+                            cols="12"
+                            sm="6"
+                            md="6"
+                          >
                             <v-text-field
                               v-model="editedItem.nombrePaciente"
                               :rules="[rules.required, rules.counter]"
@@ -269,7 +397,7 @@
                               disabled
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="6" md="6">
+                          <v-col v-if="perfil == 8" cols="12" sm="6" md="6">
                             <v-text-field
                               v-model="editedItem.telefono"
                               :rules="[rules.required, rules.counter]"
@@ -277,25 +405,49 @@
                               :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="12" md="12">
+                          <v-col v-if="perfil == 9" cols="12" sm="6" md="6">
+                            <v-text-field
+                              v-model="editedItem.telefono"
+                              label="Telefono"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 8" cols="12" sm="12" md="12">
                             <v-autocomplete
                               v-model="editedItem.casOrigen"
                               :rules="[rules.required, rules.counter]"
                               :items="itemsClinicas"
                               dense
-                              label="LUGAR DE ORIGEN"
+                              label="Lugar de Origen"
                             ></v-autocomplete>
                           </v-col>
-                          <v-col cols="12" sm="12" md="12">
+                          <v-col v-if="perfil == 9" cols="12" sm="12" md="12">
+                            <v-text-field
+                              v-model="editedItem.casOrigen"
+                              label="Lugar de Origen"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 8" cols="12" sm="12" md="12">
                             <v-autocomplete
                               v-model="editedItem.casDestino"
                               :rules="[rules.required, rules.counter]"
                               :items="itemsClinicas"
                               dense
-                              label="LUGAR DE ORIGEN"
+                              label="Lugar de Destino"
                             ></v-autocomplete>
                           </v-col>
-                          <v-col cols="12" sm="6" md="6">
+                          <v-col v-if="perfil == 9" cols="12" sm="12" md="12">
+                            <v-text-field
+                              v-model="editedItem.casDestino"
+                              label="Lugar de Destino"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 8" cols="12" sm="6" md="6">
                             <v-autocomplete
                               v-model="editedItem.distrito"
                               :rules="[rules.required, rules.counter]"
@@ -304,7 +456,15 @@
                               label="Distrito"
                             ></v-autocomplete>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil == 9" cols="12" sm="6" md="6">
+                            <v-text-field
+                              v-model="editedItem.distrito"
+                              label="Distrito"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 8" cols="12" sm="6" md="3">
                             <v-select
                               v-model="editedItem.turno"
                               :items="itemsTurno"
@@ -312,7 +472,15 @@
                               label="Turno"
                             ></v-select>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col v-if="perfil == 9" cols="12" sm="6" md="3">
+                            <v-text-field
+                              v-model="editedItem.turno"
+                              label="Turno"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 8" cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.referencia"
                               :rules="[rules.required, rules.counter]"
@@ -320,7 +488,23 @@
                               :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="12" md="12">
+                          <v-col v-if="perfil == 9" cols="12" sm="12" md="12">
+                            <v-text-field
+                              v-model="editedItem.referencia"
+                              label="Referencia"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 8" cols="12" sm="12" md="12">
+                            <v-text-field
+                              v-model="editedItem.observaciones"
+                              label="Observaciones"
+                              :maxlength="maxdat"
+                              disabled
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 9" cols="12" sm="12" md="12">
                             <v-text-field
                               v-model="editedItem.observaciones"
                               label="Observaciones"
@@ -365,7 +549,7 @@
             <v-icon small class="mr-2" @click="editItem(item)">
               mdi-pencil
             </v-icon>
-            <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+            <!--<v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>-->
           </template>
         </v-data-table>
       </v-card>
@@ -426,6 +610,7 @@ export default {
     adminForm: 0,
     maxdat: 21,
     valid: true,
+    validDni: false,
     medicamentos: ["ERITROPOYETINA", "HIERRO"],
     via: ["SC", "EV"],
     dosisE: [1000, 2000, 3000, 4000, 5000, 6000],
@@ -479,7 +664,7 @@ export default {
       "Santiago de Surco",
       "Surquillo",
       "Villa El Salvador",
-      "Villa María del Triunfo"
+      "Villa María del Triunfo",
     ],
     clinicasCarga: null,
     editedItem: {
@@ -498,6 +683,7 @@ export default {
       distrito: "",
       referencia: "",
       observaciones: "",
+      estado: null,
       dateIngreso: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
@@ -535,6 +721,7 @@ export default {
     formAdmi: false,
     dialogDelete: false,
     dialogEditAdm: false,
+    dialogNoEdit: false,
     vista: "",
     actionBoton: "AGREGAR LISTA DE ESPERA",
     headers: [],
@@ -556,6 +743,7 @@ export default {
       distrito: "",
       referencia: "",
       observaciones: "",
+      estado: null,
       dateIngreso: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
@@ -627,10 +815,12 @@ export default {
               //this.dataAdmi = res.data[0].url.split("/")[4];
               //this.datosPresHis = res.data[0];
               console.log("data paciente", res.data[0].url);
+              this.validDni = false;
             })
             .catch((res) => {
               console.warn("Error:", res.statusText);
               //this.dialog = false;
+              this.validDni = true;
             });
         })
         .catch((response) => {
@@ -787,6 +977,7 @@ export default {
 
     editItem(item) {
       console.log("item", item);
+
       this.editedItem.fechaSolicitud = item.fechaSoli;
       this.editedItem.dni = item.datosPaciente.num_doc;
       this.editedItem.urlPaciente = item.datosPaciente.url;
@@ -805,7 +996,12 @@ export default {
       this.editedItem.referencia = item.referencia;
       this.editedItem.observaciones = item.observaciones;
       this.datosEdit = item.url;
-      this.dialogEdit = true;
+      //this.editedItem.estado = item.estado;
+      if (item.estado == false) {
+        this.dialogEdit = true;
+      } else {
+        this.dialogNoEdit = true;
+      }
     },
 
     deleteItem(item) {
@@ -870,6 +1066,7 @@ export default {
     edit() {
       console.log("esto es para editar", this.editedItem);
       //if (this.editedItem.usuario == this.url) {
+
       axios
         .post(RUTA_SERVIDOR + "/api/token/", {
           username: "cnsr",
@@ -985,7 +1182,7 @@ export default {
                   referencia: this.editedItem.referencia,
                   observaciones: this.editedItem.observaciones,
                   estado: false,
-                  user_reg: this.usuario+"|"+this.nombre
+                  user_reg: this.usuario + "|" + this.nombre,
                 },
                 {
                   headers: { Authorization: this.auth },
@@ -1065,7 +1262,7 @@ export default {
           sortable: false,
           value: "datosPaciente.num_doc",
         },
-        { text: "Paciente", value: "datosPaciente.nombres" },
+        { text: "Nombre", value: "datosPaciente.nombres" },
         { text: "Apellido Pat", value: "datosPaciente.ape_pat" },
         { text: "Apellido Mat", value: "datosPaciente.ape_mat" },
         { text: "Telefono", value: "telefono" },
@@ -1090,7 +1287,39 @@ export default {
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
           axios
-            .get(RUTA_SERVIDOR + "/listaEspera/", {
+            .get(RUTA_SERVIDOR + "/listaEspera/?search=false", {
+              headers: { Authorization: this.auth },
+            })
+            .then((res) => {
+              this.desserts = res.data;
+              this.dialogDataApi = false;
+              //this.dataAdmi = res.data[0].url.split("/")[4];
+              //this.datosPresHis = res.data[0];
+              console.log("desert", res.data);
+            })
+            .catch((res) => {
+              console.warn("Error:", res);
+              this.dialog = false;
+            });
+        })
+        .catch((response) => {
+          response === 404
+            ? console.warn("lo sientimos no tenemos servicios")
+            : console.warn("Error:", response);
+        });
+    },
+    listaEsperaAsig() {
+      this.cabezeraListaEspera();
+      this.dialogDataApi = true;
+      axios
+        .post(RUTA_SERVIDOR + "/api/token/", {
+          username: "cnsr",
+          password: "123456",
+        })
+        .then((response) => {
+          this.auth = "Bearer " + response.data.access;
+          axios
+            .get(RUTA_SERVIDOR + "/listaEspera/?search=true", {
               headers: { Authorization: this.auth },
             })
             .then((res) => {
