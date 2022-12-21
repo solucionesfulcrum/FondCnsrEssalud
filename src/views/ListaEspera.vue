@@ -53,10 +53,13 @@
             </v-btn>
           </v-col>
           <v-col cols="12" md="4">
-            <!--<v-btn class="mt-10" icon color="#1973a5" @click="generatePDF">
+            <v-btn class="mt-10" icon color="#1973a5" @click="exportExcel">
+              Generar Excel<v-icon>mdi-arrow-down-bold-box</v-icon>
+            </v-btn>
+          </v-col>
+          <!--<v-btn class="mt-10" icon color="#1973a5" @click="generatePDF">
               Generar PDF<v-icon>mdi-arrow-down-bold-box</v-icon>
             </v-btn>-->
-          </v-col>
         </v-row>
       </v-card>
 
@@ -563,6 +566,7 @@ export const RUTA_SERVIDOR = process.env.VUE_APP_RUTA_API;
 import CalendarioAnemia from "./CalendarioAnemia.vue";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import * as XLSX from "xlsx";
 
 export default {
   data: () => ({
@@ -573,6 +577,7 @@ export default {
     usuario: "",
     //EXPORT PDF
     dataPdfExport: [],
+    dataToExport: [],
     heading: "REPORTE PACIENTES NUTRICIÓN",
     items: [
       { title: "Item 1", body: "I am item 1 body text" },
@@ -790,6 +795,60 @@ export default {
     },
   },
   methods: {
+    exportExcel() {
+      this.dataToExport = [];
+      console.log("estamos aqui 1", this.dataToExport);
+      axios
+        .post(RUTA_SERVIDOR + "/api/token/", {
+          username: "cnsr",
+          password: "123456",
+        })
+        .then((response) => {
+          this.auth = "Bearer " + response.data.access;
+          axios
+            .get(RUTA_SERVIDOR + "/listaEspera/", {
+              headers: { Authorization: this.auth },
+            })
+            .then((res) => {
+              for (let i = 0; i < res.data.length; i++) {
+                //this.dataPdfExport.push(this.desserts[i].datosPaciente.nombres,this.desserts[i]);
+                this.dataToExport.push(
+                  Object.assign(
+                    { contador: i + 1 },
+                    { fechaSolicitada: res.data[i].fechaSoli },
+                    { NombreCompleto: (res.data[i].datosPaciente.nombres +" "+res.data[i].datosPaciente.ape_pat +" "+res.data[i].datosPaciente.ape_mat)},
+                    { Telefono: res.data[i].telefono },
+                    { Origen: res.data[i].casOrigen },
+                    { ClinicaSolicitada: res.data[i].casDestino },
+                    { DistritoSolicitado: res.data[i].distrito },
+                    { Turno: res.data[i].turno },
+                    { Referencia: res.data[i].referencia },
+                    { Observaciones: res.data[i].observaciones },
+                    { Estado: res.data[i].estado },
+                  )
+                );
+              }
+
+              //this.dataToExport = res.data;
+              console.log("estamos aqui", this.dataToExport);
+              let data = XLSX.utils.json_to_sheet(this.dataToExport);
+              const workbook = XLSX.utils.book_new();
+              const filename = "Exportado";
+              XLSX.utils.book_append_sheet(workbook, data, filename);
+              XLSX.writeFile(workbook, `${filename}.xlsx`);
+            })
+            .catch((res) => {
+              console.warn("Error:", res);
+              this.dialog = false;
+            });
+        })
+        .catch((response) => {
+          response === 404
+            ? console.warn("lo sientimos no tenemos servicios")
+            : console.warn("Error:", response);
+        });
+    },
+
     buscarNombrePac() {
       axios
         .post(RUTA_SERVIDOR + "/api/token/", {
