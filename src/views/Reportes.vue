@@ -2,11 +2,11 @@
   <v-container>
     <v-card class="mx-auto my-5" max-width="900">
       <v-tabs background-color="#1973a5" center-active dark>
-        <v-tab @click="adminForm = 0">Anemia</v-tab>
-        <v-tab @click="adminForm = 1">Nutrición</v-tab>
+        <v-tab @click="adminForm = 0">Nutrición</v-tab>
+        <!--<v-tab @click="adminForm = 1">Anemia</v-tab>-->
       </v-tabs>
     </v-card>
-    <v-card class="mx-auto my-5" max-width="900" v-if="adminForm == 1">
+    <v-card class="mx-auto my-5" max-width="900" v-if="adminForm == 0">
       <v-form ref="form" v-model="valid" lazy-validation>
         <v-system-bar color="#1973a5" dark> Reportes Nutrición </v-system-bar>
         <v-row class="mt-4 container">
@@ -93,7 +93,7 @@
 
     <!--Reporte de Anemia-->
 
-    <v-card class="mx-auto my-5" max-width="900" v-if="adminForm == 0">
+    <v-card class="mx-auto my-5" max-width="900" v-if="adminForm == 1">
       <v-form ref="form" v-model="valid" lazy-validation>
         <v-system-bar color="#1973a5" dark> Reporte Anemia </v-system-bar>
         <v-row class="mt-4 container">

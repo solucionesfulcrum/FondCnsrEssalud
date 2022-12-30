@@ -43,7 +43,7 @@
                     <v-list-item-title v-text="items2[1].text"></v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
-                <v-list-item v-if="perfil==2">
+                <v-list-item v-if="perfil==1">
                   <v-list-item-icon>
                     <v-icon v-text="items2[2].icon"></v-icon>
                   </v-list-item-icon>
@@ -68,8 +68,9 @@
       </div>
       <div v-if="selectedItem == 0" class="col-sm-10"><CExternaAnem /></div>
       <div v-if="selectedItem == 1" class="col-sm-10"><CExternaNut /></div>
-      <div v-if="selectedItem == 2 && perfil == 2" class="col-sm-10"><ValorGloSub /></div>
+      <div v-if="selectedItem == 2 && perfil == 1" class="col-sm-10"><ValorGloSub /></div>
       <div v-if="selectedItem == 2 && perfil == 1" class="col-sm-10"><Reportes /></div>
+      <div v-if="selectedItem == 2 && perfil == 2" class="col-sm-10"><Reportes /></div>
       <div v-if="selectedItem == 3" class="col-sm-10"><Reportes /></div>
     </div>
   </div>

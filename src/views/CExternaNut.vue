@@ -58,6 +58,22 @@
     <v-dialog
       transition="dialog-bottom-transition"
       max-width="600"
+      v-model="dialogError"
+    >
+      <v-card>
+        <v-toolbar color="#1973a5" dark>¡Aviso Importante!</v-toolbar>
+        <v-card-text>
+          <div class="text-h4 pa-5">¡Lo siento, se cometio un error!</div>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn text @click="dialogError = false">cerrar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
+      transition="dialog-bottom-transition"
+      max-width="600"
       v-model="dialogAvisoEliminar"
     >
       <v-card>
@@ -101,9 +117,9 @@
             <v-text-field
               class="mx-auto mt-8"
               v-model="setDni"
-              label="DNI"
+              label="Número de Documento"
               required
-              :maxlength="8"
+              :maxlength="10"
               @keyup.enter="buscarPacicente"
             ></v-text-field>
           </v-col>
@@ -302,7 +318,7 @@
                               label="Turno"
                             ></v-select>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col cols="12" sm="6" md="6">
                             <v-select
                               v-model="editedItem.tipoPaciente"
                               :items="itemsTipoPaciente"
@@ -313,36 +329,28 @@
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.peso"
-                              :rules="[rules.required, rules.counter]"
+                              :rules="[rules.required]"
                               label="Peso (Kilogramos)"
-                              :maxlength="maxdat"
+                              :maxlength="15"
                               type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.talla"
-                              :rules="[rules.required, rules.counter]"
+                              :rules="[rules.required]"
                               label="Talla (Metros)"
-                              :maxlength="maxdat"
+                              :maxlength="15"
                               type="number"
                               @keyup.enter="calculoIMC"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
-                              v-model="editedItem.imc"
-                              label="IMC"
-                              :maxlength="maxdat"
-                              disabled
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
                               v-model="editedItem.circuBra"
-                              :rules="[rules.required, rules.counter]"
+                              :rules="[rules.required]"
                               label="Circunferencia Braquial"
-                              :maxlength="maxdat"
+                              :maxlength="15"
                               type="number"
                             ></v-text-field>
                           </v-col>
@@ -350,49 +358,51 @@
                             <v-text-field
                               v-model="editedItem.medCali"
                               label="Pliege Tricipital"
-                              :maxlength="maxdat"
+                              :rules="[rules.required]"
+                              :maxlength="15"
                               type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.albSerica"
-                              :rules="[rules.required, rules.counter]"
+                              :rules="[rules.required]"
                               label="ALB Sérica"
-                              :maxlength="maxdat"
+                              :maxlength="15"
                               type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.vgs"
+                              :rules="[rules.required]"
                               label="MIS"
-                              :maxlength="maxdat"
+                              :maxlength="15"
                               type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.ingestaCaloricaT"
-                              :rules="[rules.required, rules.counter]"
+                              :rules="[rules.required]"
                               label="Ingesta Calorica Total"
-                              :maxlength="maxdat"
+                              :maxlength="40"
                               type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.ingestaProteicaT"
-                              :rules="[rules.required, rules.counter]"
+                              :rules="[rules.required]"
                               label="Ingesta Proteica Total"
-                              :maxlength="maxdat"
+                              :maxlength="40"
                               type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-select
                               v-model="editedItem.diagNut"
-                              :rules="[rules.required, rules.counter]"
+                              :rules="[rules.required]"
                               label="Diagnostico Nutricional"
                               :items="itemsDiagNut"
                             ></v-select>
@@ -404,6 +414,13 @@
                               :rules="[rules.required]"
                               label="Intervención Nutricional"
                             ></v-select>
+                          </v-col>
+                          <v-col cols="12" sm="12" md="12">
+                            <v-text-field
+                              v-model="editedItem.obsNutricion"
+                              label="Observacion Nutricional"
+                              :maxlength="100"
+                            ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="12" md="12"
                             ><v-divider inset></v-divider
@@ -424,7 +441,7 @@
                             >PT: {{ parValores[0].pt }}</v-col
                           >
                           <v-col cols="12" sm="4" md="3"
-                            >%IMC:
+                            >IMC:
                             {{(
                     editedItem.peso /
                     (editedItem.talla * editedItem.talla)
@@ -502,7 +519,7 @@
                                 <v-btn
                                   text
                                   color="primary"
-                                  @click="menu4 = false"
+                                  @click="menu5 = false"
                                 >
                                   Cancel
                                 </v-btn>
@@ -510,7 +527,7 @@
                                   text
                                   color="primary"
                                   @click="
-                                    $refs.menu4.save(editedItem.dateIngreso)
+                                    $refs.menu5.save(editedItem.dateIngreso)
                                   "
                                 >
                                   OK
@@ -520,8 +537,8 @@
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-menu
-                              ref="menu5"
-                              v-model="menu5"
+                              ref="menu6"
+                              v-model="menu6"
                               :close-on-content-click="false"
                               :return-value.sync="editedItem.dateEvalu"
                               transition="scale-transition"
@@ -549,7 +566,7 @@
                                 <v-btn
                                   text
                                   color="primary"
-                                  @click="menu4 = false"
+                                  @click="menu6 = false"
                                 >
                                   Cancel
                                 </v-btn>
@@ -557,7 +574,7 @@
                                   text
                                   color="primary"
                                   @click="
-                                    $refs.menu4.save(editedItem.dateEvalu)
+                                    $refs.menu6.save(editedItem.dateEvalu)
                                   "
                                 >
                                   OK
@@ -581,7 +598,7 @@
                               label="Turno"
                             ></v-select>
                           </v-col>
-                          <v-col cols="12" sm="6" md="3">
+                          <v-col cols="12" sm="6" md="6">
                             <v-select
                               v-model="editedItem.tipoPaciente"
                               :items="itemsTipoPaciente"
@@ -592,33 +609,28 @@
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.peso"
+                              :rules="[rules.required]"
                               label="Peso (Kilogramos)"
-                              :maxlength="maxdat"
+                              :maxlength="15"
                               type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.talla"
+                              :rules="[rules.required]"
                               label="Talla (Metros)"
-                              :maxlength="maxdat"
+                              :maxlength="15"
                               type="number"
                               @keyup.enter="calculoIMC"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
-                              v-model="editedItem.imc"
-                              label="IMC"
-                              :maxlength="maxdat"
-                              disabled
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="6" md="3">
-                            <v-text-field
                               v-model="editedItem.circuBra"
+                              :rules="[rules.required]"
                               label="Circunferencia Braquial"
-                              :maxlength="maxdat"
+                              :maxlength="15"
                               type="number"
                             ></v-text-field>
                           </v-col>
@@ -627,46 +639,50 @@
                               v-model="editedItem.medCali"
                               label="Pliege Tricipital"
                               :rules="[rules.required]"
-                              :maxlength="maxdat"
+                              :maxlength="15"
                               type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.albSerica"
+                              :rules="[rules.required]"
                               label="ALB Sérica"
-                              :maxlength="maxdat"
+                              :maxlength="15"
                               type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.vgs"
+                              :rules="[rules.required]"
                               label="MIS"
-                              :maxlength="maxdat"
+                              :maxlength="15"
                               type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.ingestaCaloricaT"
+                              :rules="[rules.required]"
                               label="Ingesta Calorica Total"
-                              :maxlength="maxdat"
+                              :maxlength="40"
                               type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.ingestaProteicaT"
+                              :rules="[rules.required]"
                               label="Ingesta Proteica Total"
-                              :maxlength="maxdat"
+                              :maxlength="40"
                               type="number"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="3">
                             <v-select
                               v-model="editedItem.diagNut"
-                              :rules="[rules.required, rules.counter]"
+                              :rules="[rules.required]"
                               label="Diagnostico Nutricional"
                               :items="itemsDiagNut"
                             ></v-select>
@@ -679,9 +695,13 @@
                               label="Intervención Nutricional"
                             ></v-select>
                           </v-col>
-                          <v-col cols="12" sm="12" md="12"
-                            ><v-divider inset></v-divider
-                          ></v-col>
+                          <v-col cols="12" sm="12" md="12">
+                            <v-text-field
+                              v-model="editedItem.obsNutricion"
+                              label="Observacion Nutricional"
+                              :maxlength="100"
+                            ></v-text-field>
+                          </v-col>
                           <v-col cols="12" sm="4" md="3"
                             >Edad: {{ parValores[0].edad }}</v-col
                           >
@@ -795,6 +815,7 @@ export default {
     dialogAvisoEliminar: false,
     dialogAvisoEditar: false,
     dialogAvisoNULL: false,
+    dialogError: false,
     dialog: false,
     itemsFrecuencia: ["L-M-V", "M-J-S"],
     itemsTurno: ["1er Turno", "2do Turno", "3er Turno", "4to Turno"],
@@ -816,12 +837,12 @@ export default {
       "Seguimiento Nutricional - NORMAL/SOBRESO/OBESIDAD",
       "Monitoreo y Orientación Nutricional- DESNUTRICION LEVE/MODERADO/SEVERO",
     ],*/
-     itemsInterNut: [
+    itemsInterNut: [
       "Evaluación y Orientación Nutricional",
       "Seguimiento Nutricional",
       "Monitoreo y Orientación Nutricional",
     ],
-    nuevoValid: false,
+    nuevoValid: true,
     datosPresHis: [],
     datosEdit: "",
     dialogEditExclu: false,
@@ -864,6 +885,7 @@ export default {
       ingestaProteicaT: Number,
       diagNut: "",
       interNut: "",
+      obsNutricion: "",
     },
     minimo: new Date(
       Date.now() - 432000000 - new Date().getTimezoneOffset() * 60000
@@ -909,6 +931,7 @@ export default {
       ingestaProteicaT: Number,
       diagNut: "",
       interNut: "",
+      obsNutricion: "",
     },
     menu3: false,
     menu2: false,
@@ -1131,6 +1154,7 @@ export default {
       this.editedItem.diagNut = item.diagNutricional;
       this.editedItem.interNut = item.interveNutricional;
       this.editedItem.usuario = item.usuario;
+      this.editedItem.obsNutricion = item.obsNutricion;
       /*this.editedItem.name = item.nomNefro;
       this.editedItem.dos = item.dosisPres;
       this.editedItem.dosHierro = item.dosisHiePres;
@@ -1273,7 +1297,7 @@ export default {
               })
               .catch((res) => {
                 console.warn("Error:", res);
-                this.dialog = false;
+                //this.dialogEdit = false;
               });
           })
           .catch((response) => {
@@ -1381,6 +1405,7 @@ export default {
                   ).toFixed(2),
                   diagNutricional: this.editedItem.diagNut,
                   interveNutricional: this.editedItem.interNut,
+                  obsNutricion : this.editedItem.obsNutricion,
                   usuario: this.url,
                   pacNuevo: this.nuevoValid,
                 },
@@ -1396,7 +1421,8 @@ export default {
               })
               .catch((res) => {
                 console.log("Error:", res);
-                this.dialog = false;
+                this.dialogError = true;
+                //this.dialog = false;
               });
           })
           .catch((response) => {
