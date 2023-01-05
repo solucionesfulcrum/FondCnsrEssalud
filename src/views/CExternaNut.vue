@@ -306,7 +306,6 @@
                             <v-select
                               v-model="editedItem.frecuencia"
                               :items="itemsFrecuencia"
-                              :rules="[rules.required]"
                               label="Frecuencia"
                             ></v-select>
                           </v-col>
@@ -314,7 +313,6 @@
                             <v-select
                               v-model="editedItem.turno"
                               :items="itemsTurno"
-                              :rules="[rules.required]"
                               label="Turno"
                             ></v-select>
                           </v-col>
@@ -375,7 +373,6 @@
                           <v-col cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.vgs"
-                              :rules="[rules.required]"
                               label="MIS"
                               :maxlength="15"
                               type="number"
@@ -402,7 +399,6 @@
                           <v-col cols="12" sm="6" md="3">
                             <v-select
                               v-model="editedItem.diagNut"
-                              :rules="[rules.required]"
                               label="Diagnostico Nutricional"
                               :items="itemsDiagNut"
                             ></v-select>
@@ -411,7 +407,6 @@
                             <v-select
                               v-model="editedItem.interNut"
                               :items="itemsInterNut"
-                              :rules="[rules.required]"
                               label="Intervención Nutricional"
                             ></v-select>
                           </v-col>
@@ -1338,7 +1333,7 @@ export default {
     save() {
       console.log("click");
       if (
-        !this.editedItem.turno ||
+        /*!this.editedItem.turno ||
         !this.editedItem.frecuencia ||
         !this.editedItem.dateIngreso ||
         !this.editedItem.dateEvalu ||
@@ -1351,7 +1346,8 @@ export default {
         !this.editedItem.ingestaCalorica ||
         !this.editedItem.ingestaProteica ||
         !this.editedItem.diagNut ||
-        !this.editedItem.interNut
+        !this.editedItem.interNut*/
+        !this.editedItem.tipoPaciente
       ) {
         this.$refs.form.validate();
         console.log("validate");
