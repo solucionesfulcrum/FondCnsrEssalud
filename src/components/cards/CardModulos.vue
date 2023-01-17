@@ -36,6 +36,9 @@
     <div v-if="this.img === '10'">
       <v-img :src="require('../../assets/transfer.png')" height="120px"></v-img>
     </div>
+    <div v-if="this.img === '11'">
+      <v-img :src="require('../../assets/incidencias.png')" height="120px"></v-img>
+    </div>
     <v-card-title> {{ img }}-{{ title }} </v-card-title>
 
     <v-card-subtitle>
@@ -81,6 +84,9 @@ export default {
       }
       if (this.img === "10") {
         this.$router.push("/DocuContratados");
+      }
+      if (this.img === "11") {
+        this.$router.push("/Incidencias");
       }
     },
   },

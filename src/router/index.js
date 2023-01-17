@@ -69,6 +69,11 @@ const routes = [
     name: 'DocuContratados',
     component: () => import('../views/DocuContratados.vue')
   },
+  {
+    path: '/incidencias',
+    name: 'Incidencias',
+    component: () => import('../views/AdmIncidencias.vue')
+  },
 ]
 
 const router = new VueRouter({

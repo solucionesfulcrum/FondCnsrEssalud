@@ -76,12 +76,12 @@
               />
             </div>
           </v-flex>
-          <v-flex xs12 sm3 v-if="perfil == 1 || perfil == 2 || perfil == 3 || perfil == 4 || perfil == 5 || perfil == 6 || perfil == 7 || perfil == 8 || perfil == 9 || perfil == 10 || perfil == 11 || perfil == 0">
+          <v-flex xs12 sm3 v-if="perfil == 12 || perfil == 0">
             <div>
               <CardModulos
-                title="Seguridad"
-                detalle_titulo="Gestiona los Accesos al sistema para los usuarios"
-                img="4"
+                title="Incidencias"
+                detalle_titulo="Registro y Control de Incidencias"
+                img="11"
               />
             </div>
           </v-flex>
@@ -91,6 +91,15 @@
                 title="Documentos"
                 detalle_titulo="Envio de Archivos al CNSR - Oficina Servicios Contratados"
                 img="10"
+              />
+            </div>
+          </v-flex>
+          <v-flex xs12 sm3 v-if="perfil == 1 || perfil == 2 || perfil == 3 || perfil == 4 || perfil == 5 || perfil == 6 || perfil == 7 || perfil == 8 || perfil == 9 || perfil == 10 || perfil == 11 || perfil == 12 || perfil == 0">
+            <div>
+              <CardModulos
+                title="Seguridad"
+                detalle_titulo="Gestiona los Accesos al sistema para los usuarios"
+                img="4"
               />
             </div>
           </v-flex>

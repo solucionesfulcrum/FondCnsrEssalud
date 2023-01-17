@@ -232,7 +232,6 @@
                                 v-model="editedItem.dateIngreso"
                                 no-title
                                 scrollable
-                                :min="minimo"
                                 :max="maximo"
                               >
                                 <v-spacer></v-spacer>
@@ -279,7 +278,6 @@
                                 v-model="editedItem.dateEvalu"
                                 no-title
                                 scrollable
-                                :min="minimo"
                                 :max="maximo"
                               >
                                 <v-spacer></v-spacer>
@@ -507,7 +505,6 @@
                                 v-model="editedItem.dateIngreso"
                                 no-title
                                 scrollable
-                                :min="minimo"
                                 :max="maximo"
                               >
                                 <v-spacer></v-spacer>
@@ -554,7 +551,6 @@
                                 v-model="editedItem.dateEvalu"
                                 no-title
                                 scrollable
-                                :min="minimo"
                                 :max="maximo"
                               >
                                 <v-spacer></v-spacer>
