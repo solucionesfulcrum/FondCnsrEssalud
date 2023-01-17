@@ -78,6 +78,63 @@
         <v-system-bar color="#1973a5" dark>
           MONITOREO Y SEGUIMIENTO DE COMPRAS DELEGADAS Y LOCALES
         </v-system-bar>
+        <v-row class="start mt-5 ml-5">
+          <v-col cols="12" md="5">
+            <v-menu
+              v-model="menuBusquedaDesde"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              transition="scale-transition"
+              offset-y
+              min-width="auto"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-model="dateBusquedaDesde"
+                  label="Fecha Busqueda Desde"
+                  prepend-icon="mdi-calendar"
+                  readonly
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                v-model="dateBusquedaDesde"
+                @input="menuBusquedaDesde = false"
+              ></v-date-picker>
+            </v-menu>
+          </v-col>
+          <v-col cols="12" md="5"
+            ><v-menu
+              v-model="menuBusquedaHasta"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              transition="scale-transition"
+              offset-y
+              min-width="auto"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-model="dateBusquedaHasta"
+                  label="Fecha Busqueda Hasta"
+                  prepend-icon="mdi-calendar"
+                  readonly
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                v-model="dateBusquedaHasta"
+                @input="menuBusquedaHasta = false"
+              ></v-date-picker>
+            </v-menu>
+          </v-col>
+          <v-col cols="12" md="1">
+            <v-btn color="#1973a5" dark class="mb-2" @click="buscarPorFecha">
+              Buscar
+            </v-btn>
+          </v-col>
+        </v-row>
       </v-card>
 
       <v-card class="mx-auto my-5" max-width="900">
@@ -1675,6 +1732,15 @@ import "jspdf-autotable";
 
 export default {
   data: () => ({
+    //fecha para busqueda
+    menuBusquedaDesde: false,
+    menuBusquedaHasta: false,
+    dateBusquedaDesde: "2023-01-01",
+    dateBusquedaHasta: new Date(
+      Date.now() - new Date().getTimezoneOffset() * 60000
+    )
+      .toISOString()
+      .substr(0, 10),
     //perfil data
     perfil: "",
     nombre: "",
@@ -1759,9 +1825,7 @@ export default {
         .substr(0, 10),
       ordenCompra: Number,
       monto: Number,
-      datePago: new Date(
-        Date.now() - new Date().getTimezoneOffset() * 60000
-      )
+      datePago: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
       anulacion: "",
@@ -1848,9 +1912,7 @@ export default {
         .substr(0, 10),
       ordenCompra: Number,
       monto: Number,
-      datePago: new Date(
-        Date.now() - new Date().getTimezoneOffset() * 60000
-      )
+      datePago: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
       anulacion: "",
@@ -1912,6 +1974,39 @@ export default {
   },
 
   methods: {
+    buscarPorFecha() {
+      this.dialogDataApi = true;
+      axios
+        .post(RUTA_SERVIDOR + "/api/token/", {
+          username: "cnsr",
+          password: "123456",
+        })
+        .then((response) => {
+          this.auth = "Bearer " + response.data.access;
+          axios
+            .get(RUTA_SERVIDOR + "/delegaciones/", {
+              headers: { Authorization: this.auth },
+            })
+            .then((res) => {
+              this.desserts = res.data.filter(
+                (e) =>
+                  e.fechaDelegacion >= this.dateBusquedaDesde &&
+                  e.fechaDelegacion <= this.dateBusquedaHasta
+              );
+              this.dialogDataApi = false;
+            })
+            .catch((res) => {
+              console.log("Error:", res);
+              this.dialog = false;
+            });
+        })
+        .catch((response) => {
+          response === 404
+            ? console.warn("lo sientimos no tenemos servicios")
+            : console.warn("Error:", response);
+        });
+    },
+
     generatePDF() {
       console.log("datos deseert elemt", this.desserts);
       for (let i = 0; i < this.desserts.length; i++) {
@@ -2558,14 +2653,18 @@ export default {
               headers: { Authorization: this.auth },
             })
             .then((res) => {
-              this.desserts = res.data;
+              this.desserts = res.data.filter(
+                (e) =>
+                  e.fechaDelegacion >= this.dateBusquedaDesde &&
+                  e.fechaDelegacion <= this.dateBusquedaHasta
+              );
               this.dialogDataApi = false;
               //this.dataAdmi = res.data[0].url.split("/")[4];
               //this.datosPresHis = res.data[0];
               console.log("desert", res.data);
             })
             .catch((res) => {
-              console.warn("Error:", res);
+              console.log("Error:", res);
               this.dialog = false;
             });
         })

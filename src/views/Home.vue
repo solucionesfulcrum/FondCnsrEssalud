@@ -63,7 +63,7 @@
         </v-container>
       </v-form>
     </v-card>
-    <span>Versión N° 1.1.2 || DSI - Diciembre - 2022</span>
+    <span>Versión N° 1.1.3 || DSI - Enero - 2023</span>
   </div>
 </template>
 
