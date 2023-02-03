@@ -110,7 +110,10 @@ export default {
                 sessionStorage.setItem("nombre", res.data[0].nombre);
                 sessionStorage.setItem("perfil", res.data[0].perfil);
                 sessionStorage.setItem("url", res.data[0].url);
-                sessionStorage.setItem("descripCas", res.data[0].datosCas.descripCas);
+                sessionStorage.setItem(
+                  "descripCas",
+                  res.data[0].datosCas.descripCas
+                );
                 sessionStorage.setItem("urlCas", res.data[0].datosCas.url);
                 this.$router.push("/go");
               } else {
@@ -128,13 +131,27 @@ export default {
           response === 404
             ? console.warn("lo sientimos no tenemos servicios")
             : console.warn("Error:", response);
-            this.value = true;
+          this.value = true;
         });
     },
     actualizar() {
       this.value = false;
     },
   },
-  created() {},
+  created() {
+    axios
+      .post(RUTA_SERVIDOR + "api/SgssPacienteQa/rest/pLoginMovilRWs/", {
+        codOpcion: "1",
+        codTipDoc: "1",
+        numDoc: "16146548",
+        fecNacimiento: "15/07/1956",
+      })
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  },
 };
 </script>
