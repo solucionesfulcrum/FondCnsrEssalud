@@ -90,18 +90,17 @@ export default {
       this.dialog = true;
       this.value = false;
       axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
+        .post(RUTA_SERVIDOR + "/V1/api/token/", {
           username: "cnsr",
           password: "123456",
         })
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
           axios
-            .get(RUTA_SERVIDOR + "/usuario/?search=" + this.usuario, {
+            .get(RUTA_SERVIDOR + "/V1/usuario/?search=" + this.usuario, {
               headers: { Authorization: this.auth },
             })
             .then((res) => {
-              console.log("respuesta", res.data);
               this.dialog = false;
               if (res.data[0].clave == this.contra) {
                 console.log("ingreso exitoso");
@@ -140,14 +139,14 @@ export default {
   },
   created() {
     axios
-      .post(RUTA_SERVIDOR + "api/SgssPacienteQa/rest/pLoginMovilRWs/", {
+      .post(RUTA_SERVIDOR + "/V2/SgssPacienteQa/rest/pLoginMovilRWs", {
         codOpcion: "1",
         codTipDoc: "1",
         numDoc: "16146548",
         fecNacimiento: "15/07/1956",
       })
       .then(function (response) {
-        console.log(response.data);
+        console.log(response.data.vDataItem[0].apePaterno);
       })
       .catch(function (error) {
         console.log(error);
