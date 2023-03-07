@@ -136,14 +136,14 @@ export default {
       this.dialog = true;
       this.value = false;
       axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
           password: "123456",
         })
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
           axios
-            .get(RUTA_SERVIDOR + "/usuario/?search=" + this.usuario, {
+            .get(RUTA_SERVIDOR + "/APICNSR/usuario/?search=" + this.usuario, {
               headers: { Authorization: this.auth },
             })
             .then((res) => {

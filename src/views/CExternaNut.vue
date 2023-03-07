@@ -1044,14 +1044,14 @@ export default {
         this.dialogAvisoNULL = true;
       } else {
         axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
             username: "cnsr",
             password: "123456",
           })
           .then((response) => {
             this.auth = "Bearer " + response.data.access;
             axios
-              .get(RUTA_SERVIDOR + "/paciente/?search=" + this.setDni, {
+              .get(RUTA_SERVIDOR + "/APICNSR/paciente/?search=" + this.setDni, {
                 headers: { Authorization: this.auth },
               })
               .then((res) => {
@@ -1170,7 +1170,7 @@ export default {
       if (this.editedItem.usuario == this.url) {
         console.log("hola");
         axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
             username: "cnsr",
             password: "123456",
           })
@@ -1222,7 +1222,7 @@ export default {
       console.log("esto es para editar", this.editedItem);
       if (this.editedItem.usuario == this.url) {
         axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
             username: "cnsr",
             password: "123456",
           })
@@ -1349,7 +1349,7 @@ export default {
         console.log("validate");
       } else {
         axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
             username: "cnsr",
             password: "123456",
           })
@@ -1357,7 +1357,7 @@ export default {
             this.auth = "Bearer " + response.data.access;
             axios
               .post(
-                RUTA_SERVIDOR + "/nutricion/",
+                RUTA_SERVIDOR + "/APICNSR/nutricion/",
                 {
                   paciente: this.datosPaciente[0].url,
                   turno: this.editedItem.turno,
@@ -1434,7 +1434,7 @@ export default {
       this.dialogDataApi = true;
 
       axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
           password: "123456",
         })

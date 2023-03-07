@@ -58,7 +58,7 @@
                     ></v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
-                <v-list-item v-if="perfil == 1 || perfil == 2">
+                <v-list-item>
                   <v-list-item-icon>
                     <v-icon v-text="items2[3].icon"></v-icon>
                   </v-list-item-icon>
@@ -74,18 +74,20 @@
           </v-navigation-drawer>
         </v-card>
       </div>
-      <div v-if="selectedItem == 0" class="col-sm-10"><CuposAsignacion /></div>
-      <div v-if="selectedItem == 1" class="col-sm-10"><CuposRecord /></div>
-      <div v-if="selectedItem == 2" class="col-sm-10"><ListaEspera /></div>
+      <div v-if="selectedItem == 0" class="col-sm-10"><CuposParame /></div>
+      <div v-if="selectedItem == 1" class="col-sm-10"><CuposConfPuesto /></div>
+      <div v-if="selectedItem == 2" class="col-sm-10"><CuposAsisPaciente /></div>
+      <div v-if="selectedItem == 3" class="col-sm-10"><CuposReporte /></div>
     </div>
   </div>
 </template>
 
 <script>
 import NavBar from "../components/navbar/NavBar.vue";
-import ListaEspera from "./ListaEspera.vue";
-import CuposAsignacion from "./CuposAsignacion.vue";
-import CuposRecord from "./CuposRecord.vue"
+import CuposParame from "./CuposParame.vue"
+import CuposConfPuesto from "./CuposConfPuesto.vue"
+import CuposAsisPaciente from "./CuposAsisPaciente.vue"
+import CuposReporte from "./CuposReporte.vue"
 
 export default {
   data() {
@@ -94,9 +96,10 @@ export default {
       nombre: "",
       selectedItem: null,
       items2: [
-        { text: "Asignar Cupo", icon: "mdi-folder" },
-        { text: "Record Asignaciones", icon: "mdi-folder" },
-        { text: "Lista de Espera", icon: "mdi-folder" },
+        { text: "Parametrizacion Centro", icon: "mdi-folder" },
+        { text: "Configuración Puesto", icon: "mdi-folder" },
+        { text: "Asistencias de Paciente", icon: "mdi-folder" },
+        { text: "Reportes", icon: "mdi-folder" },
       ],
     };
   },
@@ -114,9 +117,10 @@ export default {
   },
   components: {
     NavBar,
-    ListaEspera,
-    CuposAsignacion,
-    CuposRecord,
+    CuposParame,
+    CuposConfPuesto,
+    CuposAsisPaciente,
+    CuposReporte,
   },
 };
 </script>

@@ -4,20 +4,20 @@ module.exports = {
   ],
   devServer: {
     proxy: {
-      '/V1': {
+      '/APICNSR': {
         target: 'http://10.0.52.64:8000/',
         ws: true,
         changeOrigin: true,
         pathRewrite: {
-          '^/V1': ''
+          '^/APICNSR': ''
         }
       },
-      '/V2': {
+      '/APICENTRAL': {
         target: 'http://10.56.1.127:9087/',
         ws: true,
         changeOrigin: true,
         pathRewrite: {
-          '^/V2': ''
+          '^/APICENTRAL': ''
         }
       }
     },

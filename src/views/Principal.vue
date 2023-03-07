@@ -76,6 +76,15 @@
               />
             </div>
           </v-flex>
+          <v-flex xs12 sm3 v-if="perfil == 13 || perfil == 0">
+            <div>
+              <CardModulos
+                title="Admisión y Cupós"
+                detalle_titulo="Gestiona de Asistencia y Cupos de Pacientes"
+                img="12"
+              />
+            </div>
+          </v-flex>
           <v-flex xs12 sm3 v-if="perfil == 12 || perfil == 0">
             <div>
               <CardModulos
@@ -94,7 +103,7 @@
               />
             </div>
           </v-flex>
-          <v-flex xs12 sm3 v-if="perfil == 1 || perfil == 2 || perfil == 3 || perfil == 4 || perfil == 5 || perfil == 6 || perfil == 7 || perfil == 8 || perfil == 9 || perfil == 10 || perfil == 11 || perfil == 12 || perfil == 0">
+          <v-flex xs12 sm3 v-if="perfil == 1 || perfil == 2 || perfil == 3 || perfil == 4 || perfil == 5 || perfil == 6 || perfil == 7 || perfil == 8 || perfil == 9 || perfil == 10 || perfil == 11 || perfil == 12|| perfil == 13 || perfil == 14 || perfil == 0">
             <div>
               <CardModulos
                 title="Seguridad"

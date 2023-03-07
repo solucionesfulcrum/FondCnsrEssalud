@@ -37,7 +37,16 @@
       <v-img :src="require('../../assets/transfer.png')" height="120px"></v-img>
     </div>
     <div v-if="this.img === '11'">
-      <v-img :src="require('../../assets/incidencias.png')" height="120px"></v-img>
+      <v-img
+        :src="require('../../assets/incidencias.png')"
+        height="120px"
+      ></v-img>
+    </div>
+    <div v-if="this.img === '12'">
+      <v-img
+        :src="require('../../assets/cuposClinicas.png')"
+        height="120px"
+      ></v-img>
     </div>
     <v-card-title> {{ img }}-{{ title }} </v-card-title>
 
@@ -87,6 +96,9 @@ export default {
       }
       if (this.img === "11") {
         this.$router.push("/Incidencias");
+      }
+      if (this.img === "12") {
+        this.$router.push("/CuposIpress");
       }
     },
   },

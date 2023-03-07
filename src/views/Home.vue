@@ -90,14 +90,14 @@ export default {
       this.dialog = true;
       this.value = false;
       axios
-        .post(RUTA_SERVIDOR + "/V1/api/token/", {
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
           password: "123456",
         })
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
           axios
-            .get(RUTA_SERVIDOR + "/V1/usuario/?search=" + this.usuario, {
+            .get(RUTA_SERVIDOR + "/APICNSR/usuario/?search=" + this.usuario, {
               headers: { Authorization: this.auth },
             })
             .then((res) => {
@@ -139,14 +139,14 @@ export default {
   },
   created() {
     axios
-      .post(RUTA_SERVIDOR + "/V2/SgssPacienteQa/rest/pLoginMovilRWs", {
+      .post(RUTA_SERVIDOR + "/APICENTRAL/SgssPacienteQa/rest/pLoginMovilRWs", {
         codOpcion: "1",
         codTipDoc: "1",
-        numDoc: "16146548",
-        fecNacimiento: "15/07/1956",
+        numDoc: "07622610",
+        fecNacimiento: "10/12/1970",
       })
       .then(function (response) {
-        console.log(response.data.vDataItem[0].apePaterno);
+        console.log(response.data);
       })
       .catch(function (error) {
         console.log(error);

@@ -55,6 +55,11 @@ const routes = [
     component: () => import('../views/MenuCupos.vue')
   },
   {
+    path: '/cuposIpress',
+    name: 'CuposIpress',
+    component: () => import('../views/MenuCuposIpress.vue')
+  },
+  {
     path: '/listaEspera',
     name: 'ListaEspera',
     component: () => import('../views/ListaEspera.vue')
@@ -73,6 +78,16 @@ const routes = [
     path: '/incidencias',
     name: 'Incidencias',
     component: () => import('../views/AdmIncidencias.vue')
+  },
+  {
+    path: '/cuposAsignacion',
+    name: 'CuposAsignacion',
+    component: () => import('../views/CuposAsignacion.vue')
+  },
+  {
+    path: '/cuposRecord',
+    name: 'CuposRecord',
+    component: () => import('../views/CuposRecord.vue')
   },
 ]
 

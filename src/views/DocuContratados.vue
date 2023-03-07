@@ -699,7 +699,7 @@ export default {
       if (this.editedItem.usuario == this.url) {
         console.log("hola");
         axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
             username: "cnsr",
             password: "123456",
           })
@@ -751,7 +751,7 @@ export default {
       console.log("esto es para editar", this.editedItem);
       if (this.editedItem.usuario == this.url) {
         axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
             username: "cnsr",
             password: "123456",
           })
@@ -886,7 +886,7 @@ export default {
 
         console.log("data",InstFormData)
         axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
             username: "cnsr",
             password: "123456",
           })
@@ -894,7 +894,7 @@ export default {
             this.auth = "Bearer " + response.data.access;
             axios
               .post(
-                RUTA_SERVIDOR + "/docuContratados/",InstFormData,
+                RUTA_SERVIDOR + "/APICNSR/docuContratados/",InstFormData,
                 {
                   headers: { Authorization: this.auth , 'Content-Type': 'multipart/form-data'},
                 }
@@ -926,7 +926,7 @@ export default {
       this.dialogDataApi = true;
 
       axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
           password: "123456",
         })
@@ -981,14 +981,14 @@ export default {
       this.cabezeraDocu();
       this.dialogDataApi = true;
       axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
           password: "123456",
         })
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
           axios
-            .get(RUTA_SERVIDOR + "/docuContratados/?search="+this.urlCas.split("/")[4]+",N", {
+            .get(RUTA_SERVIDOR + "/APICNSR/docuContratados/?search="+this.urlCas.split("/")[4]+",N", {
               headers: { Authorization: this.auth },
             })
             .then((res) => {
@@ -1014,14 +1014,14 @@ export default {
       this.cabezeraDocu();
       this.dialogDataApi = true;
       axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
           password: "123456",
         })
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
           axios
-            .get(RUTA_SERVIDOR + "/docuContratados/?search="+this.urlCas.split("/")[4]+",R", {
+            .get(RUTA_SERVIDOR + "/APICNSR/docuContratados/?search="+this.urlCas.split("/")[4]+",R", {
               headers: { Authorization: this.auth },
             })
             .then((res) => {

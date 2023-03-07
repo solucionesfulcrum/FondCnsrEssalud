@@ -505,14 +505,14 @@ export default {
     //Consulta de incidencias pendientes
     listarPersonal() {
       axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
           password: "123456",
         })
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
           axios
-            .get(RUTA_SERVIDOR + "/personal/", {
+            .get(RUTA_SERVIDOR + "/APICNSR/personal/", {
               headers: { Authorization: this.auth },
             })
             .then((res) => {
@@ -545,14 +545,14 @@ export default {
       this.adminForm = "0";
       this.dialogDataApi = true;
       axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
           password: "123456",
         })
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
           axios
-            .get(RUTA_SERVIDOR + "/incidenciaDsi/?search=PENDIENTE", {
+            .get(RUTA_SERVIDOR + "/APICNSR/incidenciaDsi/?search=PENDIENTE", {
               headers: { Authorization: this.auth },
             })
             .then((res) => {
@@ -591,14 +591,14 @@ export default {
       this.adminForm = "1";
       this.dialogDataApi = true;
       axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
           password: "123456",
         })
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
           axios
-            .get(RUTA_SERVIDOR + "/incidenciaDsi/?search=PROCESO", {
+            .get(RUTA_SERVIDOR + "/APICNSR/incidenciaDsi/?search=PROCESO", {
               headers: { Authorization: this.auth },
             })
             .then((res) => {
@@ -636,14 +636,14 @@ export default {
     incidenciasTerminado() {
       this.dialogDataApi = true;
       axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
           password: "123456",
         })
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
           axios
-            .get(RUTA_SERVIDOR + "/incidenciaDsi/?search=TERMINADO", {
+            .get(RUTA_SERVIDOR + "/APICNSR/incidenciaDsi/?search=TERMINADO", {
               headers: { Authorization: this.auth },
             })
             .then((res) => {
@@ -682,14 +682,14 @@ export default {
     //Consulta Cantidad de incidencias
     incidencias() {
       axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
           password: "123456",
         })
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
           axios
-            .get(RUTA_SERVIDOR + "/incidenciaDsi/", {
+            .get(RUTA_SERVIDOR + "/APICNSR/incidenciaDsi/", {
               headers: { Authorization: this.auth },
             })
             .then((res) => {
@@ -726,7 +726,7 @@ export default {
       console.log("data item", item);
       console.log("usuario", this.usuario);
       axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
           password: "123456",
         })
@@ -739,7 +739,7 @@ export default {
                 this.urlAsignacion.split("/")[4] +
                 "/",
               {
-                estado: RUTA_SERVIDOR + "/maestro/3/",
+                estado: RUTA_SERVIDOR + "/APICNSR/maestro/3/",
                 userReg: this.usuario + "-" + this.nombre,
               },
               {
@@ -797,7 +797,7 @@ export default {
       } else {
         console.log("clasificacion", this.editedItem.clasiSolucion);
         axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
             username: "cnsr",
             password: "123456",
           })
@@ -810,7 +810,7 @@ export default {
                   this.urlAsignacion.split("/")[4] +
                   "/",
                 {
-                  estado: RUTA_SERVIDOR + "/maestro/4/",
+                  estado: RUTA_SERVIDOR + "/APICNSR/maestro/4/",
                   clasiSolu: this.editedItem.clasiSolucion.toString(),
                   solucion: this.editedItem.detalleSolucion,
                 },
@@ -873,7 +873,7 @@ export default {
         console.log("validate");
       } else {
         axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
             username: "cnsr",
             password: "123456",
           })
@@ -881,7 +881,7 @@ export default {
             this.auth = "Bearer " + response.data.access;
             axios
               .post(
-                RUTA_SERVIDOR + "/incidenciaDsi/",
+                RUTA_SERVIDOR + "/APICNSR/incidenciaDsi/",
                 {
                   personal:
                     RUTA_SERVIDOR +

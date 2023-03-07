@@ -522,14 +522,14 @@ export default {
     console.log("usuario", this.usuario);
     this.dialogDataApi = true;
     axios
-      .post(RUTA_SERVIDOR + "/api/token/", {
+      .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
         username: "cnsr",
         password: "123456",
       })
       .then((response) => {
         this.auth = "Bearer " + response.data.access;
         axios
-          .get(RUTA_SERVIDOR + "/paciente/", {
+          .get(RUTA_SERVIDOR + "/APICNSR/paciente/", {
             headers: { Authorization: this.auth },
           })
           .then((res) => {
@@ -557,7 +557,7 @@ export default {
             //this.pres()
 
             axios
-              .get(RUTA_SERVIDOR + "/cas/?search=1", {
+              .get(RUTA_SERVIDOR + "/APICNSR/cas/?search=1", {
                 headers: { Authorization: this.auth },
               })
               .then((res1) => {
@@ -599,14 +599,14 @@ export default {
         this.dialogAviso = true;
       } else {
         axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
             username: "cnsr",
             password: "123456",
           })
           .then((response) => {
             this.auth = "Bearer " + response.data.access;
             axios
-              .get(RUTA_SERVIDOR + "/paciente/?search=" + this.setDni, {
+              .get(RUTA_SERVIDOR + "/APICNSR/paciente/?search=" + this.setDni, {
                 headers: { Authorization: this.auth },
               })
               .then((res) => {
@@ -637,7 +637,7 @@ export default {
     datosHistoria() {
       this.dialogDataApi = true;
       axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
           password: "123456",
         })
@@ -687,7 +687,7 @@ export default {
 
     editar() {
       axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
           password: "123456",
         })
@@ -782,7 +782,7 @@ export default {
         console.log("validate");
       } else {
         axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
             username: "cnsr",
             password: "123456",
           })
@@ -790,7 +790,7 @@ export default {
             this.auth = "Bearer " + response.data.access;
             axios
               .post(
-                RUTA_SERVIDOR + "/archivo/",
+                RUTA_SERVIDOR + "/APICNSR/archivo/",
                 {
                   paciente: this.datosPaciente[0].url,
                   numBalda: this.editedItem.numBalda,
@@ -839,7 +839,7 @@ export default {
       } else {
         this.dialogDataApi = true;
         axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
             username: "cnsr",
             password: "123456",
           })
@@ -847,7 +847,7 @@ export default {
             this.auth = "Bearer " + response.data.access;
             axios
               .post(
-                RUTA_SERVIDOR + "/paciente/",
+                RUTA_SERVIDOR + "/APICNSR/paciente/",
                 {
                   tipo_doc: this.paciente.tipoDoc,
                   num_doc: this.paciente.numDniPacinte,

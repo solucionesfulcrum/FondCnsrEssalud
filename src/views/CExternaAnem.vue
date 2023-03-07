@@ -1148,14 +1148,14 @@ export default {
         this.dialogAviso = true;
       } else {
         axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
             username: "cnsr",
             password: "123456",
           })
           .then((response) => {
             this.auth = "Bearer " + response.data.access;
             axios
-              .get(RUTA_SERVIDOR + "/paciente/?search=" + this.setDni, {
+              .get(RUTA_SERVIDOR + "/APICNSR/paciente/?search=" + this.setDni, {
                 headers: { Authorization: this.auth },
               })
               .then((res) => {
@@ -1334,7 +1334,7 @@ export default {
     edit() {
       console.log("esto es para editar", this.datosEdit.split("/")[4]);
       axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
           password: "123456",
         })
@@ -1382,7 +1382,7 @@ export default {
 
     editarAdm() {
       axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
           password: "123456",
         })
@@ -1433,7 +1433,7 @@ export default {
       console.log("esto paciente", this.datosPaciente);
 
       axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
           password: "123456",
         })
@@ -1510,7 +1510,7 @@ export default {
       } else {
         console.log("administra", this.editedItem);
         axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
             username: "cnsr",
             password: "123456",
           })
@@ -1518,10 +1518,10 @@ export default {
             this.auth = "Bearer " + response.data.access;
             axios
               .post(
-                RUTA_SERVIDOR + "/adminAnemia/",
+                RUTA_SERVIDOR + "/APICNSR/adminAnemia/",
                 {
                   presAnemia:
-                    RUTA_SERVIDOR + "/presAnemia/" + this.dataAdmi + "/",
+                    RUTA_SERVIDOR + "/APICNSR/presAnemia/" + this.dataAdmi + "/",
                   fechaAdmi: this.editedItem.date,
                   nomEnfer: this.editedItem.name,
                   medAdmi: this.editedItem.med,
@@ -1570,7 +1570,7 @@ export default {
         console.log("validate");
       } else {
         axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
             username: "cnsr",
             password: "123456",
           })
@@ -1578,7 +1578,7 @@ export default {
             this.auth = "Bearer " + response.data.access;
             axios
               .post(
-                RUTA_SERVIDOR + "/presAnemia/",
+                RUTA_SERVIDOR + "/APICNSR/presAnemia/",
                 {
                   paciente: this.datosPaciente[0].url,
                   fechaPres: this.editedItem.date,
@@ -1623,7 +1623,7 @@ export default {
         console.log("validate");
       } else {
         axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
             username: "cnsr",
             password: "123456",
           })
@@ -1631,7 +1631,7 @@ export default {
             this.auth = "Bearer " + response.data.access;
             axios
               .post(
-                RUTA_SERVIDOR + "/exclusionAnemia/",
+                RUTA_SERVIDOR + "/APICNSR/exclusionAnemia/",
                 {
                   paciente: this.datosPaciente[0].url,
                   fechaExclu: this.editedItem.date,
@@ -1669,7 +1669,7 @@ export default {
       this.dialogDataApi = true;
 
       axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
           password: "123456",
         })
@@ -1712,7 +1712,7 @@ export default {
       //consulta api datos Prescripcion
       console.log("datos desert1", this.desserts1);
       axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
           password: "123456",
         })
@@ -1754,7 +1754,7 @@ export default {
       this.actionBoton = "Registro Exclusión";
       this.dialogDataApi = true;
       axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
           password: "123456",
         })

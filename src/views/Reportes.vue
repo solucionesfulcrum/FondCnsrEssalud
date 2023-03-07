@@ -266,14 +266,14 @@ export default {
 
   created() {
     axios
-      .post(RUTA_SERVIDOR + "/api/token/", {
+      .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
         username: "cnsr",
         password: "123456",
       })
       .then((response) => {
         this.auth = "Bearer " + response.data.access;
         axios
-          .get(RUTA_SERVIDOR + "/cas/", {
+          .get(RUTA_SERVIDOR + "/APICNSR/cas/", {
             headers: { Authorization: this.auth },
           })
           .then((res) => {
@@ -319,7 +319,7 @@ export default {
         console.log("estamos aqui 1", this.dataToExport);
         console.log("selectClinica", this.valueClinicas);
         axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
             username: "cnsr",
             password: "123456",
           })
@@ -438,7 +438,7 @@ export default {
         this.$refs.form.validate();
       } else {
         axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
             username: "cnsr",
             password: "123456",
           })
@@ -1084,7 +1084,7 @@ export default {
         this.$refs.form.validate();
       } else {
         axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
             username: "cnsr",
             password: "123456",
           })
@@ -1189,7 +1189,7 @@ export default {
       //Administración Anemia
 
       axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
           password: "123456",
         })
@@ -1282,7 +1282,7 @@ export default {
       //Administración exclusion
 
       axios
-        .post(RUTA_SERVIDOR + "/api/token/", {
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
           password: "123456",
         })
@@ -1367,7 +1367,7 @@ export default {
         this.$refs.form.validate();
       } else {
         axios
-          .post(RUTA_SERVIDOR + "/api/token/", {
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
             username: "cnsr",
             password: "123456",
           })

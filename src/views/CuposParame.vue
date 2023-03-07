@@ -32,45 +32,13 @@
     </v-dialog>
 
     <v-container>
-      <v-card class="mx-auto my-5" max-width="1600">
+      <v-card class="mx-auto my-5" max-width="1000">
         <v-system-bar color="#1973a5" dark>
-          GESION DE CUPOS - LISTA DE ESPERA
+          PARAMETRIZACION CENTRO DE DIALISIS
         </v-system-bar>
-        <v-row class="start ml-10">
-          <v-col cols="12" md="4">
-            <v-text-field
-              class="mx-auto mt-8"
-              v-model="setDni"
-              label="DNI"
-              required
-              :maxlength="maxdat"
-              @keyup.enter="buscarPacicente"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="4">
-            <v-btn class="mt-10" icon color="#1973a5" @click="buscarPacicente">
-              <v-icon>mdi-magnify</v-icon>
-            </v-btn>
-          </v-col>
-          <v-col cols="12" md="4">
-            <v-btn class="mt-10" icon color="#1973a5" @click="exportExcel">
-              Generar Excel<v-icon>mdi-arrow-down-bold-box</v-icon>
-            </v-btn>
-          </v-col>
-          <!--<v-btn class="mt-10" icon color="#1973a5" @click="generatePDF">
-              Generar PDF<v-icon>mdi-arrow-down-bold-box</v-icon>
-            </v-btn>-->
-        </v-row>
       </v-card>
 
-      <v-card class="mx-auto my-5" max-width="1600">
-        <v-tabs background-color="#1973a5" center-active dark>
-          <v-tab @click="listaEsperaInit">Pendientes</v-tab>
-          <v-tab @click="listaEsperaAsig">Asignados</v-tab>
-        </v-tabs>
-      </v-card>
-
-      <v-card class="mx-auto my-5" max-width="1600">
+      <v-card class="mx-auto my-5" max-width="1000">
         <v-data-table :headers="headers" :items="desserts" class="elevation-1">
           <template v-slot:top>
             <v-toolbar flat>
@@ -1313,23 +1281,15 @@ export default {
 
     cabezeraListaEspera() {
       this.headers = [
-        { text: "Fecha Soli", value: "fechaSoli" },
+        { text: "Turno", value: "fechaSoli" },
         {
-          text: "Dni",
+          text: "Frecuencia",
           align: "start",
           sortable: false,
           value: "datosPaciente.num_doc",
         },
-        { text: "Nombre", value: "datosPaciente.nombres" },
-        { text: "Apellido Pat", value: "datosPaciente.ape_pat" },
-        { text: "Apellido Mat", value: "datosPaciente.ape_mat" },
-        { text: "Telefono", value: "telefono" },
-        { text: "Origen", value: "casOrigen" },
-        { text: "Clinica Solicitada", value: "casDestino" },
-        { text: "Distrito Solicitado", value: "distrito" },
-        { text: "Turno", value: "turno" },
-        { text: "Referencia", value: "referencia" },
-        { text: "Observaciones", value: "observaciones" },
+        { text: "Capacidad", value: "datosPaciente.nombres" },
+        { text: "Estado", value: "datosPaciente.ape_pat" },
         { text: "Actions", value: "actions", sortable: false },
       ];
     },
