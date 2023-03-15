@@ -60,28 +60,75 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-      <v-container>
-        <v-row>
-          <v-col
-            :key="indice"
-            v-for="(numero, indice) in contadorConf"
-            cols="12"
-            sm="2"
-            md="2"
-          >
-            <v-card class="mx-auto" max-width="250">
-              <v-card-text>
-                <div>PUESTO {{ indice + 1 }}</div>
-                <p class="text-h5 text--primary">NORMAL</p>
-                <p>adjective</p>
-              </v-card-text>
-              <v-card-actions>
-                <v-btn text color="deep-purple accent-4"> Asitencia </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
+
+    <v-dialog
+      transition="dialog-bottom-transition"
+      max-width="600"
+      persistent
+      v-model="dialogEditPuesto"
+    >
+      <v-card>
+        <v-toolbar color="#1973a5" dark
+          >Editar Puesto {{ editedItem.numeroPuesto }}</v-toolbar
+        >
+        <v-container class="mt-5">
+          <v-row>
+            <v-col cols="12" sm="12" md="12">
+              <v-autocomplete
+                v-model="editedItem.tipoPuesto"
+                :rules="[rules.required, rules.counter]"
+                :items="itemsPuesto"
+                dense
+                label="TURNO"
+              ></v-autocomplete>
+            </v-col>
+            <v-col cols="12" sm="12" md="12">
+              <v-radio-group v-model="editedItem.estado" row>
+                <v-radio label="Activo" value="true"></v-radio>
+                <v-radio label="Inactivo" value="false"></v-radio>
+              </v-radio-group>
+            </v-col>
+          </v-row>
+        </v-container>
+        <v-card-actions class="justify-end">
+          <v-btn text @click="cambioPuesto">Aceptar</v-btn>
+          <v-btn text @click="dialogEditPuesto = false">Cerrar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-container>
+      <v-row>
+        <v-col
+          :key="indice"
+          v-for="(contadorRes, indice) in contadorConf"
+          cols="12"
+          sm="2"
+          md="2"
+        >
+          <v-card class="mx-auto" max-width="250">
+            <v-card-text v-if="contadorRes.tipoPuesto == 'NORMAL'">
+              <div>PUESTO {{ contadorRes.numeroPuesto }}</div>
+              <p class="text-h5 text--primary">{{ contadorRes.tipoPuesto }}</p>
+            </v-card-text>
+            <v-card-text v-else>
+              <div class="orange--text">PUESTO {{ contadorRes.numeroPuesto }}</div>
+              <p class="text-h5 orange--text">{{ contadorRes.tipoPuesto }}</p>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn
+                @click="configItem(contadorRes)"
+                text
+                color="deep-purple accent-4"
+                elevation="2"
+              >
+                Asistencia
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
@@ -96,6 +143,9 @@ export default {
     itemsTurno: ["TURNO 1", "TURNO 2", "TURNO 3", "TURNO 4"],
     itemsFrecuencia: ["LUN-MIE-VIE", "MAR-JUE-SAB"],
     itemsEstado: ["true", "false"],
+    itemsPuesto: ["NORMAL", "ESPECIAL"],
+    //JALAR DATA DE USER
+    datosEditPuesto: "",
     //perfil data
     perfil: "",
     nombre: "",
@@ -106,24 +156,15 @@ export default {
       required: (value) => !!value || "Campo Obligatorio.",
       counter: (value) => value.length <= 20 || "Max 20 characters",
     },
-
     editedItem: {
       //Cupos
       turno: "",
       frecuencia: "",
       capacidad: Number,
+      tipoPuesto: "",
+      estado: null,
+      numeroPuesto: null,
     },
-    dialog: false,
-    dialogEdit: false,
-    formAdmi: false,
-    dialogDelete: false,
-    dialogEditAdm: false,
-    dialogNoEdit: false,
-    dialogDataApi: false,
-    vista: "",
-    valid: true,
-    datosEdit: "",
-    actionBoton: "AGREGAR",
     headers: [],
     desserts: [],
     editedIndex: -1,
@@ -132,8 +173,23 @@ export default {
       turno: "",
       frecuencia: "",
       capacidad: Number,
+      tipoPuesto: "",
+      estado: null,
+      numeroPuesto: null,
     },
-    contadorConf: Number,
+    dialog: false,
+    dialogEdit: false,
+    formAdmi: false,
+    dialogDelete: false,
+    dialogEditAdm: false,
+    dialogNoEdit: false,
+    dialogDataApi: false,
+    dialogEditPuesto: false,
+    vista: "",
+    valid: true,
+    datosEdit: "",
+    actionBoton: "AGREGAR",
+    contadorConf: [],
   }),
 
   computed: {
@@ -151,6 +207,57 @@ export default {
     },
   },
   methods: {
+    cambioPuesto() {
+      axios
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
+          username: "cnsr",
+          password: "123456",
+        })
+        .then((response) => {
+          this.auth = "Bearer " + response.data.access;
+          axios
+            .patch(
+              RUTA_SERVIDOR +
+                "/APICNSR/parameCentroPuesto/" +
+                this.datosEditPuesto.split("/")[4] +
+                "/",
+              {
+                tipoPuesto: this.editedItem.tipoPuesto,
+                estado: this.editedItem.estado,
+              },
+              {
+                headers: { Authorization: this.auth },
+              }
+            )
+            .then((res) => {
+              this.dialogDataApi = true;
+              console.log("exito", res.status);
+              //this.close();
+              this.dialogEditPuesto=false;
+              this.ejecutarTurno();
+              this.ParameCentroPuestoInit();
+            })
+            .catch((res) => {
+              console.warn("Error:", res);
+              this.dialog = false;
+            });
+        })
+        .catch((response) => {
+          response === 404
+            ? console.warn("lo sientimos no tenemos servicios")
+            : console.warn("Error:", response);
+        });
+    },
+
+    configItem(item) {
+      console.log("item", item);
+      this.dialogEditPuesto = true;
+      this.editedItem.numeroPuesto = item.numeroPuesto;
+      this.editedItem.tipoPuesto = item.tipoPuesto;
+      this.editedItem.estado = item.estado.toString();
+      this.datosEditPuesto = item.url
+    },
+
     ejecutarTurno() {
       console.log(this.desserts, "desserts");
       const resultTurno = this.desserts.filter(
@@ -158,8 +265,10 @@ export default {
           e.turno == this.editedItem.turno &&
           e.frecuencia == this.editedItem.frecuencia
       );
-      console.log("resultTurno", resultTurno[0].capacidad);
-      this.contadorConf = resultTurno[0].capacidad;
+      //console.log("resultTurno", resultTurno);
+      resultTurno.sort((x, y) => x.numeroPuesto - y.numeroPuesto);
+      this.contadorConf = resultTurno;
+      console.log("contadorConf", this.contadorConf);
     },
 
     initialize() {
@@ -221,7 +330,7 @@ export default {
               this.dialogDataApi = true;
               console.log("exito", res.status);
               this.close();
-              this.ParameCentroInit();
+              this.ParameCentroPuestoInit();
               this.dialogEdit = false;
             })
             .catch((res) => {
@@ -296,7 +405,7 @@ export default {
                 console.log("exito", res.status);
                 this.close();
                 //console.log(this.editedItem);
-                this.ParameCentroInit();
+                this.ParameCentroPuestoInit();
               })
               .catch((res) => {
                 console.log("Error:", res);
@@ -331,7 +440,7 @@ export default {
       ];
     },
 
-    ParameCentroInit() {
+    ParameCentroPuestoInit() {
       //this.cabezeraParameCentro();
       this.dialogDataApi = true;
       axios
@@ -344,7 +453,7 @@ export default {
           axios
             .get(
               RUTA_SERVIDOR +
-                "/APICNSR/parameCentro/?search=true," +
+                "/APICNSR/parameCentroPuesto/?search=true," +
                 this.urlCas.split("/")[4],
               {
                 headers: { Authorization: this.auth },
@@ -355,7 +464,7 @@ export default {
               this.dialogDataApi = false;
               //this.dataAdmi = res.data[0].url.split("/")[4];
               //this.datosPresHis = res.data[0];
-              console.log("parametros", res.data);
+              console.log("parametrosPuesto", res.data);
             })
             .catch((res) => {
               console.warn("Error:", res);
@@ -387,11 +496,9 @@ export default {
     console.log("Nombre", this.nombre);
     console.log("cas", this.urlCas);
     //INICIO DE CONSULTA
-    this.ParameCentroInit();
+    this.ParameCentroPuestoInit();
   },
 
   components: {},
 };
 </script>
-
-
