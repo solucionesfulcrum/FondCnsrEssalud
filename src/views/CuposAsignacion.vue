@@ -20,17 +20,15 @@
       v-model="dialogAsigPaciente"
     >
       <v-card>
-        <v-toolbar color="#1973a5" dark
-          >Editar Puesto {{ editedItem.numeroPuesto }}</v-toolbar
-        >
+        <v-toolbar color="#1973a5" dark>Asignar Puesto</v-toolbar>
         <v-container class="mt-5">
           <v-row>
             <v-col cols="12" sm="12" md="12">
               <v-autocomplete
                 v-model="editedItem.urlPaciente"
-                :rules="[rules.required, rules.counter]"
-                :items="itemsdatosPaciente"
-                item-text="nombres"
+                :rules="[rules.required]"
+                :items="itemsDatosPaciente"
+                item-text="nombreCompleto"
                 item-value="url"
                 dense
                 label="PACIENTE"
@@ -39,7 +37,7 @@
           </v-row>
         </v-container>
         <v-card-actions class="justify-end">
-          <v-btn text @click="">Aceptar</v-btn>
+          <v-btn text @click="asignarCupoPaciente">Aceptar</v-btn>
           <v-btn text @click="dialogAsigPaciente = false">Cerrar</v-btn>
         </v-card-actions>
       </v-card>
@@ -175,7 +173,7 @@
             </v-toolbar>
           </template>
           <template v-slot:[`item.actions`]="{ item }">
-            <v-icon small class="mr-2" @click="asignarCupoPaciente(item)">
+            <v-icon small class="mr-2" @click="itemAsigCuposPac(item)">
               mdi-account
             </v-icon>
             <!--<v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>-->
@@ -196,6 +194,22 @@
         </v-card-text>
         <v-card-actions class="justify-end">
           <v-btn text @click="dialogNoEdit = false">cerrar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+     <v-dialog
+      transition="dialog-bottom-transition"
+      max-width="600"
+      v-model="dialogNoAsignacion"
+    >
+      <v-card>
+        <v-toolbar color="#1973a5" dark>¡Aviso Importante!</v-toolbar>
+        <v-card-text>
+          <div class="text-h4 pa-5">No es posible otorgar Cupo - ¡Paciene con Cupo Vigente!</div>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn text @click="dialogNoAsignacion = false">cerrar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -308,18 +322,18 @@
                 </v-card>
               </v-dialog>
               <!--editar-->
-              <v-dialog v-model="dialogEdit" max-width="600px">
+              <v-dialog v-model="dialogGuaradoCorrecto" max-width="600px">
                 <v-card>
                   <v-form ref="form" v-model="valid" lazy-validation>
                     <v-card-title>
-                      <span class="text-h5">Editar el estado de turno</span>
+                      <span class="text-h5">!MENSAJE IMPORTANTE¡</span>
                     </v-card-title>
                     <v-card-text>
                       <v-container>
                         <v-row>
                           <v-col cols="12" sm="12" md="12">
                             <span class="text-h5"
-                              >¿Esta seguro de desactivar este turno?</span
+                              >SE GRABO CORRECTAMENTE EL CUPO</span
                             >
                           </v-col>
                         </v-row>
@@ -327,10 +341,11 @@
                     </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn color="red darken-1" text @click="closeEdit">
-                        Cancelar
-                      </v-btn>
-                      <v-btn color="blue darken-1" text @click="edit">
+                      <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="dialogGuaradoCorrecto = false"
+                      >
                         Aceptar
                       </v-btn>
                     </v-card-actions>
@@ -380,7 +395,7 @@ export default {
     itemsEstado: ["true", "false"],
     itemsClinicas: [],
     itemsDistrito: [],
-    itemsdatosPaciente: [],
+    itemsDatosPaciente: [],
     //perfil data
     perfil: "",
     nombre: "",
@@ -399,6 +414,7 @@ export default {
       capacidad: Number,
       urlClinica: "",
       urlPaciente: "",
+      urlPuesto: "",
       distrito: "",
     },
     dialog: false,
@@ -410,6 +426,8 @@ export default {
     dialogDataApi: false,
     dialogDetalleCupos: false,
     dialogAsigPaciente: false,
+    dialogGuaradoCorrecto: false,
+    dialogNoAsignacion: false,
     vista: "",
     valid: true,
     datosEdit: "",
@@ -426,6 +444,8 @@ export default {
       frecuencia: "",
       capacidad: Number,
       urlClinica: "",
+      urlPaciente: "",
+      urlPuesto: "",
       distrito: "",
     },
   }),
@@ -814,8 +834,13 @@ export default {
               headers: { Authorization: this.auth },
             })
             .then((res) => {
-              console.log("datosPaciente", res.data);
-              this.itemsdatosPaciente = res.data;
+              for (let i = 0; i < res.data.length; i++) {
+                this.itemsDatosPaciente.push(Object.assign(
+                    {nombreCompleto:res.data[i].ape_pat+" "+res.data[i].ape_mat+" "+res.data[i].nombres},
+                    {url:res.data[i].url},
+                ));
+              }
+              console.log("datosPaciente", this.itemsDatosPaciente);
               this.dialogDataApi = false;
             })
             .catch((res) => {
@@ -912,10 +937,66 @@ export default {
         });
     },
 
-    asignarCupoPaciente(item) {
+    itemAsigCuposPac(item) {
       this.dialogAsigPaciente = true;
-      console.log("item de cupos",item)
-      
+      console.log("item de asig cupos", item);
+      this.editedItem.urlPuesto = item.url;
+      this.editedItem.urlPaciente = [];
+    },
+
+    asignarCupoPaciente() {
+      console.log("ya casi", this.editedItem.urlPuesto);
+      console.log("ya casi 2", this.editedItem.urlPaciente);
+
+      console.log("click");
+      this.dialogDataApi = true;
+      if (!this.editedItem.urlPaciente) {
+        this.$refs.form.validate();
+        console.log("validate");
+      } else {
+        axios
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
+            username: "cnsr",
+            password: "123456",
+          })
+          .then((response) => {
+            this.auth = "Bearer " + response.data.access;
+            axios
+              .post(
+                RUTA_SERVIDOR + "/APICNSR/asigCuposPac/",
+                {
+                  paciente: this.editedItem.urlPaciente,
+                  parameCentroPuesto: this.editedItem.urlPuesto,
+                  usuario_reg: this.usuario + "|" + this.nombre,
+                },
+                {
+                  headers: { Authorization: this.auth },
+                }
+              )
+              .then((res) => {
+                console.log("exito", res.status);
+                this.dialogDataApi = false;
+                this.editedItem.urlPaciente = [];
+                this.dialogAsigPaciente = false;
+                this.dialogDetalleCupos = false;
+                this.buscarClinica();
+                this.dialogGuaradoCorrecto = true;
+              })
+              .catch((res) => {
+                console.log("exito", res.status);
+                console.log("Error:", res);
+                this.dialogNoAsignacion=true;
+                this.dialogDataApi = false;
+                this.dialogAsigPaciente = false;
+                this.dialogDetalleCupos = false;
+                this.dialog = false;
+                this.buscarClinica();
+              });
+          })
+          .catch((response) => {
+            console.log("exito", response.status);
+          });
+      }
     },
   },
 
