@@ -1,4 +1,948 @@
 <template>
-<h1>hola esto es asignacion de cupos</h1>
-    
+  <div>
+    <v-dialog v-model="dialogDataApi" hide-overlay persistent width="300">
+      <v-card color="#1973a5" dark>
+        <v-card-text>
+          Cargando Datos
+          <v-progress-linear
+            indeterminate
+            color="white"
+            class="mb-0"
+          ></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
+      transition="dialog-bottom-transition"
+      max-width="600"
+      persistent
+      v-model="dialogAsigPaciente"
+    >
+      <v-card>
+        <v-toolbar color="#1973a5" dark
+          >Editar Puesto {{ editedItem.numeroPuesto }}</v-toolbar
+        >
+        <v-container class="mt-5">
+          <v-row>
+            <v-col cols="12" sm="12" md="12">
+              <v-autocomplete
+                v-model="editedItem.urlPaciente"
+                :rules="[rules.required, rules.counter]"
+                :items="itemsdatosPaciente"
+                item-text="nombres"
+                item-value="url"
+                dense
+                label="PACIENTE"
+              ></v-autocomplete>
+            </v-col>
+          </v-row>
+        </v-container>
+        <v-card-actions class="justify-end">
+          <v-btn text @click="">Aceptar</v-btn>
+          <v-btn text @click="dialogAsigPaciente = false">Cerrar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="dialogDetalleCupos" hide-overlay persistent width="1000">
+      <v-toolbar color="#1973a5" dark
+        ><v-row
+          ><v-col cols="12" sm="9" md="9"
+            >Cupos Libres de la Clinica {{ nombreClinicaDetalle }}</v-col
+          >
+          <v-col cols="12" sm="3" md="3"
+            ><v-btn
+              color="#1973a5"
+              dark
+              class="justify-content-end"
+              @click="dialogDetalleCupos = false"
+            >
+              CERRAR
+            </v-btn></v-col
+          ></v-row
+        ></v-toolbar
+      >
+      <v-card class="mx-auto" max-width="1000">
+        <v-data-table
+          :items-per-page="5"
+          :headers="headers"
+          :items="desserts"
+          class="elevation-1"
+        >
+          <template v-slot:top>
+            <v-toolbar flat>
+              <!--Registrar-->
+              <v-dialog v-model="dialog" max-width="600px">
+                <v-card>
+                  <v-form ref="form" v-model="valid" lazy-validation>
+                    <v-card-text>
+                      <v-container>
+                        <v-row>
+                          <v-col cols="12" sm="12" md="12">
+                            <v-autocomplete
+                              v-model="editedItem.turno"
+                              :rules="[rules.required, rules.counter]"
+                              :items="itemsTurno"
+                              dense
+                              label="TURNO"
+                            ></v-autocomplete>
+                          </v-col>
+                          <v-col cols="12" sm="12" md="12">
+                            <v-autocomplete
+                              v-model="editedItem.frecuencia"
+                              :rules="[rules.required, rules.counter]"
+                              :items="itemsFrecuencia"
+                              dense
+                              label="FRECUENCIA"
+                            ></v-autocomplete>
+                          </v-col>
+                          <v-col cols="12" sm="12" md="12">
+                            <v-text-field
+                              v-model="editedItem.capacidad"
+                              :rules="[rules.required, rules.counter]"
+                              label="CAPACIDAD"
+                              :maxlength="8"
+                              type="number"
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                      </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="blue darken-1" text @click="close">
+                        Cancelar
+                      </v-btn>
+                      <v-btn color="blue darken-1" text @click="save">
+                        Guardar
+                      </v-btn>
+                    </v-card-actions>
+                  </v-form>
+                </v-card>
+              </v-dialog>
+              <!--editar-->
+              <v-dialog v-model="dialogEdit" max-width="600px">
+                <v-card>
+                  <v-form ref="form" v-model="valid" lazy-validation>
+                    <v-card-title>
+                      <span class="text-h5">Editar el estado de turno</span>
+                    </v-card-title>
+                    <v-card-text>
+                      <v-container>
+                        <v-row>
+                          <v-col cols="12" sm="12" md="12">
+                            <span class="text-h5"
+                              >¿Esta seguro de desactivar este turno?</span
+                            >
+                          </v-col>
+                        </v-row>
+                      </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        color="red darken-1"
+                        text
+                        @click="dialogEdit = false"
+                      >
+                        Cancelar
+                      </v-btn>
+                      <v-btn color="blue darken-1" text @click="edit">
+                        Aceptar
+                      </v-btn>
+                    </v-card-actions>
+                  </v-form>
+                </v-card>
+              </v-dialog>
+              <v-dialog v-model="dialogDelete" max-width="500px">
+                <v-card>
+                  <v-card-title class="text-h5"
+                    >Esta seguro de eliminar registro?</v-card-title
+                  >
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="closeDelete"
+                      >Cancel</v-btn
+                    >
+                    <v-btn color="blue darken-1" text @click="deleteItemConfirm"
+                      >OK</v-btn
+                    >
+                    <v-spacer></v-spacer>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-toolbar>
+          </template>
+          <template v-slot:[`item.actions`]="{ item }">
+            <v-icon small class="mr-2" @click="asignarCupoPaciente(item)">
+              mdi-account
+            </v-icon>
+            <!--<v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>-->
+          </template>
+        </v-data-table>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
+      transition="dialog-bottom-transition"
+      max-width="600"
+      v-model="dialogNoEdit"
+    >
+      <v-card>
+        <v-toolbar color="#1973a5" dark>¡Aviso Importante!</v-toolbar>
+        <v-card-text>
+          <div class="text-h4 pa-5">¡No se puede editar, estado inactivo!</div>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn text @click="dialogNoEdit = false">cerrar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-container>
+      <v-card class="mx-auto my-5" max-width="1000">
+        <v-system-bar color="#1973a5" dark>
+          ASIGNACIÓN DE CUPOS - IPRESS CONTRATADAS
+        </v-system-bar>
+        <v-row class="mt-2 ml-15">
+          <v-col cols="12" sm="6" md="6">
+            <v-autocomplete
+              v-model="editedItem.distrito"
+              :items="itemsDistrito"
+              dense
+              label="Por Distrito"
+            ></v-autocomplete>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-btn
+              class="mt-2"
+              icon
+              color="#1973a5"
+              @click="buscarClinicaDistrito"
+            >
+              <v-icon>mdi-magnify</v-icon>
+            </v-btn>
+          </v-col>
+          <v-col cols="12" sm="6" md="6">
+            <v-autocomplete
+              v-model="editedItem.urlClinica"
+              :rules="[rules.required]"
+              :items="itemsClinicas"
+              item-text="descripCas"
+              item-value="url"
+              dense
+              label="Por Clinica"
+            ></v-autocomplete>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-btn
+              class="mt-2 mb-5"
+              icon
+              color="#1973a5"
+              @click="buscarClinica"
+            >
+              <v-icon>mdi-magnify</v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card>
+
+      <v-card class="mx-auto my-5" max-width="1000">
+        <v-data-table
+          :headers="headersClinica"
+          :items="dessertsClinica"
+          class="elevation-1"
+        >
+          <template v-slot:top>
+            <v-toolbar flat>
+              <v-divider class="mx-4" inset vertical></v-divider>
+              <v-spacer></v-spacer>
+              <!--Registrar-->
+              <v-dialog v-model="dialog" max-width="600px">
+                <v-card>
+                  <v-form ref="form" v-model="valid" lazy-validation>
+                    <v-card-text>
+                      <v-container>
+                        <v-row>
+                          <v-col cols="12" sm="12" md="12">
+                            <v-autocomplete
+                              v-model="editedItem.turno"
+                              :rules="[rules.required, rules.counter]"
+                              :items="itemsTurno"
+                              dense
+                              label="TURNO"
+                            ></v-autocomplete>
+                          </v-col>
+                          <v-col cols="12" sm="12" md="12">
+                            <v-autocomplete
+                              v-model="editedItem.frecuencia"
+                              :rules="[rules.required, rules.counter]"
+                              :items="itemsFrecuencia"
+                              dense
+                              label="FRECUENCIA"
+                            ></v-autocomplete>
+                          </v-col>
+                          <v-col cols="12" sm="12" md="12">
+                            <v-text-field
+                              v-model="editedItem.capacidad"
+                              :rules="[rules.required, rules.counter]"
+                              label="CAPACIDAD"
+                              :maxlength="8"
+                              type="number"
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                      </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="blue darken-1" text @click="close">
+                        Cancelar
+                      </v-btn>
+                      <v-btn color="blue darken-1" text @click="save">
+                        Guardar
+                      </v-btn>
+                    </v-card-actions>
+                  </v-form>
+                </v-card>
+              </v-dialog>
+              <!--editar-->
+              <v-dialog v-model="dialogEdit" max-width="600px">
+                <v-card>
+                  <v-form ref="form" v-model="valid" lazy-validation>
+                    <v-card-title>
+                      <span class="text-h5">Editar el estado de turno</span>
+                    </v-card-title>
+                    <v-card-text>
+                      <v-container>
+                        <v-row>
+                          <v-col cols="12" sm="12" md="12">
+                            <span class="text-h5"
+                              >¿Esta seguro de desactivar este turno?</span
+                            >
+                          </v-col>
+                        </v-row>
+                      </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="red darken-1" text @click="closeEdit">
+                        Cancelar
+                      </v-btn>
+                      <v-btn color="blue darken-1" text @click="edit">
+                        Aceptar
+                      </v-btn>
+                    </v-card-actions>
+                  </v-form>
+                </v-card>
+              </v-dialog>
+              <v-dialog v-model="dialogDelete" max-width="500px">
+                <v-card>
+                  <v-card-title class="text-h5"
+                    >Esta seguro de eliminar registro?</v-card-title
+                  >
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="closeDelete"
+                      >Cancel</v-btn
+                    >
+                    <v-btn color="blue darken-1" text @click="deleteItemConfirm"
+                      >OK</v-btn
+                    >
+                    <v-spacer></v-spacer>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-toolbar>
+          </template>
+          <template v-slot:[`item.actions`]="{ item }">
+            <v-icon small class="mr-2" @click="buscarCuposClinica(item)">
+              mdi-account
+            </v-icon>
+            <!--<v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>-->
+          </template>
+        </v-data-table>
+      </v-card>
+    </v-container>
+  </div>
 </template>
+
+<script>
+import axios from "axios";
+export const RUTA_SERVIDOR = process.env.VUE_APP_RUTA_API;
+
+export default {
+  data: () => ({
+    //cupos
+    itemsTurno: ["TURNO 1", "TURNO 2", "TURNO 3", "TURNO 4"],
+    itemsFrecuencia: ["LUN-MIE-VIE", "MAR-JUE-SAB"],
+    itemsEstado: ["true", "false"],
+    itemsClinicas: [],
+    itemsDistrito: [],
+    itemsdatosPaciente: [],
+    //perfil data
+    perfil: "",
+    nombre: "",
+    url: "",
+    usuario: "",
+    //Datos de formulario
+    rules: {
+      required: (value) => !!value || "Campo Obligatorio.",
+      counter: (value) => value.length <= 20 || "Max 20 characters",
+    },
+
+    editedItem: {
+      //Cupos
+      turno: "",
+      frecuencia: "",
+      capacidad: Number,
+      urlClinica: "",
+      urlPaciente: "",
+      distrito: "",
+    },
+    dialog: false,
+    dialogEdit: false,
+    formAdmi: false,
+    dialogDelete: false,
+    dialogEditAdm: false,
+    dialogNoEdit: false,
+    dialogDataApi: false,
+    dialogDetalleCupos: false,
+    dialogAsigPaciente: false,
+    vista: "",
+    valid: true,
+    datosEdit: "",
+    actionBoton: "AGREGAR",
+    headers: [],
+    headersClinica: [],
+    desserts: [],
+    dessertsClinica: [],
+    editedIndex: -1,
+    dataex: "",
+    nombreClinicaDetalle: "",
+    defaultItem: {
+      turno: "",
+      frecuencia: "",
+      capacidad: Number,
+      urlClinica: "",
+      distrito: "",
+    },
+  }),
+
+  computed: {
+    formTitle() {
+      return this.editedIndex === -1 ? "New Item" : "Edit Item";
+    },
+  },
+
+  watch: {
+    dialog(val) {
+      val || this.close();
+    },
+    dialogDelete(val) {
+      val || this.closeDelete();
+    },
+  },
+  methods: {
+    initialize() {
+      this.desserts = [];
+    },
+
+    editItem(item) {
+      console.log("item", item);
+      this.editedItem.turno = item.turno;
+      this.editedItem.frecuencia = item.frecuencia;
+      this.editedItem.capacidad = item.capacidad;
+      this.editedItem.estado = item.estado;
+      this.datosEdit = item.url;
+      this.dialogEdit = true;
+    },
+
+    deleteItem(item) {
+      this.editedIndex = this.desserts.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogDelete = true;
+    },
+
+    deleteItemConfirm() {},
+
+    closeFormAdmin() {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+
+    edit() {
+      axios
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
+          username: "cnsr",
+          password: "123456",
+        })
+        .then((response) => {
+          this.auth = "Bearer " + response.data.access;
+          axios
+            .patch(
+              RUTA_SERVIDOR +
+                "/APICNSR/parameCentro/" +
+                this.datosEdit.split("/")[4] +
+                "/",
+              {
+                estado: false,
+              },
+              {
+                headers: { Authorization: this.auth },
+              }
+            )
+            .then((res) => {
+              this.dialogDataApi = true;
+              console.log("exito", res.status);
+              this.close();
+              this.ParameCentroInit();
+              this.dialogEdit = false;
+            })
+            .catch((res) => {
+              console.warn("Error:", res);
+              this.dialog = false;
+            });
+        })
+        .catch((response) => {
+          response === 404
+            ? console.warn("lo sientimos no tenemos servicios")
+            : console.warn("Error:", response);
+        });
+    },
+
+    close() {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+
+    closeEdit() {
+      this.dialogEdit = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+
+    closeDelete() {
+      this.dialogDelete = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+
+    save() {
+      console.log("click");
+      if (
+        !this.editedItem.turno ||
+        !this.editedItem.frecuencia ||
+        !this.editedItem.capacidad
+      ) {
+        this.$refs.form.validate();
+        console.log("validate");
+      } else {
+        axios
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
+            username: "cnsr",
+            password: "123456",
+          })
+          .then((response) => {
+            this.auth = "Bearer " + response.data.access;
+            axios
+              .post(
+                RUTA_SERVIDOR + "/APICNSR/parameCentro/",
+                {
+                  cas: this.urlCas,
+                  turno: this.editedItem.turno,
+                  frecuencia: this.editedItem.frecuencia,
+                  capacidad: this.editedItem.capacidad,
+                  estado: true,
+                  usuario_reg: this.usuario + "|" + this.nombre,
+                },
+                {
+                  headers: { Authorization: this.auth },
+                }
+              )
+              .then((res) => {
+                console.log("exito", res.status);
+                console.log("editedItem", this.editedItem.turno);
+
+                axios
+                  .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
+                    username: "cnsr",
+                    password: "123456",
+                  })
+                  .then((response) => {
+                    this.auth = "Bearer " + response.data.access;
+                    for (let i = 0; i < this.editedItem.capacidad; i++) {
+                      axios
+                        .post(
+                          RUTA_SERVIDOR + "/APICNSR/parameCentroPuesto/",
+                          {
+                            cas: this.urlCas,
+                            turno: this.editedItem.turno,
+                            frecuencia: this.editedItem.frecuencia,
+                            tipoPuesto: "NORMAL",
+                            numeroPuesto: i + 1,
+                            estado: true,
+                            usuario_reg: this.usuario + "|" + this.nombre,
+                          },
+                          {
+                            headers: { Authorization: this.auth },
+                          }
+                        )
+                        .then((res) => {
+                          console.log("exito", res.status);
+                          this.close();
+                          //console.log(this.editedItem);
+                        })
+                        .catch((res) => {
+                          console.log("Error:", res);
+                          this.dialog = false;
+                        });
+                    }
+                  })
+                  .catch((response) => {
+                    response === 404
+                      ? console.warn("lo sientimos no tenemos servicios")
+                      : console.warn("Error:", response);
+                  });
+
+                this.ParameCentroInit();
+              })
+              .catch((res) => {
+                console.log("Error:", res);
+                this.dialog = false;
+              });
+          })
+          .catch((response) => {
+            response === 404
+              ? console.warn("lo sientimos no tenemos servicios")
+              : console.warn("Error:", response);
+          });
+      }
+      //console.log('holaaaaaaaa',this.editedItem)
+    },
+
+    nutricion() {
+      console.log("nutricion");
+    },
+
+    cabezeraParameCentro() {
+      this.headers = [
+        { text: "Turno", value: "turno" },
+        {
+          text: "Frecuencia",
+          align: "start",
+          sortable: false,
+          value: "frecuencia",
+        },
+        { text: "Tipo Puesto", value: "tipoPuesto" },
+        { text: "Número Puesto", value: "numeroPuesto" },
+        { text: "Actions", value: "actions", sortable: false },
+      ];
+    },
+
+    cabezeraCuposClinica() {
+      this.headersClinica = [
+        { text: "Clinica", value: "clinica" },
+        {
+          text: "Cupos Totales",
+          align: "start",
+          sortable: false,
+          value: "cuposTotales",
+        },
+        { text: "Cupos Ocupados", value: "cuposAsignados" },
+        { text: "Cupos Disponibles", value: "cuposNoAsignados" },
+        { text: "Actions", value: "actions", sortable: false },
+      ];
+    },
+
+    clinicasInit() {
+      //this.dialogDataApi = true;
+      axios
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
+          username: "cnsr",
+          password: "123456",
+        })
+        .then((response) => {
+          this.auth = "Bearer " + response.data.access;
+          axios
+            .get(RUTA_SERVIDOR + "/APICNSR/cas/?search=2", {
+              headers: { Authorization: this.auth },
+            })
+            .then((res) => {
+              this.itemsClinicas = res.data;
+              //this.desserts = res.data;
+              this.dialogDataApi = false;
+              //this.dataAdmi = res.data[0].url.split("/")[4];
+              //this.datosPresHis = res.data[0];
+              /*for (let i = 0; i < res.data.length; i++) {
+                this.itemsClinicas.push(res.data[i].descripCas+"|"+res.data[i].url.split("/")[4])
+              }*/
+              console.log("itemsClinicas", this.itemsClinicas);
+            })
+            .catch((res) => {
+              console.warn("Error:", res);
+              this.dialog = false;
+            });
+        })
+        .catch((response) => {
+          response === 404
+            ? console.warn("lo sientimos no tenemos servicios")
+            : console.warn("Error:", response);
+        });
+    },
+
+    buscarClinica() {
+      console.log("prueba", this.editedItem.urlClinica);
+      this.dessertsClinica = [];
+      this.dialogDataApi = true;
+      this.cabezeraCuposClinica();
+      axios
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
+          username: "cnsr",
+          password: "123456",
+        })
+        .then((response) => {
+          this.auth = "Bearer " + response.data.access;
+          axios
+            .get(
+              RUTA_SERVIDOR +
+                "/APICNSR/parameCentroPuesto/?search=" +
+                this.editedItem.urlClinica.split("/")[4],
+              {
+                headers: { Authorization: this.auth },
+              }
+            )
+            .then((res) => {
+              //this.itemsClinicas = res.data;
+              //this.desserts = res.data;
+              //this.dialogDataApi = false;
+              //this.dataAdmi = res.data[0].url.split("/")[4];
+              //this.datosPresHis = res.data[0];
+              /*for (let i = 0; i < res.data.length; i++) {
+                this.itemsClinicas.push(res.data[i].descripCas+"|"+res.data[i].url.split("/")[4])
+              }*/
+              /*const resultFechaAnemia = this.dataToExportAnemia.filter(
+                  (e) =>
+                    e.FechaPres >= this.dateInicialAnemia &&
+                    e.FechaPres <= this.dateHastaAnemia
+                );*/
+              axios
+                .get(
+                  RUTA_SERVIDOR +
+                    "/APICNSR/asigCuposPac/?search=" +
+                    this.editedItem.urlClinica.split("/")[4],
+                  {
+                    headers: { Authorization: this.auth },
+                  }
+                )
+                .then((resCuposAsig) => {
+                  //this.itemsClinicas = res.data;
+                  //this.desserts = res.data;
+                  //this.dataAdmi = res.data[0].url.split("/")[4];
+                  //this.datosPresHis = res.data[0];
+                  /*for (let i = 0; i < res.data.length; i++) {
+                this.itemsClinicas.push(res.data[i].descripCas+"|"+res.data[i].url.split("/")[4])
+              }*/
+                  const resultNoAsig = res.data.filter(
+                    (e) =>
+                      !resCuposAsig.data.some((i) =>
+                        i.parameCentroPuesto.includes(e.url)
+                      )
+                  );
+                  this.dessertsClinica.push(
+                    Object.assign(
+                      {
+                        clinica:
+                          resCuposAsig.data[0].datosPueto.datosCas.descripCas,
+                      },
+                      { urlClinica: resCuposAsig.data[0].datosPueto.cas },
+                      { cuposTotales: res.data.length },
+                      { cuposAsignados: resCuposAsig.data.length },
+                      { cuposNoAsignados: resultNoAsig.length }
+                    )
+                  );
+                  this.nombreClinicaDetalle =
+                    resCuposAsig.data[0].datosPueto.datosCas.descripCas;
+                  console.log("data total cupos", res.data);
+                  console.log("data asignados", resCuposAsig.data);
+                  console.log("resultNoAsig", this.dessertsClinica);
+                  this.dialogDataApi = false;
+                  //this.dialogDetalleCupos = true;
+                })
+                .catch((res) => {
+                  console.warn("Error:", res);
+                  this.dialog = false;
+                });
+            })
+            .catch((res) => {
+              console.warn("Error:", res);
+              this.dialog = false;
+            });
+        })
+        .catch((response) => {
+          response === 404
+            ? console.warn("lo sientimos no tenemos servicios")
+            : console.warn("Error:", response);
+        });
+    },
+    buscarClinicaDistrito() {
+      console.log("prueba", this.editedItem.distrito);
+    },
+
+    buscarPaciente() {
+      this.dialogDataApi = true;
+      axios
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
+          username: "cnsr",
+          password: "123456",
+        })
+        .then((response) => {
+          this.auth = "Bearer " + response.data.access;
+          axios
+            .get(RUTA_SERVIDOR + "/APICNSR/paciente/", {
+              headers: { Authorization: this.auth },
+            })
+            .then((res) => {
+              console.log("datosPaciente", res.data);
+              this.itemsdatosPaciente = res.data;
+              this.dialogDataApi = false;
+            })
+            .catch((res) => {
+              console.warn("Error:", res);
+              this.dialog = false;
+            });
+        })
+        .catch((response) => {
+          response === 404
+            ? console.warn("lo sientimos no tenemos servicios")
+            : console.warn("Error:", response);
+        });
+    },
+
+    buscarCuposClinica(item) {
+      console.log("detalleCipos", item);
+      this.dialogDataApi = true;
+      this.cabezeraParameCentro();
+      axios
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
+          username: "cnsr",
+          password: "123456",
+        })
+        .then((response) => {
+          this.auth = "Bearer " + response.data.access;
+          axios
+            .get(
+              RUTA_SERVIDOR +
+                "/APICNSR/parameCentroPuesto/?search=" +
+                item.urlClinica.split("/")[4],
+              {
+                headers: { Authorization: this.auth },
+              }
+            )
+            .then((res) => {
+              //this.itemsClinicas = res.data;
+              //this.desserts = res.data;
+              //this.dialogDataApi = false;
+              //this.dataAdmi = res.data[0].url.split("/")[4];
+              //this.datosPresHis = res.data[0];
+              /*for (let i = 0; i < res.data.length; i++) {
+                this.itemsClinicas.push(res.data[i].descripCas+"|"+res.data[i].url.split("/")[4])
+              }*/
+              /*const resultFechaAnemia = this.dataToExportAnemia.filter(
+                  (e) =>
+                    e.FechaPres >= this.dateInicialAnemia &&
+                    e.FechaPres <= this.dateHastaAnemia
+                );*/
+              axios
+                .get(
+                  RUTA_SERVIDOR +
+                    "/APICNSR/asigCuposPac/?search=" +
+                    item.urlClinica.split("/")[4],
+                  {
+                    headers: { Authorization: this.auth },
+                  }
+                )
+                .then((resCuposAsig) => {
+                  console.log("data buscar clinica", res.data);
+                  console.log("data asignados", resCuposAsig.data);
+                  //this.itemsClinicas = res.data;
+                  //this.desserts = res.data;
+                  //this.dataAdmi = res.data[0].url.split("/")[4];
+                  //this.datosPresHis = res.data[0];
+                  /*for (let i = 0; i < res.data.length; i++) {
+                this.itemsClinicas.push(res.data[i].descripCas+"|"+res.data[i].url.split("/")[4])
+              }*/
+                  const resultNoAsig = res.data.filter(
+                    (e) =>
+                      !resCuposAsig.data.some((i) =>
+                        i.parameCentroPuesto.includes(e.url)
+                      )
+                  );
+                  this.desserts = resultNoAsig;
+                  console.log("resultNoAsig", this.desserts);
+                  this.dialogDataApi = false;
+                  this.dialogDetalleCupos = true;
+                  //this.dialogDetalleCupos = true;
+                })
+                .catch((res) => {
+                  console.warn("Error:", res);
+                  this.dialog = false;
+                });
+            })
+            .catch((res) => {
+              console.warn("Error:", res);
+              this.dialog = false;
+            });
+        })
+        .catch((response) => {
+          response === 404
+            ? console.warn("lo sientimos no tenemos servicios")
+            : console.warn("Error:", response);
+        });
+    },
+
+    asignarCupoPaciente(item) {
+      this.dialogAsigPaciente = true;
+      console.log("item de cupos",item)
+      
+    },
+  },
+
+  mounted() {
+    if (!sessionStorage.getItem("keyValue")) {
+      this.$router.push("/");
+    }
+  },
+
+  created() {
+    this.perfil = sessionStorage.getItem("perfil");
+    this.nombre = sessionStorage.getItem("nombre");
+    this.url = sessionStorage.getItem("url");
+    this.usuario = sessionStorage.getItem("usuario");
+    this.urlCas = sessionStorage.getItem("urlCas");
+    console.log("Url", this.url);
+    console.log("Perfil", this.perfil);
+    console.log("Nombre", this.nombre);
+    console.log("cas", this.urlCas);
+    //INICIO DE CONSULTA
+
+    this.clinicasInit();
+    this.buscarPaciente();
+  },
+
+  components: {},
+};
+</script>
+
+

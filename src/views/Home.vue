@@ -142,8 +142,8 @@ export default {
       .post(RUTA_SERVIDOR + "/APICENTRAL/SgssPacienteQa/rest/pLoginMovilRWs", {
         codOpcion: "1",
         codTipDoc: "1",
-        numDoc: "07622610",
-        fecNacimiento: "10/12/1970",
+        numDoc: "72412676",
+        fecNacimiento: "25/02/1998",
       })
       .then(function (response) {
         console.log(response.data);

@@ -21,6 +21,6 @@ module.exports = {
         }
       }
     },
-    port: 90
+    port: 3000
   },
 }
