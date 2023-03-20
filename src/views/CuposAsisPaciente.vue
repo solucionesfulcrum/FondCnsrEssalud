@@ -64,6 +64,22 @@
     <v-dialog
       transition="dialog-bottom-transition"
       max-width="600"
+      v-model="dialogAcredita"
+    >
+      <v-card>
+        <v-toolbar color="#1973a5" dark>¡Aviso Importante!</v-toolbar>
+        <v-card-text>
+          <div class="text-h4 pa-5">¡Lo sentimos, el paciente no esta acreditado!</div>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn text @click="dialogAcredita = false">cerrar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
+      transition="dialog-bottom-transition"
+      max-width="600"
       persistent
       v-model="dialogEditPuesto"
     >
@@ -107,13 +123,21 @@
           md="2"
         >
           <v-card class="mx-auto" max-width="250">
-            <v-card-text v-if="contadorRes.tipoPuesto == 'NORMAL'">
-              <div>PUESTO {{ contadorRes.numeroPuesto }}</div>
-              <p class="text-h5 text--primary">{{ contadorRes.tipoPuesto }}</p>
-            </v-card-text>
-            <v-card-text v-else>
-              <div class="orange--text">PUESTO {{ contadorRes.numeroPuesto }}</div>
-              <p class="text-h5 orange--text">{{ contadorRes.tipoPuesto }}</p>
+            <v-card-text>
+              <div>PUESTO {{ contadorRes.datosPueto.numeroPuesto }}</div>
+              <p class="text-h5 text--primary">
+                {{ contadorRes.datosPueto.tipoPuesto }}
+              </p>
+              <div>Paciente:</div>
+              <v-card-text>
+                {{
+                  contadorRes.datosPaciente.nombres +
+                  " " +
+                  contadorRes.datosPaciente.ape_pat +
+                  " " +
+                  contadorRes.datosPaciente.ape_mat
+                }}
+              </v-card-text>
             </v-card-text>
             <v-card-actions>
               <v-btn
@@ -185,6 +209,7 @@ export default {
     dialogNoEdit: false,
     dialogDataApi: false,
     dialogEditPuesto: false,
+    dialogAcredita: false,
     vista: "",
     valid: true,
     datosEdit: "",
@@ -233,7 +258,7 @@ export default {
               this.dialogDataApi = true;
               console.log("exito", res.status);
               //this.close();
-              this.dialogEditPuesto=false;
+              this.dialogEditPuesto = false;
               this.ejecutarTurno();
               this.ParameCentroPuestoInit();
             })
@@ -251,19 +276,47 @@ export default {
 
     configItem(item) {
       console.log("item", item);
-      this.dialogEditPuesto = true;
-      this.editedItem.numeroPuesto = item.numeroPuesto;
-      this.editedItem.tipoPuesto = item.tipoPuesto;
-      this.editedItem.estado = item.estado.toString();
-      this.datosEditPuesto = item.url
+      axios
+        .post(
+          RUTA_SERVIDOR + "/APICENTRAL/SgssPacienteQa/rest/pLoginMovilRWs",
+          {
+            codOpcion: "1",
+            codTipDoc: "1",
+            numDoc: item.datosPaciente.num_doc,
+            fecNacimiento:
+              item.datosPaciente.fecha_nac.split("-")[2] +
+              "/" +
+              item.datosPaciente.fecha_nac.split("-")[1] +
+              "/" +
+              item.datosPaciente.fecha_nac.split("-")[0],
+          }
+        )
+        .then( (response)=> {
+          console.log(response.data);
+          if (response.data.vDataItem[0].flagIndicadorActivo == "1") {
+            console.log(
+              "esta acreditado:",
+              response.data.vDataItem[0].fecVigHasta
+            );
+          } else {
+            this.dialogAcredita = true;
+            console.log(
+              "no esta acreditado:",
+              response.data.vDataItem[0].fecVigHasta
+            );
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
 
     ejecutarTurno() {
       console.log(this.desserts, "desserts");
       const resultTurno = this.desserts.filter(
         (e) =>
-          e.turno == this.editedItem.turno &&
-          e.frecuencia == this.editedItem.frecuencia
+          e.datosPueto.turno == this.editedItem.turno &&
+          e.datosPueto.frecuencia == this.editedItem.frecuencia
       );
       //console.log("resultTurno", resultTurno);
       resultTurno.sort((x, y) => x.numeroPuesto - y.numeroPuesto);
@@ -441,8 +494,8 @@ export default {
     },
 
     ParameCentroPuestoInit() {
-      //this.cabezeraParameCentro();
       this.dialogDataApi = true;
+      this.cabezeraParameCentro();
       axios
         .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
           username: "cnsr",
@@ -460,11 +513,25 @@ export default {
               }
             )
             .then((res) => {
-              this.desserts = res.data;
-              this.dialogDataApi = false;
-              //this.dataAdmi = res.data[0].url.split("/")[4];
-              //this.datosPresHis = res.data[0];
-              console.log("parametrosPuesto", res.data);
+              axios
+                .get(
+                  RUTA_SERVIDOR +
+                    "/APICNSR/asigCuposPac/?search=" +
+                    this.urlCas.split("/")[4],
+                  {
+                    headers: { Authorization: this.auth },
+                  }
+                )
+                .then((resCuposAsig) => {
+                  this.dialogDataApi = false;
+                  console.log("dessert", this.desserts);
+                  console.log("resCuposAsig", resCuposAsig.data);
+                  this.desserts = resCuposAsig.data;
+                })
+                .catch((res) => {
+                  console.warn("Error:", res);
+                  this.dialog = false;
+                });
             })
             .catch((res) => {
               console.warn("Error:", res);

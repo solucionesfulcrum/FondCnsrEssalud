@@ -222,8 +222,11 @@
         <v-row class="mt-2 ml-15">
           <v-col cols="12" sm="6" md="6">
             <v-autocomplete
-              v-model="editedItem.distrito"
-              :items="itemsDistrito"
+             v-model="editedItem.urlDistrito"
+              :rules="[rules.required]"
+              :items="itemsClinicas"
+              item-text="descripCas"
+              item-value="url"
               dense
               label="Por Distrito"
             ></v-autocomplete>
@@ -415,7 +418,7 @@ export default {
       urlClinica: "",
       urlPaciente: "",
       urlPuesto: "",
-      distrito: "",
+      urlDistrito: "",
     },
     dialog: false,
     dialogEdit: false,
@@ -446,7 +449,7 @@ export default {
       urlClinica: "",
       urlPaciente: "",
       urlPuesto: "",
-      distrito: "",
+      urlDistrito: "",
     },
   }),
 
@@ -696,7 +699,7 @@ export default {
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
           axios
-            .get(RUTA_SERVIDOR + "/APICNSR/cas/?search=2", {
+            .get(RUTA_SERVIDOR + "/APICNSR/cas/?search=1", {
               headers: { Authorization: this.auth },
             })
             .then((res) => {

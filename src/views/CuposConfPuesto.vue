@@ -238,8 +238,9 @@ export default {
               console.log("exito", res.status);
               //this.close();
               this.dialogEditPuesto=false;
-              this.ejecutarTurno();
               this.ParameCentroPuestoInit();
+              this.ejecutarTurno();
+              //.dialogEdit = false;
             })
             .catch((res) => {
               console.warn("Error:", res);
