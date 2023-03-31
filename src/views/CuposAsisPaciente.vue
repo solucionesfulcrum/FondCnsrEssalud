@@ -69,7 +69,9 @@
       <v-card>
         <v-toolbar color="#1973a5" dark>¡Aviso Importante!</v-toolbar>
         <v-card-text>
-          <div class="text-h4 pa-5">¡Lo sentimos, el paciente no esta acreditado!</div>
+          <div class="text-h4 pa-5">
+            ¡Lo sentimos, el paciente no esta acreditado!
+          </div>
         </v-card-text>
         <v-card-actions class="justify-end">
           <v-btn text @click="dialogAcredita = false">cerrar</v-btn>
@@ -80,35 +82,58 @@
     <v-dialog
       transition="dialog-bottom-transition"
       max-width="600"
-      persistent
-      v-model="dialogEditPuesto"
+      v-model="dialogErrorRegistrado"
     >
       <v-card>
-        <v-toolbar color="#1973a5" dark
-          >Editar Puesto {{ editedItem.numeroPuesto }}</v-toolbar
-        >
+        <v-toolbar color="#1973a5" dark>¡Aviso Importante!</v-toolbar>
+        <v-card-text>
+          <div class="text-h4 pa-5">
+            ¡El Paciente ya tiene La Asistencia Registrada!
+          </div>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn text @click="dialogErrorRegistrado = false">cerrar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
+      transition="dialog-bottom-transition"
+      max-width="600"
+      persistent
+      v-model="dialogRegAsistencia"
+    >
+      <v-card>
+        <v-toolbar color="#1973a5" dark>
+          Registrar Asistencia de paciente: {{ nombrePacienteDialog }}
+        </v-toolbar>
         <v-container class="mt-5">
           <v-row>
             <v-col cols="12" sm="12" md="12">
-              <v-autocomplete
-                v-model="editedItem.tipoPuesto"
-                :rules="[rules.required, rules.counter]"
-                :items="itemsPuesto"
-                dense
-                label="TURNO"
-              ></v-autocomplete>
-            </v-col>
-            <v-col cols="12" sm="12" md="12">
               <v-radio-group v-model="editedItem.estado" row>
-                <v-radio label="Activo" value="true"></v-radio>
-                <v-radio label="Inactivo" value="false"></v-radio>
+                <v-radio label="Asistió" value="ASISTIO"></v-radio>
+                <v-radio label="Falto" value="FALTO"></v-radio>
               </v-radio-group>
+            </v-col>
+            <v-col
+              v-if="editedItem.estado == 'FALTO'"
+              cols="12"
+              sm="12"
+              md="12"
+            >
+              <v-autocomplete
+                v-model="editedItem.observaFalta"
+                :rules="[rules.required, rules.counter]"
+                :items="itemsObserva"
+                dense
+                label="MOTIVO FALTA"
+              ></v-autocomplete>
             </v-col>
           </v-row>
         </v-container>
         <v-card-actions class="justify-end">
-          <v-btn text @click="cambioPuesto">Aceptar</v-btn>
-          <v-btn text @click="dialogEditPuesto = false">Cerrar</v-btn>
+          <v-btn text @click="grabarAsistenciaPac">Aceptar</v-btn>
+          <v-btn text @click="dialogRegAsistencia = false">Cerrar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -119,10 +144,10 @@
           :key="indice"
           v-for="(contadorRes, indice) in contadorConf"
           cols="12"
-          sm="2"
-          md="2"
+          sm="3"
+          md="3"
         >
-          <v-card class="mx-auto" max-width="250">
+          <v-card class="mx-auto" max-width="350">
             <v-card-text>
               <div>PUESTO {{ contadorRes.datosPueto.numeroPuesto }}</div>
               <p class="text-h5 text--primary">
@@ -168,6 +193,7 @@ export default {
     itemsFrecuencia: ["LUN-MIE-VIE", "MAR-JUE-SAB"],
     itemsEstado: ["true", "false"],
     itemsPuesto: ["NORMAL", "ESPECIAL"],
+    itemsObserva: ["HOSPITALIZACION", "NO ESPECIFICADO"],
     //JALAR DATA DE USER
     datosEditPuesto: "",
     //perfil data
@@ -188,6 +214,7 @@ export default {
       tipoPuesto: "",
       estado: null,
       numeroPuesto: null,
+      observaFalta: "",
     },
     headers: [],
     desserts: [],
@@ -200,6 +227,7 @@ export default {
       tipoPuesto: "",
       estado: null,
       numeroPuesto: null,
+      observaFalta: "",
     },
     dialog: false,
     dialogEdit: false,
@@ -208,13 +236,17 @@ export default {
     dialogEditAdm: false,
     dialogNoEdit: false,
     dialogDataApi: false,
-    dialogEditPuesto: false,
+    dialogRegAsistencia: false,
     dialogAcredita: false,
+    dialogErrorRegistrado: false,
     vista: "",
     valid: true,
     datosEdit: "",
     actionBoton: "AGREGAR",
     contadorConf: [],
+    nombrePacienteDialog: "",
+    urlPacienteAsistencia: "",
+    urlAsigCuposPac: "",
   }),
 
   computed: {
@@ -232,6 +264,70 @@ export default {
     },
   },
   methods: {
+    grabarAsistenciaPac() {
+      if (this.editedItem.estado == "FALTO" && !this.editedItem.observaFalta) {
+        this.$refs.form.validate();
+        console.log("validate");
+      } else {
+        console.log("VALIDADO");
+        console.log("grabar asistencia paciente");
+        console.log("Estado", this.editedItem.estado);
+        console.log("Motivo", this.editedItem.observaFalta);
+        console.log("paciente", this.urlPacienteAsistencia);
+        console.log("urlAsigCuposPac", this.urlAsigCuposPac);
+        console.log(
+          "fechaPaciente",
+          new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+            .toISOString()
+            .substr(0, 10)
+        );
+        axios
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
+            username: "cnsr",
+            password: "123456",
+          })
+          .then((response) => {
+            this.auth = "Bearer " + response.data.access;
+            axios
+              .post(
+                RUTA_SERVIDOR + "/APICNSR/asisPacDiario/",
+                {
+                  asigCuposPac: this.urlAsigCuposPac,
+                  estadoAsistencia: this.editedItem.estado,
+                  observaFalta: this.editedItem.observaFalta,
+                  usuario_reg: this.usuario + "|" + this.nombre,
+                  validacionAsistencia: new Date(
+                    Date.now() - new Date().getTimezoneOffset() * 60000
+                  )
+                    .toISOString()
+                    .substr(0, 10)+"|"+this.urlPacienteAsistencia.split("/")[4],
+                },
+                {
+                  headers: { Authorization: this.auth },
+                }
+              )
+              .then((res) => {
+                console.log("exito", res.status);
+                this.editedItem.estado = "";
+                this.editedItem.observaFalta = "";
+                this.dialogRegAsistencia = false;
+              })
+              .catch((res) => {
+                this.dialogErrorRegistrado = true;
+                this.dialogRegAsistencia = false;
+                this.editedItem.estado = "";
+                this.editedItem.observaFalta = "";
+                console.log("Error:", res);
+              });
+          })
+          .catch((response) => {
+            response === 404
+              ? console.warn("lo sientimos no tenemos servicios")
+              : console.warn("Error:", response);
+          });
+      }
+    },
+
     cambioPuesto() {
       axios
         .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
@@ -258,7 +354,7 @@ export default {
               this.dialogDataApi = true;
               console.log("exito", res.status);
               //this.close();
-              this.dialogEditPuesto = false;
+              this.dialogRegAsistencia = false;
               this.ejecutarTurno();
               this.ParameCentroPuestoInit();
             })
@@ -291,13 +387,22 @@ export default {
               item.datosPaciente.fecha_nac.split("-")[0],
           }
         )
-        .then( (response)=> {
+        .then((response) => {
           console.log(response.data);
           if (response.data.vDataItem[0].flagIndicadorActivo == "1") {
             console.log(
               "esta acreditado:",
-              response.data.vDataItem[0].fecVigHasta
+              response.data.vDataItem[0].fecVigHasta+"|"+item.url
             );
+            this.urlPacienteAsistencia = item.datosPaciente.url;
+            this.nombrePacienteDialog =
+              item.datosPaciente.nombres +
+              " " +
+              item.datosPaciente.ape_pat +
+              " " +
+              item.datosPaciente.ape_mat;
+            this.dialogRegAsistencia = true;
+            this.urlAsigCuposPac = item.url;
           } else {
             this.dialogAcredita = true;
             console.log(
@@ -319,7 +424,7 @@ export default {
           e.datosPueto.frecuencia == this.editedItem.frecuencia
       );
       //console.log("resultTurno", resultTurno);
-      resultTurno.sort((x, y) => x.numeroPuesto - y.numeroPuesto);
+      resultTurno.sort((x, y) => x.datosPueto.numeroPuesto - y.datosPueto.numeroPuesto);
       this.contadorConf = resultTurno;
       console.log("contadorConf", this.contadorConf);
     },

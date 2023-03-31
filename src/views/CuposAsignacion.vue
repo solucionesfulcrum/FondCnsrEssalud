@@ -198,7 +198,7 @@
       </v-card>
     </v-dialog>
 
-     <v-dialog
+    <v-dialog
       transition="dialog-bottom-transition"
       max-width="600"
       v-model="dialogNoAsignacion"
@@ -206,7 +206,9 @@
       <v-card>
         <v-toolbar color="#1973a5" dark>¡Aviso Importante!</v-toolbar>
         <v-card-text>
-          <div class="text-h4 pa-5">No es posible otorgar Cupo - ¡Paciene con Cupo Vigente!</div>
+          <div class="text-h4 pa-5">
+            No es posible otorgar Cupo - ¡Paciene con Cupo Vigente!
+          </div>
         </v-card-text>
         <v-card-actions class="justify-end">
           <v-btn text @click="dialogNoAsignacion = false">cerrar</v-btn>
@@ -222,7 +224,7 @@
         <v-row class="mt-2 ml-15">
           <v-col cols="12" sm="6" md="6">
             <v-autocomplete
-             v-model="editedItem.urlDistrito"
+              v-model="editedItem.urlDistrito"
               :rules="[rules.required]"
               :items="itemsClinicas"
               item-text="descripCas"
@@ -726,6 +728,7 @@ export default {
     },
 
     buscarClinica() {
+      this.liberarCupo();
       console.log("prueba", this.editedItem.urlClinica);
       this.dessertsClinica = [];
       this.dialogDataApi = true;
@@ -747,19 +750,6 @@ export default {
               }
             )
             .then((res) => {
-              //this.itemsClinicas = res.data;
-              //this.desserts = res.data;
-              //this.dialogDataApi = false;
-              //this.dataAdmi = res.data[0].url.split("/")[4];
-              //this.datosPresHis = res.data[0];
-              /*for (let i = 0; i < res.data.length; i++) {
-                this.itemsClinicas.push(res.data[i].descripCas+"|"+res.data[i].url.split("/")[4])
-              }*/
-              /*const resultFechaAnemia = this.dataToExportAnemia.filter(
-                  (e) =>
-                    e.FechaPres >= this.dateInicialAnemia &&
-                    e.FechaPres <= this.dateHastaAnemia
-                );*/
               axios
                 .get(
                   RUTA_SERVIDOR +
@@ -770,13 +760,6 @@ export default {
                   }
                 )
                 .then((resCuposAsig) => {
-                  //this.itemsClinicas = res.data;
-                  //this.desserts = res.data;
-                  //this.dataAdmi = res.data[0].url.split("/")[4];
-                  //this.datosPresHis = res.data[0];
-                  /*for (let i = 0; i < res.data.length; i++) {
-                this.itemsClinicas.push(res.data[i].descripCas+"|"+res.data[i].url.split("/")[4])
-              }*/
                   const resultNoAsig = res.data.filter(
                     (e) =>
                       !resCuposAsig.data.some((i) =>
@@ -838,10 +821,19 @@ export default {
             })
             .then((res) => {
               for (let i = 0; i < res.data.length; i++) {
-                this.itemsDatosPaciente.push(Object.assign(
-                    {nombreCompleto:res.data[i].ape_pat+" "+res.data[i].ape_mat+" "+res.data[i].nombres},
-                    {url:res.data[i].url},
-                ));
+                this.itemsDatosPaciente.push(
+                  Object.assign(
+                    {
+                      nombreCompleto:
+                        res.data[i].ape_pat +
+                        " " +
+                        res.data[i].ape_mat +
+                        " " +
+                        res.data[i].nombres,
+                    },
+                    { url: res.data[i].url }
+                  )
+                );
               }
               console.log("datosPaciente", this.itemsDatosPaciente);
               this.dialogDataApi = false;
@@ -988,7 +980,7 @@ export default {
               .catch((res) => {
                 console.log("exito", res.status);
                 console.log("Error:", res);
-                this.dialogNoAsignacion=true;
+                this.dialogNoAsignacion = true;
                 this.dialogDataApi = false;
                 this.dialogAsigPaciente = false;
                 this.dialogDetalleCupos = false;
@@ -1000,6 +992,63 @@ export default {
             console.log("exito", response.status);
           });
       }
+    },
+
+    liberarCupo() {
+      axios
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
+          username: "cnsr",
+          password: "123456",
+        })
+        .then((response) => {
+          this.auth = "Bearer " + response.data.access;
+          axios
+            .get(
+              RUTA_SERVIDOR +
+                "/APICNSR/asisPacDiario/?search=FALTO," +
+                this.editedItem.urlClinica.split("/")[4],
+              {
+                headers: { Authorization: this.auth },
+              }
+            )
+            .then((res) => {
+              console.log("asistenciaPacDiario", res.data);
+              for (let i = 0; i < res.data.length; i++) {
+                let quinceDias = 1000 * 60 * 60 * 24 * 15;
+
+                if (
+                  new Date(
+                    Date.now() -
+                      quinceDias -
+                      new Date().getTimezoneOffset() * 60000
+                  )
+                    .toISOString()
+                    .substr(0, 10) >
+                    res.data[i].fecha_reg ==
+                  true
+                ) {
+                  console.log(
+                    "liberarCupos",
+                    new Date(
+                      Date.now() -
+                        quinceDias -
+                        new Date().getTimezoneOffset() * 60000
+                    )
+                      .toISOString()
+                      .substr(0, 10) > res.data[i].fecha_reg
+                  );
+                }
+              }
+            })
+            .catch((res) => {
+              console.warn("Error:", res);
+              this.dialog = false;
+            });
+        })
+        .catch((res) => {
+          console.warn("Error:", res);
+          this.dialog = false;
+        });
     },
   },
 

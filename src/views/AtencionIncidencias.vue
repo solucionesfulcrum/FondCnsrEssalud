@@ -806,11 +806,11 @@ export default {
             axios
               .patch(
                 RUTA_SERVIDOR +
-                  "/incidenciaDsi/" +
+                  "/APICNSR/incidenciaDsi/" +
                   this.urlAsignacion.split("/")[4] +
                   "/",
                 {
-                  estado: RUTA_SERVIDOR + "/APICNSR/maestro/4/",
+                  estado: RUTA_SERVIDOR + "/maestro/4/",
                   clasiSolu: this.editedItem.clasiSolucion.toString(),
                   solucion: this.editedItem.detalleSolucion,
                 },
