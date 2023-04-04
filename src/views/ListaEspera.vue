@@ -94,7 +94,7 @@
                     <v-card-text>
                       <v-container>
                         <v-row>
-                          <v-col v-if="perfil == 8" cols="12" sm="6" md="6">
+                          <v-col v-if="perfil == 9" cols="12" sm="6" md="6">
                             <v-menu
                               ref="menu3"
                               v-model="menu3"
@@ -123,7 +123,7 @@
                               ></v-date-picker>
                             </v-menu>
                           </v-col>
-                          <v-col v-if="perfil == 9" cols="12" sm="6" md="6">
+                          <v-col v-if="perfil == 8" cols="12" sm="6" md="6">
                             <v-text-field
                               v-model="editedItem.fechaSolicitud"
                               label="Fecha de Solicitud"
@@ -131,7 +131,7 @@
                               disabled
                             ></v-text-field>
                           </v-col>
-                          <v-col v-if="perfil == 8" cols="12" sm="6" md="4">
+                          <v-col v-if="perfil == 9" cols="12" sm="6" md="4">
                             <v-text-field
                               v-model="editedItem.dni"
                               :rules="[rules.required, rules.counter]"
@@ -140,7 +140,7 @@
                               @keyup.enter="buscarNombrePac"
                             ></v-text-field>
                           </v-col>
-                          <v-col v-if="perfil == 9" cols="12" sm="6" md="6">
+                          <v-col v-if="perfil == 8" cols="12" sm="6" md="6">
                             <v-text-field
                               v-model="editedItem.dni"
                               label="DNI"
@@ -148,7 +148,7 @@
                               disabled
                             ></v-text-field>
                           </v-col>
-                          <v-col v-if="perfil == 8" cols="12" sm="6" md="2">
+                          <v-col v-if="perfil == 9" cols="12" sm="6" md="2">
                             <v-btn
                               class="mt-5"
                               icon
@@ -182,23 +182,23 @@
                               disabled
                             ></v-text-field>
                           </v-col>
-                          <v-col v-if="perfil == 8" cols="12" sm="6" md="6">
-                            <v-text-field
-                              v-model="editedItem.telefono"
-                              :rules="[rules.required, rules.counter]"
-                              label="Telefono"
-                              :maxlength="maxdat"
-                            ></v-text-field>
-                          </v-col>
                           <v-col v-if="perfil == 9" cols="12" sm="6" md="6">
                             <v-text-field
                               v-model="editedItem.telefono"
+                              :rules="[rules.required, rules.counter]"
+                              label="Telefono"
+                              :maxlength="maxdat"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col v-if="perfil == 8" cols="12" sm="6" md="6">
+                            <v-text-field
+                              v-model="editedItem.telefono"
                               label="Telefono"
                               :maxlength="maxdat"
                               disabled
                             ></v-text-field>
                           </v-col>
-                          <v-col v-if="perfil == 8" cols="12" sm="12" md="12">
+                          <v-col v-if="perfil == 9" cols="12" sm="12" md="12">
                             <v-autocomplete
                               v-model="editedItem.casOrigen"
                               :rules="[rules.required, rules.counter]"
@@ -207,7 +207,7 @@
                               label="Lugar de Origen"
                             ></v-autocomplete>
                           </v-col>
-                          <v-col v-if="perfil == 9" cols="12" sm="12" md="12">
+                          <v-col v-if="perfil == 8" cols="12" sm="12" md="12">
                             <v-text-field
                               v-model="editedItem.casOrigen"
                               label="Lugar de Origen"
@@ -215,7 +215,7 @@
                               disabled
                             ></v-text-field>
                           </v-col>
-                          <v-col v-if="perfil == 8" cols="12" sm="12" md="12">
+                          <v-col v-if="perfil == 9" cols="12" sm="12" md="12">
                             <v-autocomplete
                               v-model="editedItem.casDestino"
                               :rules="[rules.required, rules.counter]"
@@ -224,7 +224,7 @@
                               label="Lugar de Destino"
                             ></v-autocomplete>
                           </v-col>
-                          <v-col v-if="perfil == 9" cols="12" sm="12" md="12">
+                          <v-col v-if="perfil == 8" cols="12" sm="12" md="12">
                             <v-text-field
                               v-model="editedItem.casDestino"
                               label="Lugar de Destino"
@@ -232,7 +232,7 @@
                               disabled
                             ></v-text-field>
                           </v-col>
-                          <v-col v-if="perfil == 8" cols="12" sm="6" md="6">
+                          <v-col v-if="perfil == 9" cols="12" sm="6" md="6">
                             <v-autocomplete
                               v-model="editedItem.distrito"
                               :rules="[rules.required, rules.counter]"
@@ -241,7 +241,7 @@
                               label="Distrito"
                             ></v-autocomplete>
                           </v-col>
-                          <v-col v-if="perfil == 9" cols="12" sm="6" md="6">
+                          <v-col v-if="perfil == 8" cols="12" sm="6" md="6">
                             <v-text-field
                               v-model="editedItem.distrito"
                               label="Distrito"
@@ -249,7 +249,7 @@
                               disabled
                             ></v-text-field>
                           </v-col>
-                          <v-col v-if="perfil == 8" cols="12" sm="6" md="3">
+                          <v-col v-if="perfil == 9" cols="12" sm="6" md="3">
                             <v-select
                               v-model="editedItem.turno"
                               :items="itemsTurno"
@@ -257,7 +257,7 @@
                               label="Turno"
                             ></v-select>
                           </v-col>
-                          <v-col v-if="perfil == 9" cols="12" sm="6" md="3">
+                          <v-col v-if="perfil == 8" cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.turno"
                               label="Turno"
@@ -265,7 +265,7 @@
                               disabled
                             ></v-text-field>
                           </v-col>
-                          <v-col v-if="perfil == 8" cols="12" sm="6" md="3">
+                          <v-col v-if="perfil == 9" cols="12" sm="6" md="3">
                             <v-text-field
                               v-model="editedItem.referencia"
                               :rules="[rules.required, rules.counter]"
@@ -273,7 +273,7 @@
                               :maxlength="maxdat"
                             ></v-text-field>
                           </v-col>
-                          <v-col v-if="perfil == 9" cols="12" sm="12" md="12">
+                          <v-col v-if="perfil == 8" cols="12" sm="12" md="12">
                             <v-text-field
                               v-model="editedItem.referencia"
                               label="Referencia"

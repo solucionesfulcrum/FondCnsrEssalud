@@ -1,3 +1,3 @@
 <template>
-    <h1>hola Reporte</h1>
+    <h1>Reporte</h1>
 </template>

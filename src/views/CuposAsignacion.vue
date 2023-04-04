@@ -222,12 +222,12 @@
           ASIGNACIÓN DE CUPOS - IPRESS CONTRATADAS
         </v-system-bar>
         <v-row class="mt-2 ml-15">
-          <v-col cols="12" sm="6" md="6">
+          <!--<v-col cols="12" sm="6" md="6">
             <v-autocomplete
               v-model="editedItem.urlDistrito"
               :rules="[rules.required]"
               :items="itemsClinicas"
-              item-text="descripCas"
+              item-text="distrito"
               item-value="url"
               dense
               label="Por Distrito"
@@ -242,7 +242,7 @@
             >
               <v-icon>mdi-magnify</v-icon>
             </v-btn>
-          </v-col>
+          </v-col>-->
           <v-col cols="12" sm="6" md="6">
             <v-autocomplete
               v-model="editedItem.urlClinica"
@@ -399,6 +399,7 @@ export default {
     itemsFrecuencia: ["LUN-MIE-VIE", "MAR-JUE-SAB"],
     itemsEstado: ["true", "false"],
     itemsClinicas: [],
+    itemsClinicasDistritos: [],
     itemsDistrito: [],
     itemsDatosPaciente: [],
     //perfil data
@@ -701,18 +702,13 @@ export default {
         .then((response) => {
           this.auth = "Bearer " + response.data.access;
           axios
-            .get(RUTA_SERVIDOR + "/APICNSR/cas/?search=1", {
+            .get(RUTA_SERVIDOR + "/APICNSR/cas/?search=2,true", {
               headers: { Authorization: this.auth },
             })
             .then((res) => {
               this.itemsClinicas = res.data;
-              //this.desserts = res.data;
               this.dialogDataApi = false;
-              //this.dataAdmi = res.data[0].url.split("/")[4];
-              //this.datosPresHis = res.data[0];
-              /*for (let i = 0; i < res.data.length; i++) {
-                this.itemsClinicas.push(res.data[i].descripCas+"|"+res.data[i].url.split("/")[4])
-              }*/
+              //this.itemsClinicasDistritos =
               console.log("itemsClinicas", this.itemsClinicas);
             })
             .catch((res) => {
