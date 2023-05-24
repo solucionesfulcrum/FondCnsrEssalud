@@ -17,28 +17,21 @@
       transition="dialog-bottom-transition"
       max-width="600"
       persistent
-      v-model="dialogAsigPaciente"
+      v-model="dialogElimarAsigPac"
     >
       <v-card>
-        <v-toolbar color="#1973a5" dark>Asignar Puesto</v-toolbar>
+        <v-toolbar color="#1973a5" dark
+          >Eliminar Asignación de Paciente</v-toolbar
+        >
         <v-container class="mt-5">
-          <v-row>
-            <v-col cols="12" sm="12" md="12">
-              <v-autocomplete
-                v-model="editedItem.urlPaciente"
-                :rules="[rules.required]"
-                :items="itemsDatosPaciente"
-                item-text="nombreCompleto"
-                item-value="url"
-                dense
-                label="PACIENTE"
-              ></v-autocomplete>
-            </v-col>
-          </v-row>
+          <h4><center>Seguro de eliminar el cupos del paciente:</center></h4>
+          <h4>
+            <center>{{ nombrePac }}</center>
+          </h4>
         </v-container>
         <v-card-actions class="justify-end">
-          <v-btn text @click="asignarCupoPaciente">Aceptar</v-btn>
-          <v-btn text @click="dialogAsigPaciente = false">Cerrar</v-btn>
+          <v-btn text @click="deleteAsigCupos">Aceptar</v-btn>
+          <v-btn text @click="dialogElimarAsigPac = false">Cerrar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -392,6 +385,8 @@ export default {
     //RECORD CUPOS POR PACIENTE
     setDni: "",
     //cupos
+    nombrePac: "",
+    idPacienteEliminar: "",
     itemsTurno: ["TURNO 1", "TURNO 2", "TURNO 3", "TURNO 4"],
     itemsFrecuencia: ["LUN-MIE-VIE", "MAR-JUE-SAB"],
     itemsEstado: ["true", "false"],
@@ -432,6 +427,7 @@ export default {
     dialogGuaradoCorrecto: false,
     dialogNoAsignacion: false,
     dialogEliminarAsig: false,
+    dialogElimarAsigPac: false,
     vista: "",
     valid: true,
     datosEdit: "",
@@ -469,9 +465,52 @@ export default {
     },
   },
   methods: {
-    eliminarAsig(item){
-      console.log("item",item)
-      this.dialogEliminarAsig = true;
+    deleteAsigCupos() {
+      console.log("estas seguro de eliminar", this.idPacienteEliminar);
+      axios
+        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
+          username: "cnsr",
+          password: "123456",
+        })
+        .then((response) => {
+          this.auth = "Bearer " + response.data.access;
+          axios
+            .delete(
+              RUTA_SERVIDOR +
+                "/APICNSR/asigCuposPac/" +
+                this.idPacienteEliminar.split("/")[4] +
+                "/",
+              {
+                headers: { Authorization: this.auth },
+              }
+            )
+            .then((res) => {
+              console.log("exito", res.status);
+              this.buscarPacicente();
+              this.dialogElimarAsigPac = false;
+            })
+            .catch((res) => {
+              console.warn("Error:", res);
+              this.dialog = false;
+            });
+        })
+        .catch((response) => {
+          response === 404
+            ? console.warn("lo sientimos no tenemos servicios")
+            : console.warn("Error:", response);
+        });
+    },
+
+    eliminarAsig(item) {
+      console.log("item", item);
+      this.dialogElimarAsigPac = true;
+      this.nombrePac =
+        item.datosPaciente.ape_pat +
+        " " +
+        item.datosPaciente.ape_pat +
+        " " +
+        item.datosPaciente.nombres;
+      this.idPacienteEliminar = item.url;
     },
     cabezeraRecordAsigCupos() {
       this.headers = [
@@ -487,7 +526,6 @@ export default {
         },
         { text: "Turno", value: "datosPueto.turno" },
         { text: "Actions", value: "actions", sortable: false },
-        
       ];
     },
     buscarPacicente() {

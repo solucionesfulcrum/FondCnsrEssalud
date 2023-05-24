@@ -201,6 +201,22 @@
     <v-dialog
       transition="dialog-bottom-transition"
       max-width="600"
+      v-model="dialogParametrizado"
+    >
+      <v-card>
+        <v-toolbar color="#1973a5" dark>¡Aviso Importante!</v-toolbar>
+        <v-card-text>
+          <div class="text-h4 pa-5">No se puede asignar pacientes a esta clinica, revise la parametrización de Capacidad</div>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn text @click="dialogParametrizado = false">cerrar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
+      transition="dialog-bottom-transition"
+      max-width="600"
       v-model="dialogNoAsignacion"
     >
       <v-card>
@@ -423,6 +439,7 @@ export default {
       urlPuesto: "",
       urlDistrito: "",
     },
+    dialogParametrizado: false,
     dialog: false,
     dialogEdit: false,
     formAdmi: false,
@@ -756,31 +773,50 @@ export default {
                   }
                 )
                 .then((resCuposAsig) => {
-                  const resultNoAsig = res.data.filter(
-                    (e) =>
-                      !resCuposAsig.data.some((i) =>
-                        i.parameCentroPuesto.includes(e.url)
+                  if (resCuposAsig.data.length != 0) {
+                    console.log("resCuposAsig", resCuposAsig.data);
+                    const resultNoAsig = res.data.filter(
+                      (e) =>
+                        !resCuposAsig.data.some((i) =>
+                          i.parameCentroPuesto.includes(e.url)
+                        )
+                    );
+                    this.dessertsClinica.push(
+                      Object.assign(
+                        {
+                          clinica:
+                            resCuposAsig.data[0].datosPueto.datosCas.descripCas,
+                        },
+                        { urlClinica: resCuposAsig.data[0].datosPueto.cas },
+                        { cuposTotales: res.data.length },
+                        { cuposAsignados: resCuposAsig.data.length },
+                        { cuposNoAsignados: resultNoAsig.length }
                       )
-                  );
-                  this.dessertsClinica.push(
-                    Object.assign(
-                      {
-                        clinica:
-                          resCuposAsig.data[0].datosPueto.datosCas.descripCas,
-                      },
-                      { urlClinica: resCuposAsig.data[0].datosPueto.cas },
-                      { cuposTotales: res.data.length },
-                      { cuposAsignados: resCuposAsig.data.length },
-                      { cuposNoAsignados: resultNoAsig.length }
-                    )
-                  );
-                  this.nombreClinicaDetalle =
-                    resCuposAsig.data[0].datosPueto.datosCas.descripCas;
-                  console.log("data total cupos", res.data);
-                  console.log("data asignados", resCuposAsig.data);
-                  console.log("resultNoAsig", this.dessertsClinica);
-                  this.dialogDataApi = false;
-                  //this.dialogDetalleCupos = true;
+                    );
+                    this.nombreClinicaDetalle =
+                      resCuposAsig.data[0].datosPueto.datosCas.descripCas;
+                    console.log("data total cupos", res.data);
+                    console.log("data asignados", resCuposAsig.data);
+                    console.log("resultNoAsig", this.dessertsClinica);
+                    this.dialogDataApi = false;
+                    //this.dialogDetalleCupos = true;
+                  } else {
+                    console.log(
+                      "esta clinica no tiene nungun paciente asignado"
+                    );
+                    console.log("resCuposAsig", resCuposAsig.data);
+                    this.dessertsClinica.push(
+                      Object.assign(
+                        {
+                          clinica: this.editedItem.urlClinica,
+                        },
+                        { cuposTotales: res.data.length },
+                        { cuposAsignados: 0 },
+                        { cuposNoAsignados: 0 }
+                      )
+                    );
+                    this.dialogDataApi = false;
+                  }
                 })
                 .catch((res) => {
                   console.warn("Error:", res);
@@ -849,83 +885,89 @@ export default {
     buscarCuposClinica(item) {
       console.log("detalleCipos", item);
       this.dialogDataApi = true;
-      this.cabezeraParameCentro();
-      axios
-        .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
-          username: "cnsr",
-          password: "123456",
-        })
-        .then((response) => {
-          this.auth = "Bearer " + response.data.access;
-          axios
-            .get(
-              RUTA_SERVIDOR +
-                "/APICNSR/parameCentroPuesto/?search=" +
-                item.urlClinica.split("/")[4],
-              {
-                headers: { Authorization: this.auth },
-              }
-            )
-            .then((res) => {
-              //this.itemsClinicas = res.data;
-              //this.desserts = res.data;
-              //this.dialogDataApi = false;
-              //this.dataAdmi = res.data[0].url.split("/")[4];
-              //this.datosPresHis = res.data[0];
-              /*for (let i = 0; i < res.data.length; i++) {
+      if (item.cuposTotales == 0) {
+        console.log("no tiene parametrizacion");
+        this.dialogParametrizado= true;
+        this.dialogDataApi = false;
+      } else {
+        this.cabezeraParameCentro();
+        axios
+          .post(RUTA_SERVIDOR + "/APICNSR/api/token/", {
+            username: "cnsr",
+            password: "123456",
+          })
+          .then((response) => {
+            this.auth = "Bearer " + response.data.access;
+            axios
+              .get(
+                RUTA_SERVIDOR +
+                  "/APICNSR/parameCentroPuesto/?search=" +
+                  item.urlClinica.split("/")[4],
+                {
+                  headers: { Authorization: this.auth },
+                }
+              )
+              .then((res) => {
+                //this.itemsClinicas = res.data;
+                //this.desserts = res.data;
+                //this.dialogDataApi = false;
+                //this.dataAdmi = res.data[0].url.split("/")[4];
+                //this.datosPresHis = res.data[0];
+                /*for (let i = 0; i < res.data.length; i++) {
                 this.itemsClinicas.push(res.data[i].descripCas+"|"+res.data[i].url.split("/")[4])
               }*/
-              /*const resultFechaAnemia = this.dataToExportAnemia.filter(
+                /*const resultFechaAnemia = this.dataToExportAnemia.filter(
                   (e) =>
                     e.FechaPres >= this.dateInicialAnemia &&
                     e.FechaPres <= this.dateHastaAnemia
                 );*/
-              axios
-                .get(
-                  RUTA_SERVIDOR +
-                    "/APICNSR/asigCuposPac/?search=" +
-                    item.urlClinica.split("/")[4],
-                  {
-                    headers: { Authorization: this.auth },
-                  }
-                )
-                .then((resCuposAsig) => {
-                  console.log("data buscar clinica", res.data);
-                  console.log("data asignados", resCuposAsig.data);
-                  //this.itemsClinicas = res.data;
-                  //this.desserts = res.data;
-                  //this.dataAdmi = res.data[0].url.split("/")[4];
-                  //this.datosPresHis = res.data[0];
-                  /*for (let i = 0; i < res.data.length; i++) {
+                axios
+                  .get(
+                    RUTA_SERVIDOR +
+                      "/APICNSR/asigCuposPac/?search=" +
+                      item.urlClinica.split("/")[4],
+                    {
+                      headers: { Authorization: this.auth },
+                    }
+                  )
+                  .then((resCuposAsig) => {
+                    console.log("data buscar clinica", res.data);
+                    console.log("data asignados", resCuposAsig.data);
+                    //this.itemsClinicas = res.data;
+                    //this.desserts = res.data;
+                    //this.dataAdmi = res.data[0].url.split("/")[4];
+                    //this.datosPresHis = res.data[0];
+                    /*for (let i = 0; i < res.data.length; i++) {
                 this.itemsClinicas.push(res.data[i].descripCas+"|"+res.data[i].url.split("/")[4])
               }*/
-                  const resultNoAsig = res.data.filter(
-                    (e) =>
-                      !resCuposAsig.data.some((i) =>
-                        i.parameCentroPuesto.includes(e.url)
-                      )
-                  );
-                  this.desserts = resultNoAsig;
-                  console.log("resultNoAsig", this.desserts);
-                  this.dialogDataApi = false;
-                  this.dialogDetalleCupos = true;
-                  //this.dialogDetalleCupos = true;
-                })
-                .catch((res) => {
-                  console.warn("Error:", res);
-                  this.dialog = false;
-                });
-            })
-            .catch((res) => {
-              console.warn("Error:", res);
-              this.dialog = false;
-            });
-        })
-        .catch((response) => {
-          response === 404
-            ? console.warn("lo sientimos no tenemos servicios")
-            : console.warn("Error:", response);
-        });
+                    const resultNoAsig = res.data.filter(
+                      (e) =>
+                        !resCuposAsig.data.some((i) =>
+                          i.parameCentroPuesto.includes(e.url)
+                        )
+                    );
+                    this.desserts = resultNoAsig;
+                    console.log("resultNoAsig", this.desserts);
+                    this.dialogDataApi = false;
+                    this.dialogDetalleCupos = true;
+                    //this.dialogDetalleCupos = true;
+                  })
+                  .catch((res) => {
+                    console.warn("Error:", res);
+                    this.dialog = false;
+                  });
+              })
+              .catch((res) => {
+                console.warn("Error:", res);
+                this.dialog = false;
+              });
+          })
+          .catch((response) => {
+            response === 404
+              ? console.warn("lo sientimos no tenemos servicios")
+              : console.warn("Error:", response);
+          });
+      }
     },
 
     itemAsigCuposPac(item) {

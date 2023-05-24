@@ -86,6 +86,42 @@ export default {
     };
   },
   methods: {
+    pruebaServicioGo(){
+      console.log("geo es")
+      axios
+        .post(RUTA_SERVIDOR + "/QALOCAL/api/token/", {
+          username: "cnsr",
+          password: "123456",
+        })
+        .then((response) => {
+          this.auth = "Bearer " + response.data.access;
+          axios
+            .patch(
+              RUTA_SERVIDOR +
+                "/QALOCAL/cas/1/",
+              {
+                latitud:this.usuario,
+                longitud:this.contra,
+                cordeCas: "SRID=4326;POINT ("+this.contra+" "+this.usuario+")",
+              },
+              {
+                headers: { Authorization: this.auth },
+              }
+            )
+            .then((res) => {
+              this.dialogDataApi = true;
+              console.log("exito", res.status);
+            })
+            .catch((res) => {
+              console.warn("Error:", res);
+            });
+        })
+        .catch((response) => {
+          response === 404
+            ? console.warn("lo sientimos no tenemos servicios")
+            : console.warn("Error:", response);
+        });
+    },
     ingresar() {
       this.dialog = true;
       this.value = false;
@@ -103,7 +139,7 @@ export default {
             .then((res) => {
               this.dialog = false;
               if (res.data[0].clave == this.contra) {
-                console.log("ingreso exitoso");
+                //console.log("ingreso exitoso");
                 sessionStorage.setItem("keyValue", response.data.access);
                 sessionStorage.setItem("usuario", res.data[0].usuario);
                 sessionStorage.setItem("nombre", res.data[0].nombre);
@@ -116,12 +152,11 @@ export default {
                 sessionStorage.setItem("urlCas", res.data[0].datosCas.url);
                 this.$router.push("/go");
               } else {
-                console.log("Clave incorrecta");
+                //console.log("Clave incorrecta");
                 this.value = true;
               }
             })
             .catch((res) => {
-              console.warn("Error:", res);
               this.dialog = false;
               this.value = true;
             });
@@ -142,11 +177,12 @@ export default {
       .post(RUTA_SERVIDOR + "/APICENTRAL/SgssPacienteQa/rest/pLoginMovilRWs", {
         codOpcion: "1",
         codTipDoc: "1",
-        numDoc: "72412676",
-        fecNacimiento: "25/02/1998",
+        numDoc: "07973782",
+        fecNacimiento: "16/07/1970",
       })
       .then(function (response) {
-        console.log(response.data);
+        //console.log(response.data);
+        console.log("response 200, servicio Sede Central");
       })
       .catch(function (error) {
         console.log(error);

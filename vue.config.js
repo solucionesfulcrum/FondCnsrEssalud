@@ -19,6 +19,14 @@ module.exports = {
         pathRewrite: {
           '^/APICENTRAL': ''
         }
+      },
+      '/QALOCAL': {
+        target: 'http://10.0.54.88:8000/',
+        ws: true,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/QALOCAL': ''
+        }
       }
     },
     port: 90

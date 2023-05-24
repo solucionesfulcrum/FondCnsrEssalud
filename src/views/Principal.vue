@@ -140,7 +140,7 @@ export default {
   created() {
     this.perfil = sessionStorage.getItem("perfil");
     this.nombre = sessionStorage.getItem("nombre");
-    console.log("Perfil", this.perfil);
+    //console.log("Perfil", this.perfil);
   },
   methods: {
     actionOut() {
